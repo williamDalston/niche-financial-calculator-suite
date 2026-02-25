@@ -32,10 +32,12 @@ export function CalculatorSearch({
         )
       : [];
 
+  const resultsLength = results.length;
+
   // Reset active index when results change
   useEffect(() => {
     setActiveIndex(-1);
-  }, [results.length]);
+  }, [resultsLength]);
 
   // Scroll active item into view
   useEffect(() => {

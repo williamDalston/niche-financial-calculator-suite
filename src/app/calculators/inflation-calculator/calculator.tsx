@@ -84,7 +84,7 @@ export function InflationCalculatorWidget() {
     let adjustedAmount: number;
     let cumulativeRate: number;
     let avgAnnualRate: number;
-    let chartData: { year: number; value: number }[] = [];
+    const chartData: { year: number; value: number }[] = [];
 
     if (useCustomRate) {
       const yearSpan = Math.abs(endYear - startYear);

@@ -37,8 +37,8 @@ const contactMethods = [
     ),
     title: "Email",
     description: "Send us a message and we'll get back to you as soon as we can.",
-    detail: "contact@calcengine.io",
-    href: "mailto:contact@calcengine.io",
+    detail: "info@alstonanalytics.com",
+    href: "mailto:info@alstonanalytics.com",
     linkLabel: "Send an email",
   },
   {

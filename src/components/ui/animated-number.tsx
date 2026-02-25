@@ -119,19 +119,26 @@ export function AnimatedNumber({
   );
 
   useEffect(() => {
+    let isMounted = true;
+
     if (isFirstRender.current) {
       /* On mount: animate from 0 to value */
       isFirstRender.current = false;
       previousValueRef.current = 0;
-      animate(0, value);
+      if (isMounted) {
+        animate(0, value);
+      }
     } else {
       /* On value change: animate from old value to new value */
       const from = currentValueRef.current;
       previousValueRef.current = from;
-      animate(from, value);
+      if (isMounted) {
+        animate(from, value);
+      }
     }
 
     return () => {
+      isMounted = false;
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
       }

@@ -152,7 +152,7 @@ export function TspCalculatorWidget() {
       annualContribution,
       annualMatch,
     };
-  }, [currentAge, retirementAge, currentBalance, payPeriodContribution, annualSalary, expectedReturn, employerMatchPct, contributionType]);
+  }, [currentAge, retirementAge, currentBalance, payPeriodContribution, annualSalary, expectedReturn, employerMatchPct, contributionType, selectedFund]);
 
   // Pie data for balance composition
   const compositionData = [
