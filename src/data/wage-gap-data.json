@@ -1,0 +1,161 @@
+{
+  "overall": {
+    "men": 61604,
+    "women": 51226,
+    "gap_cents": 0.832,
+    "source": "U.S. Bureau of Labor Statistics, 2024 Annual Averages"
+  },
+  "occupations": [
+    {
+      "category": "Management",
+      "men": 98500,
+      "women": 78800,
+      "gap_cents": 0.80
+    },
+    {
+      "category": "Business & Financial Operations",
+      "men": 82400,
+      "women": 68900,
+      "gap_cents": 0.836
+    },
+    {
+      "category": "Computer & Mathematical",
+      "men": 102500,
+      "women": 88700,
+      "gap_cents": 0.865
+    },
+    {
+      "category": "Architecture & Engineering",
+      "men": 95200,
+      "women": 81400,
+      "gap_cents": 0.855
+    },
+    {
+      "category": "Life, Physical & Social Science",
+      "men": 82000,
+      "women": 69800,
+      "gap_cents": 0.851
+    },
+    {
+      "category": "Community & Social Service",
+      "men": 52800,
+      "women": 48400,
+      "gap_cents": 0.917
+    },
+    {
+      "category": "Legal",
+      "men": 118000,
+      "women": 82600,
+      "gap_cents": 0.70
+    },
+    {
+      "category": "Education, Training & Library",
+      "men": 62400,
+      "women": 55100,
+      "gap_cents": 0.883
+    },
+    {
+      "category": "Arts, Design, Entertainment & Media",
+      "men": 72800,
+      "women": 58200,
+      "gap_cents": 0.80
+    },
+    {
+      "category": "Healthcare Practitioners",
+      "men": 96200,
+      "women": 72800,
+      "gap_cents": 0.757
+    },
+    {
+      "category": "Healthcare Support",
+      "men": 36400,
+      "women": 33800,
+      "gap_cents": 0.929
+    },
+    {
+      "category": "Protective Service",
+      "men": 55600,
+      "women": 46200,
+      "gap_cents": 0.831
+    },
+    {
+      "category": "Food Preparation & Serving",
+      "men": 32200,
+      "women": 28600,
+      "gap_cents": 0.888
+    },
+    {
+      "category": "Building & Grounds Maintenance",
+      "men": 36800,
+      "women": 29400,
+      "gap_cents": 0.799
+    },
+    {
+      "category": "Personal Care & Service",
+      "men": 38200,
+      "women": 31400,
+      "gap_cents": 0.822
+    },
+    {
+      "category": "Sales & Related",
+      "men": 62400,
+      "women": 40600,
+      "gap_cents": 0.651
+    },
+    {
+      "category": "Office & Administrative Support",
+      "men": 44800,
+      "women": 40200,
+      "gap_cents": 0.897
+    },
+    {
+      "category": "Construction & Extraction",
+      "men": 50400,
+      "women": 42800,
+      "gap_cents": 0.849
+    },
+    {
+      "category": "Production",
+      "men": 44200,
+      "women": 34600,
+      "gap_cents": 0.783
+    },
+    {
+      "category": "Transportation & Material Moving",
+      "men": 45600,
+      "women": 36200,
+      "gap_cents": 0.794
+    }
+  ],
+  "education_multipliers": {
+    "high_school": 0.75,
+    "some_college": 0.85,
+    "associates": 0.90,
+    "bachelors": 1.0,
+    "masters": 1.20,
+    "professional": 1.55,
+    "doctorate": 1.45
+  },
+  "experience_multipliers": {
+    "0-2": 0.70,
+    "3-5": 0.82,
+    "6-10": 0.95,
+    "11-15": 1.05,
+    "16-20": 1.12,
+    "21-30": 1.18,
+    "30+": 1.20
+  },
+  "state_adjustments": {
+    "AL": 0.90, "AK": 1.05, "AZ": 0.95, "AR": 0.87, "CA": 1.18,
+    "CO": 1.05, "CT": 1.12, "DE": 1.02, "DC": 1.30, "FL": 0.95,
+    "GA": 0.95, "HI": 1.05, "ID": 0.88, "IL": 1.02, "IN": 0.92,
+    "IA": 0.90, "KS": 0.92, "KY": 0.88, "LA": 0.88, "ME": 0.93,
+    "MD": 1.10, "MA": 1.15, "MI": 0.95, "MN": 1.03, "MS": 0.85,
+    "MO": 0.92, "MT": 0.88, "NE": 0.90, "NV": 0.95, "NH": 1.05,
+    "NJ": 1.12, "NM": 0.88, "NY": 1.15, "NC": 0.95, "ND": 0.92,
+    "OH": 0.93, "OK": 0.88, "OR": 1.02, "PA": 0.98, "RI": 1.02,
+    "SC": 0.90, "SD": 0.87, "TN": 0.92, "TX": 0.98, "UT": 0.93,
+    "VT": 0.95, "VA": 1.05, "WA": 1.12, "WV": 0.85, "WI": 0.95,
+    "WY": 0.92, "National": 1.0
+  }
+}

@@ -1,26 +1,493 @@
 @import "tailwindcss";
 
+/* ============================================
+   CalcEngine.io Design System
+   Dark-first financial calculator suite
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color Palette */
+  --color-bg-primary: #0B1120;
+  --color-bg-surface: #162032;
+  --color-accent-primary: #22C55E;
+  --color-accent-secondary: #3B82F6;
+  --color-accent-warning: #F59E0B;
+  --color-text-primary: #F1F5F9;
+  --color-text-muted: #94A3B8;
+  --color-border: #1E293B;
+
+  /* Font families — set by next/font CSS variables in layout.tsx */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Surface & background colors */
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-surface: var(--color-bg-surface);
+
+  /* Accent colors */
+  --color-accent-primary: var(--color-accent-primary);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-accent-warning: var(--color-accent-warning);
+
+  /* Text colors */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted: var(--color-text-muted);
+
+  /* Border color */
+  --color-border: var(--color-border);
+
+  /* Font families for Tailwind utility classes */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ============================================
+   Base Styles
+   ============================================ */
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 2.5rem); /* 32–40px */
+  line-height: 1.15;
+  color: var(--color-text-primary);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 1.75rem); /* 24–28px */
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+a {
+  color: var(--color-accent-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--color-accent-primary);
+}
+
+/* ============================================
+   Form Elements — base resets
+   ============================================ */
+
+input,
+select,
+textarea {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent-secondary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+label {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem; /* 14px */
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Scrollbar (subtle dark)
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+/* Calculator result numbers — big mono green */
+.calc-result {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.25rem); /* 28–36px */
+  color: var(--color-accent-primary);
+  letter-spacing: -0.025em;
+}
+
+/* Chart label styling */
+.chart-label {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.75rem; /* 12px */
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   CSS Animations
+   ============================================ */
+
+/* Fade-in animation for page sections */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle pulse for results */
+@keyframes subtlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Gradient shimmer for loading states */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Number counter flash */
+@keyframes numberFlash {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* ============================================
+   Animation Utility Classes
+   ============================================ */
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+  opacity: 0;
+}
+.animate-fade-in-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-in-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-in-up-delay-3 { animation-delay: 0.3s; }
+.animate-fade-in-up-delay-4 { animation-delay: 0.4s; }
+
+.animate-subtle-pulse {
+  animation: subtlePulse 2s ease-in-out infinite;
+}
+
+/* Glow effect for primary results */
+.result-glow {
+  text-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+}
+
+/* Gradient text */
+.text-gradient-green {
+  background: linear-gradient(135deg, #22C55E, #4ADE80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism card effect */
+.glass-card {
+  background: rgba(22, 32, 50, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Smooth hover lift */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+/* Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus indicators for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-accent-secondary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  body { background: white !important; color: black !important; }
+  .no-print, header, footer, nav, .cta-block, .related-calculators,
+  [data-no-print] { display: none !important; }
+  .calc-result { color: black !important; text-shadow: none !important; }
+  a { color: black !important; text-decoration: underline !important; }
+  .bg-bg-surface, .bg-bg-primary { background: white !important; }
+  .border-border { border-color: #ccc !important; }
+  .text-text-primary { color: black !important; }
+  .text-text-muted { color: #666 !important; }
+  @page { margin: 1in; }
+}
+
+/* ============================================
+   Smooth Scrolling
+   ============================================ */
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-in-up,
+  .animate-subtle-pulse,
+  .hover-lift {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================
+   Additional Keyframe Animations
+   ============================================ */
+
+/* Slide up from bottom (for cookie banner, modals) */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Gentle float animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Gradient border rotation */
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Scale in for result cards */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Staggered list fade-in */
+@keyframes staggerFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Extended Utility Classes
+   ============================================ */
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in-delay-1 { animation-delay: 0.05s; }
+.animate-scale-in-delay-2 { animation-delay: 0.1s; }
+.animate-scale-in-delay-3 { animation-delay: 0.15s; }
+.animate-scale-in-delay-4 { animation-delay: 0.2s; }
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: var(--color-bg-surface);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #22C55E, #3B82F6, #22C55E);
+  background-size: 200% 200%;
+  animation: gradientRotate 4s ease infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* Animated underline for links */
+.animated-underline {
+  position: relative;
+}
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #22C55E, #3B82F6);
+  transition: width 0.3s ease;
+}
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* Glow button effect */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    rgba(30, 41, 59, 0.6) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Subtle text gradient */
+.text-gradient-blue-green {
+  background: linear-gradient(135deg, #3B82F6, #22C55E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card shine effect on hover */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    transparent 40%,
+    rgba(34, 197, 94, 0.03) 50%,
+    transparent 60%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.6s ease;
+}
+.card-shine:hover::after {
+  transform: rotate(30deg) translate(20%, 20%);
+}
+
+/* ============================================
+   Selection Styling
+   ============================================ */
+
+/* Text selection */
+::selection {
+  background: rgba(34, 197, 94, 0.3);
+  color: var(--color-text-primary);
 }

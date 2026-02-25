@@ -1,0 +1,138 @@
+CALCENGINE.IO — MONETIZATION PLAN
+===================================
+
+Expected Revenue Per 1,000 Visits: $40–100 (highest of all three sites)
+Revenue Mix: 60% affiliate, 30% display ads, 10% future premium tools
+
+
+PRIMARY REVENUE: FINANCE AFFILIATE PROGRAMS
+--------------------------------------------
+
+Calculator users have extreme purchase intent. Someone using a mortgage
+calculator is actively shopping for a mortgage. That's worth $20–150
+per lead to lenders.
+
+Sign up for these programs in this order:
+
+1. LendingTree
+   - Apply via: FlexOffers or LendingTree partner portal
+   - Place on: Mortgage calculator, home affordability calculator, refinance calculator
+   - CTA: "Compare rates from top lenders — check your rate in 2 minutes"
+   - Pays: $25–75 per qualified lead
+   - Placement: Directly below calculation results
+
+2. Bankrate
+   - Apply via: Commission Junction (CJ Affiliate)
+   - Place on: Mortgage, auto loan, savings, CD calculators
+   - CTA: "See today's best rates from Bankrate"
+   - Pays: $15–50 per lead depending on product
+   - Placement: Sidebar card on desktop, inline on mobile
+
+3. NerdWallet
+   - Apply via: NerdWallet affiliate portal or Impact
+   - Place on: Debt payoff, credit card, savings calculators
+   - CTA: "Find the best credit cards for your spending habits"
+   - Pays: $10–40 per lead
+   - Placement: Within editorial content section
+
+4. TurboTax / H&R Block
+   - Apply via: Commission Junction (both programs)
+   - Place on: Federal tax estimator, self-employment tax, state tax calculators
+   - CTA: "File your taxes online — free for simple returns"
+   - Pays: $15–30 per signup
+   - Placement: Below tax calculation results
+   - NOTE: Seasonal gold mine January through April. These convert like crazy during tax season.
+
+5. Wealthfront / Betterment
+   - Apply via: Impact (Wealthfront) or direct (Betterment)
+   - Place on: Retirement calculator, 401k calculator, compound interest calculator
+   - CTA: "Start investing with as little as $1"
+   - Pays: $25–75 per funded account
+   - Placement: Below results on investment calculators
+
+6. SoFi / Credible
+   - Apply via: SoFi affiliate portal or Credible partner program
+   - Place on: Student loan, personal loan, auto loan, debt payoff calculators
+   - CTA: "Check your rate without affecting your credit score"
+   - Pays: $30–100 per funded loan
+   - Placement: Directly below calculation results
+
+7. Federal Job Boards (USAJobs, ClearanceJobs)
+   - Place on: GS pay calculator, military pay calculator, FERS calculator
+   - CTA: "Browse open GS-13 positions near you"
+   - Pays: $5–15 per click or application
+   - Placement: Sidebar or below pay scale results
+
+
+AFFILIATE PLACEMENT RULES
+---------------------------
+
+- Every affiliate CTA goes DIRECTLY BELOW the calculation results.
+  That's the moment of highest intent — user just saw "$2,847/month"
+  and you show them how to lower it.
+- Maximum 2 affiliate CTAs per page (one below results, one in editorial).
+- CTAs must be contextual to the calculator. Never show mortgage ads on a
+  tip calculator.
+- Style affiliate CTAs as native-looking recommendation cards that match
+  the design system. Never use banner-style ads for affiliates.
+- Conversion rates on contextual finance CTAs run 2–5%.
+
+
+SECONDARY REVENUE: DISPLAY ADVERTISING
+-----------------------------------------
+
+Phase 1 — Launch Day:
+  Google AdSense
+  - No traffic minimum
+  - Sign up at adsense.google.com
+  - Add script to layout.tsx via next/script with strategy="afterInteractive"
+  - Create public/ads.txt with your publisher ID
+  - Enable Auto Ads in AdSense dashboard
+  - Expected RPM: $5–12
+
+Phase 2 — At 1,000 Monthly Sessions:
+  Mediavine Journey
+  - Install Grow by Mediavine plugin NOW (30-day waiting period)
+  - Apply through Grow dashboard once you hit 1K sessions
+  - Revenue share: 70%
+  - Expected RPM: $20–40
+
+Phase 3 — At 25,000 Monthly Pageviews:
+  Mediavine Official OR Raptive
+  - Mediavine: requires $5,000/year in ad revenue
+  - Raptive: requires 25,000 pageviews/month, 50% from US/UK/CA/AU/NZ
+  - Apply to both, go with whoever accepts first
+  - Revenue share: 75%
+  - Expected RPM: $30–80 (finance niche commands premium rates)
+
+Ad Placement Rules:
+  - NEVER place ads above or inside the calculator widget
+  - One ad unit below the fold (after calculator section)
+  - One ad unit within the editorial/how-it-works content
+  - One sidebar ad on desktop only
+  - Finance content commands 3–5x higher CPMs than average niches
+
+
+REVENUE PROJECTIONS BY TRAFFIC LEVEL
+--------------------------------------
+
+Monthly Visits | Affiliate Rev | Ad Rev    | Total
+10,000         | $200–400      | $100–300  | $300–700
+25,000         | $500–1,000    | $500–1,500| $1,000–2,500
+100,000        | $2,000–5,000  | $2,000–5,000| $4,000–10,000
+500,000        | $10,000–25,000| $10,000–25,000| $20,000–50,000
+1,000,000      | $20,000–50,000| $20,000–40,000| $40,000–90,000
+
+NOTE: Tax season (Jan–Apr) can spike affiliate revenue 3–5x on tax
+calculators. Mortgage rates changing drives spikes on housing calculators.
+
+
+FUTURE REVENUE STREAMS (MONTH 6+)
+------------------------------------
+
+- API access: Let fintech apps embed CalcEngine calculators for $99–499/month
+- White-label calculators: Sell branded calculator widgets to financial advisors
+- Sponsored calculators: Financial institutions pay to be the recommended
+  provider on specific calculators ($2,000–10,000/month per calculator)
+- Premium calculator features: Advanced modeling (Monte Carlo retirement
+  simulations, tax optimization scenarios) behind a $4.99/month paywall
