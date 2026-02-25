@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CookieConsent } from "@/components/cookie-consent";
@@ -64,8 +66,10 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: "/icon.svg",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -93,6 +97,8 @@ export default function RootLayout({
         <CookieConsent />
         <AdSenseScript />
         <Analytics />
+        <VercelAnalytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -37,6 +37,27 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Common calculator misspellings and alternates
+      { source: "/calculator", destination: "/calculators", permanent: true },
+      { source: "/calc", destination: "/calculators", permanent: true },
+      { source: "/tools", destination: "/calculators", permanent: true },
+      // Mortgage variations
+      { source: "/mortgage", destination: "/calculators/mortgage-calculator", permanent: true },
+      { source: "/calculators/mortgage", destination: "/calculators/mortgage-calculator", permanent: true },
+      // 401k variations
+      { source: "/401k", destination: "/calculators/401k-calculator", permanent: true },
+      { source: "/calculators/401k", destination: "/calculators/401k-calculator", permanent: true },
+      // Retirement variations
+      { source: "/retirement", destination: "/calculators/retirement-calculator", permanent: true },
+      // Tax variations
+      { source: "/tax", destination: "/calculators/federal-tax-calculator", permanent: true },
+      { source: "/taxes", destination: "/category/tax-calculators", permanent: true },
+      // Salary variations
+      { source: "/salary", destination: "/calculators/salary-to-hourly", permanent: true },
+    ];
+  },
   compress: true,
   poweredByHeader: false,
 };
