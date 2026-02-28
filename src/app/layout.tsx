@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Space_Grotesk, DM_Sans, JetBrains_Mono } from "next/font/google";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -6,7 +7,6 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CookieConsent } from "@/components/cookie-consent";
 import { AdSenseScript } from "@/components/adsense-script";
-import { Analytics } from "@/components/analytics";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -106,6 +106,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XRRR3GVE2V"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XRRR3GVE2V');
+          `}
+        </Script>
       </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
         <script
@@ -120,7 +132,6 @@ export default function RootLayout({
         <Footer />
         <CookieConsent />
         <AdSenseScript />
-        <Analytics />
         <VercelAnalytics />
         <SpeedInsights />
       </body>
