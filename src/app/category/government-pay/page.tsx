@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import {
   getCalculatorsByCategory,
   type CalculatorInfo,
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
   title: "Government Pay Calculators | CalcEngine",
   description:
     "Free government pay calculators for GS federal employees, military service members, FERS retirement annuities, and TSP projections. Understand your total federal compensation with CalcEngine.",
+  openGraph: {
+    title: "Government Pay Calculators | CalcEngine",
+    description:
+      "Free government pay calculators for GS pay, military pay, FERS retirement, and TSP projections.",
+    url: "https://calcengine.org/category/government-pay",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Government Pay Calculators | CalcEngine",
+    description:
+      "Free government pay calculators for GS federal employees, military service members, FERS retirement annuities, and TSP projections. Understand your total federal compensation with CalcEngine.",
+  },
   alternates: {
     canonical: "/category/government-pay",
   },
@@ -91,6 +104,9 @@ export default function GovernmentPayPage() {
         ))}
       </div>
 
+      {/* Ad unit */}
+      <AdUnit className="mt-12" />
+
       {/* JSON-LD BreadcrumbList */}
       <script
         type="application/ld+json"
@@ -103,13 +119,13 @@ export default function GovernmentPayPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://calcengine.io/",
+                item: "https://calcengine.org/",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: CATEGORY_NAME,
-                item: `https://calcengine.io/category/${CATEGORY_SLUG}`,
+                item: `https://calcengine.org/category/${CATEGORY_SLUG}`,
               },
             ],
           }),
@@ -124,13 +140,13 @@ export default function GovernmentPayPage() {
             name: "Government Pay Calculators",
             description:
               "Free government pay calculators for GS federal employees, military service members, FERS retirement annuities, and TSP projections. Understand your total federal compensation with CalcEngine.",
-            url: "https://calcengine.io/category/government-pay",
+            url: "https://calcengine.org/category/government-pay",
             numberOfItems: 4,
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "GS Pay Calculator", url: "https://calcengine.io/calculators/gs-pay-calculator" },
-              { "@type": "ListItem", position: 2, name: "Military Pay Calculator", url: "https://calcengine.io/calculators/military-pay-calculator" },
-              { "@type": "ListItem", position: 3, name: "FERS Retirement Calculator", url: "https://calcengine.io/calculators/fers-retirement-calculator" },
-              { "@type": "ListItem", position: 4, name: "TSP Calculator", url: "https://calcengine.io/calculators/tsp-calculator" },
+              { "@type": "ListItem", position: 1, name: "GS Pay Calculator", url: "https://calcengine.org/calculators/gs-pay-calculator" },
+              { "@type": "ListItem", position: 2, name: "Military Pay Calculator", url: "https://calcengine.org/calculators/military-pay-calculator" },
+              { "@type": "ListItem", position: 3, name: "FERS Retirement Calculator", url: "https://calcengine.org/calculators/fers-retirement-calculator" },
+              { "@type": "ListItem", position: 4, name: "TSP Calculator", url: "https://calcengine.org/calculators/tsp-calculator" },
             ],
           }),
         }}

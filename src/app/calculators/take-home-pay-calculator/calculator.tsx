@@ -18,10 +18,10 @@ import {
   ShareResults,
   StatCard,
 } from "@/components/ui";
-import { formatCurrencyExact as formatCurrency, formatPercent } from "@/lib/formatters";
+import { formatCurrencyExact, formatPercent } from "@/lib/formatters";
 
 /* ------------------------------------------------------------------ */
-/*  2024 Federal Tax Brackets                                          */
+/*  2025 Federal Tax Brackets                                          */
 /* ------------------------------------------------------------------ */
 
 interface TaxBracket {
@@ -31,13 +31,13 @@ interface TaxBracket {
 }
 
 const SINGLE_BRACKETS: TaxBracket[] = [
-  { min: 0, max: 11600, rate: 0.10 },
-  { min: 11600, max: 47150, rate: 0.12 },
-  { min: 47150, max: 100525, rate: 0.22 },
-  { min: 100525, max: 191950, rate: 0.24 },
-  { min: 191950, max: 243725, rate: 0.32 },
-  { min: 243725, max: 609350, rate: 0.35 },
-  { min: 609350, max: Infinity, rate: 0.37 },
+  { min: 0, max: 11925, rate: 0.10 },
+  { min: 11925, max: 48475, rate: 0.12 },
+  { min: 48475, max: 103350, rate: 0.22 },
+  { min: 103350, max: 197300, rate: 0.24 },
+  { min: 197300, max: 250525, rate: 0.32 },
+  { min: 250525, max: 626350, rate: 0.35 },
+  { min: 626350, max: Infinity, rate: 0.37 },
 ];
 
 const MARRIED_BRACKETS: TaxBracket[] = SINGLE_BRACKETS.map((b) => ({
@@ -47,19 +47,19 @@ const MARRIED_BRACKETS: TaxBracket[] = SINGLE_BRACKETS.map((b) => ({
 }));
 
 const HOH_BRACKETS: TaxBracket[] = [
-  { min: 0, max: 16550, rate: 0.10 },
-  { min: 16550, max: 63100, rate: 0.12 },
-  { min: 63100, max: 100500, rate: 0.22 },
-  { min: 100500, max: 191950, rate: 0.24 },
-  { min: 191950, max: 243725, rate: 0.32 },
-  { min: 243725, max: 609350, rate: 0.35 },
-  { min: 609350, max: Infinity, rate: 0.37 },
+  { min: 0, max: 17000, rate: 0.10 },
+  { min: 17000, max: 64850, rate: 0.12 },
+  { min: 64850, max: 103350, rate: 0.22 },
+  { min: 103350, max: 197300, rate: 0.24 },
+  { min: 197300, max: 250500, rate: 0.32 },
+  { min: 250500, max: 626350, rate: 0.35 },
+  { min: 626350, max: Infinity, rate: 0.37 },
 ];
 
 const STANDARD_DEDUCTIONS: Record<string, number> = {
-  single: 14600,
-  married: 29200,
-  hoh: 21900,
+  single: 15000,
+  married: 30000,
+  hoh: 22500,
 };
 
 function calculateFederalTax(taxableIncome: number, brackets: TaxBracket[]): number {
@@ -153,7 +153,7 @@ export function TakeHomePayWidget() {
     const taxableIncome = Math.max(grossSalary - preTaxDeductions, 0);
 
     // Standard deduction
-    const standardDeduction = STANDARD_DEDUCTIONS[filingStatus] || 14600;
+    const standardDeduction = STANDARD_DEDUCTIONS[filingStatus] || 15000;
     const federalTaxableIncome = Math.max(taxableIncome - standardDeduction, 0);
 
     // Federal tax brackets
@@ -175,8 +175,8 @@ export function TakeHomePayWidget() {
     const stateRate = STATE_TAX_RATES[stateCode]?.rate || 0;
     const stateTax = taxableIncome * stateRate;
 
-    // Social Security: 6.2% up to $168,600 (on gross, not reduced by pre-tax deductions)
-    const ssWageBase = 168600;
+    // Social Security: 6.2% up to $176,100 (on gross, not reduced by pre-tax deductions)
+    const ssWageBase = 176100;
     const socialSecurity = Math.min(grossSalary, ssWageBase) * 0.062;
 
     // Medicare: 1.45% on all income + 0.9% additional on income over $200k
@@ -226,17 +226,17 @@ export function TakeHomePayWidget() {
   );
 
   const shareResultsData: Record<string, string> = {
-    "Net Pay (Annual)": formatCurrency(results.annualNetPay),
-    "Federal Tax": formatCurrency(results.federalTax),
-    "State Tax": formatCurrency(results.stateTax),
-    "Social Security": formatCurrency(results.socialSecurity),
-    "Medicare": formatCurrency(results.medicare),
+    "Net Pay (Annual)": formatCurrencyExact(results.annualNetPay),
+    "Federal Tax": formatCurrencyExact(results.federalTax),
+    "State Tax": formatCurrencyExact(results.stateTax),
+    "Social Security": formatCurrencyExact(results.socialSecurity),
+    "Medicare": formatCurrencyExact(results.medicare),
     "Effective Tax Rate": formatPercent(results.effectiveTaxRate),
   };
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Gross Annual Salary */}
@@ -337,7 +337,7 @@ export function TakeHomePayWidget() {
             />
             {contribution401kPercent > 0 && (
               <p className="text-xs text-[#94A3B8] -mt-2">
-                = {formatCurrency(contribution401k)}/year
+                = {formatCurrencyExact(contribution401k)}/year
               </p>
             )}
             <CurrencyInput
@@ -361,7 +361,7 @@ export function TakeHomePayWidget() {
               value={results.netPayPerPeriod}
               format="currency"
               decimals={2}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
               Annual take-home:{" "}
@@ -375,7 +375,7 @@ export function TakeHomePayWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Net Pay (Annual)"
               highlight
@@ -468,7 +468,7 @@ export function TakeHomePayWidget() {
           </div>
 
           {/* Summary Row */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Effective Tax Rate"
               value={
@@ -526,7 +526,7 @@ export function TakeHomePayWidget() {
                     borderRadius: "8px",
                     color: "#F1F5F9",
                   }}
-                  formatter={(value) => formatCurrency(value as number)}
+                  formatter={(value) => formatCurrencyExact(value as number)}
                 />
                 <Legend
                   wrapperStyle={{ fontSize: 11, color: "#94A3B8" }}

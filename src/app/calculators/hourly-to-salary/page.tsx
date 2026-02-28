@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Hourly to Annual Salary Calculator | CalcEngine",
     description:
       "Convert your hourly wage to an annual salary. See monthly, biweekly, weekly, and daily pay breakdowns with and without overtime. Free salary conversion calculator.",
-    url: "https://calcengine.io/calculators/hourly-to-salary",
+    url: "https://calcengine.org/calculators/hourly-to-salary",
   },
   twitter: {
     card: "summary_large_image",
@@ -68,7 +68,7 @@ const faqs = [
   {
     question: "What is the overtime rate and who qualifies?",
     answer:
-      "Under the FLSA, non-exempt employees must receive overtime pay of at least 1.5 times their regular rate for hours worked over 40 in a workweek. Some states, like California, also require overtime for hours over 8 in a single day. Salaried employees earning above a certain threshold ($35,568/year as of 2024) are generally exempt from overtime. Some industries and union contracts provide double-time (2x) for holidays or hours over a certain threshold.",
+      "Under the FLSA, non-exempt employees must receive overtime pay of at least 1.5 times their regular rate for hours worked over 40 in a workweek. Some states, like California, also require overtime for hours over 8 in a single day. Salaried employees earning above a certain threshold ($58,656/year as of 2025) are generally exempt from overtime. Some industries and union contracts provide double-time (2x) for holidays or hours over a certain threshold.",
   },
   {
     question: "Should I use 52 or 50 weeks for my calculation?",

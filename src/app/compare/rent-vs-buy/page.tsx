@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ad-unit";
 
 export const metadata: Metadata = {
   title: "Rent vs Buy: The Complete 2026 Guide | CalcEngine",
@@ -9,11 +10,17 @@ export const metadata: Metadata = {
     title: "Rent vs Buy: The Complete 2026 Guide",
     description:
       "Should you rent or buy in 2026? Comprehensive guide with the 5% rule, financial comparisons, and a free calculator.",
-    url: "https://calcengine.io/compare/rent-vs-buy",
+    url: "https://calcengine.org/compare/rent-vs-buy",
     type: "article",
   },
   alternates: {
     canonical: "/compare/rent-vs-buy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rent vs Buy: The Complete 2026 Guide | CalcEngine",
+    description:
+      "Should you rent or buy in 2026? Our comprehensive guide covers the 5% rule, financial comparisons, and when each option makes sense. Use our free calculator to decide.",
   },
 };
 
@@ -70,18 +77,18 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   publisher: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   datePublished: "2026-01-15",
   dateModified: "2026-02-24",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://calcengine.io/compare/rent-vs-buy",
+    "@id": "https://calcengine.org/compare/rent-vs-buy",
   },
 };
 
@@ -567,6 +574,9 @@ export default function RentVsBuyGuidePage() {
                 </Link>
               </div>
             </section>
+
+            {/* ── Ad Unit ── */}
+            <AdUnit className="mt-12" />
 
             {/* ── Section 7: FAQ ── */}
             <section id="faq" className="mt-14 scroll-mt-24">

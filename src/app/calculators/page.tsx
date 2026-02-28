@@ -11,6 +11,18 @@ export const metadata: Metadata = {
   title: "All Calculators | CalcEngine",
   description:
     "Browse all 30 free financial calculators: mortgage, salary, retirement, tax, debt, and government pay tools. Filter by category, search by name.",
+  openGraph: {
+    title: "All Calculators | CalcEngine",
+    description:
+      "Browse all 30 free financial calculators for mortgage, salary, retirement, tax, debt, and government pay.",
+    url: "https://calcengine.org/calculators",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All Calculators | CalcEngine",
+    description:
+      "Browse all 30 free financial calculators: mortgage, salary, retirement, tax, debt, and government pay tools. Filter by category, search by name.",
+  },
   alternates: {
     canonical: "/calculators",
   },

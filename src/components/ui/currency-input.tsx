@@ -122,7 +122,7 @@ export function CurrencyInput({
       {label && (
         <label
           htmlFor={inputId}
-          className="mb-2 block text-sm font-medium text-[#94A3B8]"
+          className="mb-2 block text-sm font-medium text-text-muted"
         >
           {label}
         </label>
@@ -130,7 +130,7 @@ export function CurrencyInput({
       <div className="relative">
         {/* Fixed $ prefix */}
         <span
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 select-none text-[#94A3B8] font-medium"
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 select-none text-text-muted font-medium"
           aria-hidden="true"
         >
           $
@@ -147,7 +147,7 @@ export function CurrencyInput({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           aria-label={label ?? "Currency amount"}
-          className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] pl-7 pr-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+          className="h-12 w-full rounded-lg border border-border bg-bg-primary pl-7 pr-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
         />
       </div>
     </div>

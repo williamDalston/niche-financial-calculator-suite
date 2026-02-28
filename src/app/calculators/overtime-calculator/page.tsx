@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Overtime Calculator | CalcEngine",
     description:
       "Calculate your overtime pay, total gross earnings, and effective hourly rate. Free overtime calculator supporting 1.5x and 2x rates with weekly and biweekly pay periods.",
-    url: "https://calcengine.io/calculators/overtime-calculator",
+    url: "https://calcengine.org/calculators/overtime-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -62,7 +62,7 @@ const faqs = [
   {
     question: "Who is eligible for overtime pay?",
     answer:
-      "Under the Fair Labor Standards Act (FLSA), most hourly employees are entitled to overtime pay at 1.5x their regular rate for hours worked over 40 per week. However, certain employees are exempt from overtime requirements, including executive, administrative, and professional employees who earn at least $684 per week ($35,568 annually) on a salary basis. As of 2024, the DOL has proposed raising this threshold to $1,128 per week ($58,656 annually). Other exempt categories include outside sales employees, computer professionals earning at least $27.63/hour, and certain seasonal workers.",
+      "Under the Fair Labor Standards Act (FLSA), most hourly employees are entitled to overtime pay at 1.5x their regular rate for hours worked over 40 per week. However, certain employees are exempt from overtime requirements, including executive, administrative, and professional employees who earn at least $1,128 per week ($58,656 annually) on a salary basis as of 2025. Other exempt categories include outside sales employees, computer professionals earning at least $27.63/hour, and certain seasonal workers.",
   },
   {
     question: "How is overtime calculated for salaried employees?",

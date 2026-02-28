@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import {
   getCalculatorsByCategory,
   type CalculatorInfo,
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
   title: "Tax Calculators | CalcEngine",
   description:
     "Free tax calculators to estimate federal income tax, take-home pay after deductions, and self-employment tax for freelancers and small business owners. File smarter with CalcEngine.",
+  openGraph: {
+    title: "Tax Calculators | CalcEngine",
+    description:
+      "Free tax calculators for federal income tax, take-home pay, and self-employment tax estimates.",
+    url: "https://calcengine.org/category/tax-calculators",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tax Calculators | CalcEngine",
+    description:
+      "Free tax calculators to estimate federal income tax, take-home pay after deductions, and self-employment tax for freelancers and small business owners. File smarter with CalcEngine.",
+  },
   alternates: {
     canonical: "/category/tax-calculators",
   },
@@ -90,6 +103,9 @@ export default function TaxCalculatorsPage() {
         ))}
       </div>
 
+      {/* Ad unit */}
+      <AdUnit className="mt-12" />
+
       {/* JSON-LD BreadcrumbList */}
       <script
         type="application/ld+json"
@@ -102,13 +118,13 @@ export default function TaxCalculatorsPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://calcengine.io/",
+                item: "https://calcengine.org/",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: CATEGORY_NAME,
-                item: `https://calcengine.io/category/${CATEGORY_SLUG}`,
+                item: `https://calcengine.org/category/${CATEGORY_SLUG}`,
               },
             ],
           }),
@@ -123,12 +139,12 @@ export default function TaxCalculatorsPage() {
             name: "Tax Calculators",
             description:
               "Free tax calculators to estimate federal income tax, take-home pay after deductions, and self-employment tax for freelancers and small business owners. File smarter with CalcEngine.",
-            url: "https://calcengine.io/category/tax-calculators",
+            url: "https://calcengine.org/category/tax-calculators",
             numberOfItems: 3,
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Federal Tax Estimator", url: "https://calcengine.io/calculators/federal-tax-calculator" },
-              { "@type": "ListItem", position: 2, name: "Take-Home Pay Calculator", url: "https://calcengine.io/calculators/take-home-pay-calculator" },
-              { "@type": "ListItem", position: 3, name: "Self-Employment Tax Calculator", url: "https://calcengine.io/calculators/self-employment-tax-calculator" },
+              { "@type": "ListItem", position: 1, name: "Federal Tax Estimator", url: "https://calcengine.org/calculators/federal-tax-calculator" },
+              { "@type": "ListItem", position: 2, name: "Take-Home Pay Calculator", url: "https://calcengine.org/calculators/take-home-pay-calculator" },
+              { "@type": "ListItem", position: 3, name: "Self-Employment Tax Calculator", url: "https://calcengine.org/calculators/self-employment-tax-calculator" },
             ],
           }),
         }}

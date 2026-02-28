@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ad-unit";
 
 export const metadata: Metadata = {
   title:
@@ -10,11 +11,18 @@ export const metadata: Metadata = {
     title: "Fixed vs Variable Rate Mortgage: Which Is Right for You in 2026?",
     description:
       "Compare fixed-rate and adjustable-rate mortgages side by side. Real-world cost scenarios, rate cap explanations, and a free calculator.",
-    url: "https://calcengine.io/compare/fixed-vs-variable-mortgage",
+    url: "https://calcengine.org/compare/fixed-vs-variable-mortgage",
     type: "article",
   },
   alternates: {
     canonical: "/compare/fixed-vs-variable-mortgage",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "Fixed vs Variable Rate Mortgage: Which Is Right for You in 2026? | CalcEngine",
+    description:
+      "Compare fixed-rate and adjustable-rate mortgages (ARMs) side by side. Learn how each works, when to choose one over the other, and see real-world cost scenarios for a $400,000 loan.",
   },
 };
 
@@ -74,18 +82,18 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   publisher: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   datePublished: "2026-02-24",
   dateModified: "2026-02-24",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://calcengine.io/compare/fixed-vs-variable-mortgage",
+    "@id": "https://calcengine.org/compare/fixed-vs-variable-mortgage",
   },
 };
 
@@ -923,6 +931,9 @@ export default function FixedVsVariableMortgagePage() {
                 </div>
               </div>
             </section>
+
+            {/* -- Ad Unit -- */}
+            <AdUnit className="mt-12" />
 
             {/* -- Section 9: FAQ -- */}
             <section id="faq" className="mt-14 scroll-mt-24">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   Tooltip,
@@ -20,6 +20,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   primary: "#22C55E",
@@ -33,24 +34,28 @@ const COLORS = {
 };
 
 export function FourOhOneKCalculatorWidget() {
-  const [currentAge, setCurrentAge] = useState(30);
-  const [retirementAge, setRetirementAge] = useState(65);
-  const [currentBalance, setCurrentBalance] = useState(25000);
-  const [annualSalary, setAnnualSalary] = useState(75000);
-  const [contributionPct, setContributionPct] = useState(10);
-  const [employerMatchPct, setEmployerMatchPct] = useState(50);
-  const [employerMatchCap, setEmployerMatchCap] = useState(6);
-  const [annualReturn, setAnnualReturn] = useState(7);
-  const [salaryGrowth, setSalaryGrowth] = useState(3);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentAge: 30,
+      retirementAge: 65,
+      currentBalance: 25000,
+      annualSalary: 75000,
+      contributionPct: 10,
+      employerMatchPct: 50,
+      employerMatchCap: 6,
+      annualReturn: 7,
+      salaryGrowth: 3,
+    },
+  });
 
   const results = useMemo(() => {
-    const yearsToRetirement = Math.max(retirementAge - currentAge, 0);
-    const monthlyReturn = annualReturn / 100 / 12;
+    const yearsToRetirement = Math.max(state.retirementAge - state.currentAge, 0);
+    const monthlyReturn = state.annualReturn / 100 / 12;
 
-    let balance = currentBalance;
+    let balance = state.currentBalance;
     let totalEmployeeContribs = 0;
     let totalEmployerContribs = 0;
-    let salary = annualSalary;
+    let salary = state.annualSalary;
 
     const chartData: {
       age: number;
@@ -62,20 +67,20 @@ export function FourOhOneKCalculatorWidget() {
 
     // Add starting point
     chartData.push({
-      age: currentAge,
+      age: state.currentAge,
       employeeContributions: 0,
       employerContributions: 0,
-      investmentGrowth: currentBalance,
-      totalBalance: currentBalance,
+      investmentGrowth: state.currentBalance,
+      totalBalance: state.currentBalance,
     });
 
     for (let year = 1; year <= yearsToRetirement; year++) {
-      const yearlyEmployeeContrib = salary * (contributionPct / 100);
+      const yearlyEmployeeContrib = salary * (state.contributionPct / 100);
 
       // Employer match: match percentage of employee contribution up to cap% of salary
-      const maxMatchableContrib = salary * (employerMatchCap / 100);
+      const maxMatchableContrib = salary * (state.employerMatchCap / 100);
       const matchableContrib = Math.min(yearlyEmployeeContrib, maxMatchableContrib);
-      const yearlyEmployerContrib = matchableContrib * (employerMatchPct / 100);
+      const yearlyEmployerContrib = matchableContrib * (state.employerMatchPct / 100);
 
       // Monthly compounding
       const monthlyEmployeeContrib = yearlyEmployeeContrib / 12;
@@ -88,22 +93,22 @@ export function FourOhOneKCalculatorWidget() {
       totalEmployeeContribs += yearlyEmployeeContrib;
       totalEmployerContribs += yearlyEmployerContrib;
 
-      const totalContribs = totalEmployeeContribs + totalEmployerContribs + currentBalance;
+      const totalContribs = totalEmployeeContribs + totalEmployerContribs + state.currentBalance;
       const investmentGrowth = Math.max(balance - totalContribs, 0);
 
       chartData.push({
-        age: currentAge + year,
+        age: state.currentAge + year,
         employeeContributions: Math.round(totalEmployeeContribs),
         employerContributions: Math.round(totalEmployerContribs),
-        investmentGrowth: Math.round(investmentGrowth + currentBalance),
+        investmentGrowth: Math.round(investmentGrowth + state.currentBalance),
         totalBalance: Math.round(balance),
       });
 
       // Salary growth for next year
-      salary = salary * (1 + salaryGrowth / 100);
+      salary = salary * (1 + state.salaryGrowth / 100);
     }
 
-    const totalInvestmentGrowth = balance - totalEmployeeContribs - totalEmployerContribs - currentBalance;
+    const totalInvestmentGrowth = balance - totalEmployeeContribs - totalEmployerContribs - state.currentBalance;
     const monthlyRetirementIncome = balance * 0.04 / 12;
 
     return {
@@ -116,15 +121,15 @@ export function FourOhOneKCalculatorWidget() {
       yearsToRetirement,
     };
   }, [
-    currentAge,
-    retirementAge,
-    currentBalance,
-    annualSalary,
-    contributionPct,
-    employerMatchPct,
-    employerMatchCap,
-    annualReturn,
-    salaryGrowth,
+    state.currentAge,
+    state.retirementAge,
+    state.currentBalance,
+    state.annualSalary,
+    state.contributionPct,
+    state.employerMatchPct,
+    state.employerMatchCap,
+    state.annualReturn,
+    state.salaryGrowth,
   ]);
 
   const shareResults = {
@@ -137,17 +142,17 @@ export function FourOhOneKCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Ages */}
           <div className="space-y-4">
             <CustomSlider
-              label={`Current Age: ${currentAge}`}
-              value={currentAge}
+              label={`Current Age: ${state.currentAge}`}
+              value={state.currentAge}
               onChange={(v) => {
-                setCurrentAge(v);
-                if (v >= retirementAge) setRetirementAge(v + 1);
+                setState('currentAge', v);
+                if (v >= state.retirementAge) setState('retirementAge', v + 1);
               }}
               min={18}
               max={80}
@@ -156,10 +161,10 @@ export function FourOhOneKCalculatorWidget() {
               showMinMax
             />
             <CustomSlider
-              label={`Retirement Age: ${retirementAge}`}
-              value={retirementAge}
-              onChange={(v) => setRetirementAge(Math.max(v, currentAge + 1))}
-              min={currentAge + 1}
+              label={`Retirement Age: ${state.retirementAge}`}
+              value={state.retirementAge}
+              onChange={(v) => setState('retirementAge', Math.max(v, state.currentAge + 1))}
+              min={state.currentAge + 1}
               max={80}
               step={1}
               formatValue={(v) => `${v}`}
@@ -170,8 +175,8 @@ export function FourOhOneKCalculatorWidget() {
           {/* Current Balance */}
           <CurrencyInput
             label="Current 401(k) Balance"
-            value={currentBalance}
-            onChange={setCurrentBalance}
+            value={state.currentBalance}
+            onChange={(v) => setState('currentBalance', v)}
             min={0}
             step={1000}
           />
@@ -180,17 +185,17 @@ export function FourOhOneKCalculatorWidget() {
           <div>
             <CurrencyInput
               label="Annual Salary"
-              value={annualSalary}
-              onChange={setAnnualSalary}
+              value={state.annualSalary}
+              onChange={(v) => setState('annualSalary', v)}
               min={0}
               max={500000}
               step={1000}
             />
             <CustomSlider
-              value={annualSalary}
-              onChange={setAnnualSalary}
+              value={state.annualSalary}
+              onChange={(v) => setState('annualSalary', v)}
               min={20000}
-              max={300000}
+              max={500000}
               step={1000}
               formatValue={(v) => `$${(v / 1000).toFixed(0)}k`}
               showMinMax
@@ -202,9 +207,9 @@ export function FourOhOneKCalculatorWidget() {
           <div>
             <div className="flex items-end gap-4">
               <PercentageInput
-                label={`Your Contribution (${formatCurrency(annualSalary * contributionPct / 100)}/yr)`}
-                value={contributionPct}
-                onChange={setContributionPct}
+                label={`Your Contribution (${formatCurrency(state.annualSalary * state.contributionPct / 100)}/yr)`}
+                value={state.contributionPct}
+                onChange={(v) => setState('contributionPct', v)}
                 min={0}
                 max={30}
                 step={1}
@@ -212,8 +217,8 @@ export function FourOhOneKCalculatorWidget() {
               />
             </div>
             <CustomSlider
-              value={contributionPct}
-              onChange={setContributionPct}
+              value={state.contributionPct}
+              onChange={(v) => setState('contributionPct', v)}
               min={0}
               max={30}
               step={1}
@@ -224,19 +229,19 @@ export function FourOhOneKCalculatorWidget() {
           </div>
 
           {/* Employer Match */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <PercentageInput
                 label="Employer Match (%)"
-                value={employerMatchPct}
-                onChange={setEmployerMatchPct}
+                value={state.employerMatchPct}
+                onChange={(v) => setState('employerMatchPct', v)}
                 min={0}
                 max={100}
                 step={5}
               />
               <CustomSlider
-                value={employerMatchPct}
-                onChange={setEmployerMatchPct}
+                value={state.employerMatchPct}
+                onChange={(v) => setState('employerMatchPct', v)}
                 min={0}
                 max={100}
                 step={5}
@@ -248,15 +253,15 @@ export function FourOhOneKCalculatorWidget() {
             <div>
               <PercentageInput
                 label="Match Cap (% of salary)"
-                value={employerMatchCap}
-                onChange={setEmployerMatchCap}
+                value={state.employerMatchCap}
+                onChange={(v) => setState('employerMatchCap', v)}
                 min={0}
                 max={100}
                 step={1}
               />
               <CustomSlider
-                value={employerMatchCap}
-                onChange={setEmployerMatchCap}
+                value={state.employerMatchCap}
+                onChange={(v) => setState('employerMatchCap', v)}
                 min={0}
                 max={100}
                 step={1}
@@ -268,19 +273,19 @@ export function FourOhOneKCalculatorWidget() {
           </div>
 
           {/* Return & Salary Growth */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <PercentageInput
                 label="Annual Return (%)"
-                value={annualReturn}
-                onChange={setAnnualReturn}
+                value={state.annualReturn}
+                onChange={(v) => setState('annualReturn', v)}
                 min={0}
                 max={15}
                 step={0.5}
               />
               <CustomSlider
-                value={annualReturn}
-                onChange={setAnnualReturn}
+                value={state.annualReturn}
+                onChange={(v) => setState('annualReturn', v)}
                 min={0}
                 max={15}
                 step={0.5}
@@ -292,15 +297,15 @@ export function FourOhOneKCalculatorWidget() {
             <div>
               <PercentageInput
                 label="Salary Growth (%)"
-                value={salaryGrowth}
-                onChange={setSalaryGrowth}
+                value={state.salaryGrowth}
+                onChange={(v) => setState('salaryGrowth', v)}
                 min={0}
                 max={10}
                 step={0.5}
               />
               <CustomSlider
-                value={salaryGrowth}
-                onChange={setSalaryGrowth}
+                value={state.salaryGrowth}
+                onChange={(v) => setState('salaryGrowth', v)}
                 min={0}
                 max={10}
                 step={0.5}
@@ -316,11 +321,11 @@ export function FourOhOneKCalculatorWidget() {
         <div className="space-y-6">
           {/* Primary Result: Balance at Retirement */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Estimated Balance at Retirement (Age {retirementAge})</p>
+            <p className="mb-2 text-sm text-[#94A3B8]">Estimated Balance at Retirement (Age {state.retirementAge})</p>
             <AnimatedNumber
               value={results.balanceAtRetirement}
               format="currency"
-              className="font-mono text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -357,10 +362,11 @@ export function FourOhOneKCalculatorWidget() {
           <ShareResults
             title="401(k) Calculator Results"
             results={shareResults}
+            getShareUrl={getShareUrl}
           />
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Balance at Retirement"
               value={formatCurrency(results.balanceAtRetirement)}

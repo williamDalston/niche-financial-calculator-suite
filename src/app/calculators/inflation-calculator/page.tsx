@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Inflation Calculator | CalcEngine",
     description:
       "Calculate the impact of inflation on your money from 1920 to 2024. See how purchasing power changes over time using real CPI data from the Bureau of Labor Statistics.",
-    url: "https://calcengine.io/calculators/inflation-calculator",
+    url: "https://calcengine.org/calculators/inflation-calculator",
   },
   twitter: {
     card: "summary_large_image",

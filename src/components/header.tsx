@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/logo";
 
 const navLinks = [
   { label: "Calculators", href: "/calculators" },
@@ -14,6 +15,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   useEffect(() => {
@@ -24,31 +26,29 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /* Close mobile menu on route change */
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
+
+  /* Close mobile menu on Escape key */
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
+
   return (
     <header className={`sticky top-0 z-50 w-full border-b border-border backdrop-blur-sm transition-all duration-300 ${scrolled ? "bg-bg-surface shadow-lg shadow-black/20" : "bg-bg-surface/95"}`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo / Wordmark */}
         <Link href="/" className="flex items-center gap-2 group">
-          {/* Icon mark */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/10">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <rect x="2" y="2" width="16" height="16" rx="3" stroke="#22C55E" strokeWidth="1.5" />
-              <path d="M6 14V8" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-              <path d="M10 14V6" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-              <path d="M14 14V10" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </div>
-          {/* Wordmark */}
-          <span className="font-display text-xl font-extrabold text-text-primary tracking-tight">
-            Calc<span className="text-accent-primary">Engine</span>
-          </span>
+          <Logo size="default" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -70,6 +70,7 @@ export function Header() {
 
         {/* Mobile menu button */}
         <button
+          ref={menuButtonRef}
           type="button"
           className="inline-flex md:hidden items-center justify-center rounded-md p-2 text-text-muted hover:text-text-primary hover:bg-bg-primary/50 transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

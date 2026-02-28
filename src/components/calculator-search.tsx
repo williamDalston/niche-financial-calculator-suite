@@ -35,9 +35,8 @@ export function CalculatorSearch({
   const resultsLength = results.length;
 
   // Reset active index when results change
-  useEffect(() => {
-    setActiveIndex(-1);
-  }, [resultsLength]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setActiveIndex(-1); }, [resultsLength]);
 
   // Scroll active item into view
   useEffect(() => {
@@ -103,7 +102,7 @@ export function CalculatorSearch({
     <div ref={containerRef} className="relative w-full max-w-2xl mx-auto">
       <div className="relative">
         <svg
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8]"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
           width="20"
           height="20"
           viewBox="0 0 24 24"
@@ -129,7 +128,7 @@ export function CalculatorSearch({
           }}
           onKeyDown={handleKeyDown}
           placeholder="Search calculators... (e.g., mortgage, 401k, salary)"
-          className="w-full rounded-xl border border-[#1E293B] bg-[#162032] py-4 pl-12 pr-4 text-lg text-[#F1F5F9] placeholder:text-[#94A3B8]/60 focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 focus:outline-none transition-all"
+          className="w-full rounded-xl border border-border bg-bg-surface py-4 pl-12 pr-4 text-lg text-text-primary placeholder:text-text-muted/60 focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 focus:outline-none transition-all"
           aria-label="Search calculators"
           aria-expanded={isOpen && results.length > 0}
           aria-haspopup="listbox"
@@ -144,7 +143,7 @@ export function CalculatorSearch({
         <div
           ref={listRef}
           id="search-listbox"
-          className="absolute top-full left-0 right-0 z-50 mt-2 max-h-80 overflow-y-auto rounded-xl border border-[#1E293B] bg-[#162032] shadow-2xl shadow-black/40"
+          className="absolute top-full left-0 right-0 z-50 mt-2 max-h-80 overflow-y-auto rounded-xl border border-border bg-bg-surface shadow-2xl shadow-black/40"
           role="listbox"
           aria-label="Search results"
         >
@@ -158,8 +157,8 @@ export function CalculatorSearch({
                 aria-selected={index === activeIndex}
                 className={`flex items-center gap-3 px-4 py-3 transition-colors first:rounded-t-xl last:rounded-b-xl ${
                   index === activeIndex
-                    ? "bg-[#22C55E]/15 text-[#F1F5F9]"
-                    : "hover:bg-[#22C55E]/10"
+                    ? "bg-accent-primary/15 text-text-primary"
+                    : "hover:bg-accent-primary/10"
                 }`}
                 onClick={() => {
                   setIsOpen(false);
@@ -171,17 +170,17 @@ export function CalculatorSearch({
                   {calc.icon}
                 </span>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium text-[#F1F5F9] truncate">
+                  <div className="text-sm font-medium text-text-primary truncate">
                     {calc.name}
                   </div>
-                  <div className="text-xs text-[#94A3B8] truncate">
+                  <div className="text-xs text-text-muted truncate">
                     {calc.category}
                   </div>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="px-4 py-6 text-center text-sm text-[#94A3B8]">
+            <div className="px-4 py-6 text-center text-sm text-text-muted">
               No calculators found for &ldquo;{query}&rdquo;
             </div>
           )}

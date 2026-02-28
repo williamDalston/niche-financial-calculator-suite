@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Cost of Living Comparison Calculator | CalcEngine",
     description:
       "Compare the cost of living between 30 major US cities. Find out what salary you need to maintain your standard of living when relocating.",
-    url: "https://calcengine.io/calculators/cost-of-living-calculator",
+    url: "https://calcengine.org/calculators/cost-of-living-calculator",
   },
   twitter: {
     card: "summary_large_image",

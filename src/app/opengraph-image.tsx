@@ -101,7 +101,7 @@ export default async function Image() {
             fontFamily: "Inter, sans-serif",
           }}
         >
-          calcengine.io
+          calcengine.org
         </div>
       </div>
     ),

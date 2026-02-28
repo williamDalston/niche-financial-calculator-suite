@@ -8,7 +8,13 @@ export const metadata: Metadata = {
     title: "Contact Us | CalcEngine",
     description:
       "Get in touch with CalcEngine. Report bugs, suggest features, or ask questions about our free financial calculators.",
-    url: "https://calcengine.io/contact",
+    url: "https://calcengine.org/contact",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us | CalcEngine",
+    description:
+      "Get in touch with CalcEngine. Report bugs, suggest features, or ask questions about our free financial calculators.",
   },
   alternates: {
     canonical: "/contact",
@@ -37,8 +43,8 @@ const contactMethods = [
     ),
     title: "Email",
     description: "Send us a message and we'll get back to you as soon as we can.",
-    detail: "info@alstonanalytics.com",
-    href: "mailto:info@alstonanalytics.com",
+    detail: "hello@calcengine.org",
+    href: "mailto:hello@calcengine.org",
     linkLabel: "Send an email",
   },
   {
@@ -54,15 +60,16 @@ const contactMethods = [
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-        <path d="M9 18c-4.51 2-5-2-7-2" />
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <path d="M12 17h.01" />
       </svg>
     ),
-    title: "GitHub",
-    description: "Report an issue or suggest a feature on our GitHub repository.",
-    detail: "github.com/calcengine",
-    href: "https://github.com/calcengine",
-    linkLabel: "Open GitHub",
+    title: "Feature Requests",
+    description: "Have an idea for a new calculator or improvement? We'd love to hear it.",
+    detail: "hello@calcengine.org",
+    href: "mailto:hello@calcengine.org?subject=CalcEngine%20Feature%20Request",
+    linkLabel: "Suggest a feature",
   },
   {
     icon: (
@@ -77,15 +84,16 @@ const contactMethods = [
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-        <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
       </svg>
     ),
-    title: "Twitter / X",
-    description: "Follow us for updates, tips, and new calculator announcements.",
-    detail: "@calcengine",
-    href: "https://x.com/calcengine",
-    linkLabel: "Follow on X",
+    title: "Bug Reports",
+    description: "Found something that doesn't look right? Let us know so we can fix it.",
+    detail: "hello@calcengine.org",
+    href: "mailto:hello@calcengine.org?subject=CalcEngine%20Bug%20Report",
+    linkLabel: "Report a bug",
   },
 ];
 
@@ -116,9 +124,26 @@ const faqs = [
 
 /* --- Page Component --- */
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function ContactPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* --- Hero / Intro --- */}
       <section className="relative overflow-hidden border-b border-border">
         <div
@@ -126,7 +151,7 @@ export default function ContactPage() {
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 text-center">
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl animate-fade-in-up">
+          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl animate-fade-in-up">
             Contact <span className="text-accent-primary">Us</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-text-muted leading-relaxed animate-fade-in-up animate-fade-in-up-delay-1">
@@ -146,7 +171,7 @@ export default function ContactPage() {
             Choose the method that works best for you.
           </p>
         </div>
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {contactMethods.map((method) => (
             <a
               key={method.title}

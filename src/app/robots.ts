@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/api/",
       },
     ],
-    sitemap: "https://calcengine.io/sitemap.xml",
+    sitemap: "https://calcengine.org/sitemap.xml",
   };
 }

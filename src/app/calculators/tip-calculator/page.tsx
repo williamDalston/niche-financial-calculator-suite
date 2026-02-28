@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Tip Calculator | CalcEngine",
     description:
       "Calculate the tip amount, total bill, and per-person split for any restaurant or service bill. Quick, simple, and free tip calculator.",
-    url: "https://calcengine.io/calculators/tip-calculator",
+    url: "https://calcengine.org/calculators/tip-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -123,6 +123,10 @@ export default function TipCalculatorPage() {
       description="Calculate the tip amount, total bill, and per-person split for any restaurant or service bill. Quick, simple, and free tip calculator."
       slug="tip-calculator"
       category={{ name: "Salary & Career", slug: "salary-and-career" }}
+      ctaText="Split bills & track expenses with Splitwise"
+      ctaHref="https://www.splitwise.com"
+      ctaDescription="Splitwise makes it easy to split bills with friends and keep track of shared expenses — no more awkward money conversations."
+      formula="Tip = Bill Amount × (Tip % / 100); Total = Bill + Tip; Per Person = Total / Number of People"
       howItWorks={howItWorks}
       faqs={faqs}
       relatedCalculators={relatedCalculators}

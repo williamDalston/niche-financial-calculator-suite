@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -23,6 +23,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrencyExact as fmt, formatCurrency as formatCurrencyShort } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 function calcMonthlyPayment(principal: number, monthlyRate: number, totalMonths: number): number {
   if (monthlyRate === 0) return principal / totalMonths;
@@ -35,16 +36,20 @@ function calcMonthlyPayment(principal: number, monthlyRate: number, totalMonths:
 /* ------------------------------------------------------------------ */
 
 export function LoanCalculatorWidget() {
-  const [loanAmount, setLoanAmount] = useState(25000);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [termValue, setTermValue] = useState(60);
-  const [termUnit, setTermUnit] = useState<"months" | "years">("months");
-  const [extraPayment, setExtraPayment] = useState(0);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      loanAmount: 25000,
+      interestRate: 6.5,
+      termValue: 60,
+      termUnit: "months" as string,
+      extraPayment: 0,
+    },
+  });
 
   const results = useMemo(() => {
-    const totalMonths = termUnit === "years" ? termValue * 12 : termValue;
-    const monthlyRate = interestRate / 100 / 12;
-    const P = loanAmount;
+    const totalMonths = state.termUnit === "years" ? state.termValue * 12 : state.termValue;
+    const monthlyRate = state.interestRate / 100 / 12;
+    const P = state.loanAmount;
 
     if (P <= 0 || totalMonths <= 0) {
       return null;
@@ -76,7 +81,7 @@ export function LoanCalculatorWidget() {
       if (extraBalance <= 0) break;
       if (m < totalMonths) {
         const interestPayment = extraBalance * monthlyRate;
-        const principalPayment = M - interestPayment + extraPayment;
+        const principalPayment = M - interestPayment + state.extraPayment;
         extraTotalInterest += interestPayment;
         extraBalance -= principalPayment;
         extraMonths = m + 1;
@@ -92,7 +97,7 @@ export function LoanCalculatorWidget() {
 
     // Payoff date
     const now = new Date();
-    const payoffDate = new Date(now.getFullYear(), now.getMonth() + (extraPayment > 0 ? extraMonths : totalMonths));
+    const payoffDate = new Date(now.getFullYear(), now.getMonth() + (state.extraPayment > 0 ? extraMonths : totalMonths));
     const payoffDateStr = payoffDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
     // Combined balance chart data (sample every N months to keep chart clean)
@@ -127,12 +132,12 @@ export function LoanCalculatorWidget() {
       totalInterest,
       totalCost,
       payoffDate: payoffDateStr,
-      interestSaved: extraPayment > 0 ? interestSaved : 0,
-      monthsSaved: extraPayment > 0 ? monthsSaved : 0,
+      interestSaved: state.extraPayment > 0 ? interestSaved : 0,
+      monthsSaved: state.extraPayment > 0 ? monthsSaved : 0,
       pieData,
       balanceData,
     };
-  }, [loanAmount, interestRate, termValue, termUnit, extraPayment]);
+  }, [state.loanAmount, state.interestRate, state.termValue, state.termUnit, state.extraPayment]);
 
   const PIE_COLORS = ["#3B82F6", "#22C55E"];
 
@@ -142,7 +147,7 @@ export function LoanCalculatorWidget() {
         "Total Interest": fmt(results.totalInterest),
         "Total Cost": fmt(results.totalCost),
         "Payoff Date": results.payoffDate,
-        ...(extraPayment > 0
+        ...(state.extraPayment > 0
           ? {
               "Interest Saved": fmt(results.interestSaved),
               "Months Saved": String(results.monthsSaved),
@@ -154,19 +159,19 @@ export function LoanCalculatorWidget() {
   return (
     <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
       {/* Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
         {/* Loan Amount */}
         <div>
           <CurrencyInput
             label="Loan Amount"
-            value={loanAmount}
-            onChange={setLoanAmount}
+            value={state.loanAmount}
+            onChange={(v) => setState('loanAmount', v)}
             min={0}
             step={1000}
           />
           <CustomSlider
-            value={loanAmount}
-            onChange={setLoanAmount}
+            value={state.loanAmount}
+            onChange={(v) => setState('loanAmount', v)}
             min={1000}
             max={500000}
             step={1000}
@@ -181,15 +186,15 @@ export function LoanCalculatorWidget() {
         <div>
           <PercentageInput
             label="Annual Interest Rate"
-            value={interestRate}
-            onChange={setInterestRate}
+            value={state.interestRate}
+            onChange={(v) => setState('interestRate', v)}
             min={0}
             max={30}
             step={0.1}
           />
           <CustomSlider
-            value={interestRate}
-            onChange={setInterestRate}
+            value={state.interestRate}
+            onChange={(v) => setState('interestRate', v)}
             min={0}
             max={30}
             step={0.1}
@@ -200,20 +205,21 @@ export function LoanCalculatorWidget() {
 
         {/* Loan Term */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="loan-term-value" className="mb-2 block text-sm font-medium text-[#94A3B8]">
             Loan Term
           </label>
           <div className="flex gap-2">
             <input
+              id="loan-term-value"
               type="number"
               min={1}
-              value={termValue}
-              onChange={(e) => setTermValue(Number(e.target.value))}
+              value={state.termValue}
+              onChange={(e) => setState('termValue', Number(e.target.value))}
               className="flex-1 h-12 bg-[#0B1120] border border-[#1E293B] rounded-lg p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
             />
             <select
-              value={termUnit}
-              onChange={(e) => setTermUnit(e.target.value as "months" | "years")}
+              value={state.termUnit}
+              onChange={(e) => setState('termUnit', e.target.value)}
               className="h-12 bg-[#0B1120] border border-[#1E293B] rounded-lg p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
             >
               <option value="months">Months</option>
@@ -221,13 +227,13 @@ export function LoanCalculatorWidget() {
             </select>
           </div>
           <CustomSlider
-            value={termValue}
-            onChange={setTermValue}
-            min={termUnit === "years" ? 1 : 6}
-            max={termUnit === "years" ? 30 : 360}
-            step={termUnit === "years" ? 1 : 6}
+            value={state.termValue}
+            onChange={(v) => setState('termValue', v)}
+            min={state.termUnit === "years" ? 1 : 6}
+            max={state.termUnit === "years" ? 30 : 360}
+            step={state.termUnit === "years" ? 1 : 6}
             formatValue={(v) =>
-              termUnit === "years" ? `${v} yr${v !== 1 ? "s" : ""}` : `${v} mo`
+              state.termUnit === "years" ? `${v} yr${v !== 1 ? "s" : ""}` : `${v} mo`
             }
             className="mt-3"
           />
@@ -236,8 +242,8 @@ export function LoanCalculatorWidget() {
         {/* Extra Monthly Payment */}
         <CurrencyInput
           label="Extra Monthly Payment"
-          value={extraPayment}
-          onChange={setExtraPayment}
+          value={state.extraPayment}
+          onChange={(v) => setState('extraPayment', v)}
           min={0}
           step={25}
           placeholder="0"
@@ -248,7 +254,7 @@ export function LoanCalculatorWidget() {
       {results && (
         <>
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
             <StatCard
               label="Monthly Payment"
               highlight
@@ -289,8 +295,8 @@ export function LoanCalculatorWidget() {
             />
           </div>
 
-          {extraPayment > 0 && (
-            <div className="grid grid-cols-2 gap-4 mb-8">
+          {state.extraPayment > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
               <StatCard
                 label="Interest Saved"
                 value={
@@ -323,6 +329,7 @@ export function LoanCalculatorWidget() {
             <ShareResults
               title="Loan Calculation Results"
               results={shareResultsData}
+              getShareUrl={getShareUrl}
             />
           </div>
 
@@ -403,7 +410,7 @@ export function LoanCalculatorWidget() {
                     dot={false}
                     strokeWidth={2}
                   />
-                  {extraPayment > 0 && (
+                  {state.extraPayment > 0 && (
                     <Line
                       type="monotone"
                       dataKey="withExtra"

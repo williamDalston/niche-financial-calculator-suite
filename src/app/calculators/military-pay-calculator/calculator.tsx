@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   Tooltip,
@@ -20,6 +20,7 @@ import {
   ShareResults,
   StatCard,
 } from "@/components/ui";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 
 const COLORS = {
@@ -64,22 +65,29 @@ function isEnlisted(grade: string): boolean {
 }
 
 export function MilitaryPayCalculatorWidget() {
-  const [payGrade, setPayGrade] = useState("E-5");
-  const [yearsOfService, setYearsOfService] = useState(4);
-  const [base, setBase] = useState(BASES[0]);
-  const [receiveBas, setReceiveBas] = useState(true);
-  const [hasDependents, setHasDependents] = useState(false);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      payGrade: "E-5" as string,
+      yearsOfService: 4,
+      base: BASES[0] as string,
+      receiveBas: "true" as string,
+      hasDependents: "false" as string,
+    },
+  });
+
+  const receiveBas = state.receiveBas === "true";
+  const hasDependents = state.hasDependents === "true";
 
   const results = useMemo(() => {
-    const basePay = getBasePay(payGrade, yearsOfService);
-    const bahData = (militaryPayData.bah as Record<string, { withDependents: number; withoutDependents: number }>)[base];
+    const basePay = getBasePay(state.payGrade, state.yearsOfService);
+    const bahData = (militaryPayData.bah as Record<string, { withDependents: number; withoutDependents: number }>)[state.base];
     const bah = bahData
       ? hasDependents
         ? bahData.withDependents
         : bahData.withoutDependents
       : 0;
     const bas = receiveBas
-      ? isEnlisted(payGrade)
+      ? isEnlisted(state.payGrade)
         ? militaryPayData.bas.enlisted
         : militaryPayData.bas.officer
       : 0;
@@ -101,7 +109,7 @@ export function MilitaryPayCalculatorWidget() {
       totalAnnual,
       taxEquivalent: Math.round(taxEquivalent),
     };
-  }, [payGrade, yearsOfService, base, receiveBas, hasDependents]);
+  }, [state.payGrade, state.yearsOfService, state.base, receiveBas, hasDependents]);
 
   const barData = [
     {
@@ -115,15 +123,15 @@ export function MilitaryPayCalculatorWidget() {
   // Pay progression data
   const progressionData = useMemo(() => {
     return YOS_KEYS.map((yos) => {
-      const bp = getBasePay(payGrade, yos);
-      const bahData = (militaryPayData.bah as Record<string, { withDependents: number; withoutDependents: number }>)[base];
+      const bp = getBasePay(state.payGrade, yos);
+      const bahData = (militaryPayData.bah as Record<string, { withDependents: number; withoutDependents: number }>)[state.base];
       const bahVal = bahData
         ? hasDependents
           ? bahData.withDependents
           : bahData.withoutDependents
         : 0;
       const basVal = receiveBas
-        ? isEnlisted(payGrade)
+        ? isEnlisted(state.payGrade)
           ? militaryPayData.bas.enlisted
           : militaryPayData.bas.officer
         : 0;
@@ -133,7 +141,7 @@ export function MilitaryPayCalculatorWidget() {
         "Total Monthly": bp + bahVal + basVal,
       };
     });
-  }, [payGrade, base, hasDependents, receiveBas]);
+  }, [state.payGrade, state.base, hasDependents, receiveBas]);
 
   const shareResults = {
     "Total Monthly": formatCurrencyExact(results.totalMonthly),
@@ -146,17 +154,18 @@ export function MilitaryPayCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Pay Grade */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="mil-pay-grade" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Pay Grade
             </label>
             <select
-              value={payGrade}
-              onChange={(e) => setPayGrade(e.target.value)}
+              id="mil-pay-grade"
+              value={state.payGrade}
+              onChange={(e) => setState('payGrade', e.target.value)}
               className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
             >
               <optgroup label="Enlisted">
@@ -179,9 +188,9 @@ export function MilitaryPayCalculatorWidget() {
 
           {/* Years of Service */}
           <CustomSlider
-            label={`Years of Service: ${yearsOfService}`}
-            value={yearsOfService}
-            onChange={setYearsOfService}
+            label={`Years of Service: ${state.yearsOfService}`}
+            value={state.yearsOfService}
+            onChange={(v) => setState('yearsOfService', v)}
             min={0}
             max={40}
             step={1}
@@ -191,12 +200,13 @@ export function MilitaryPayCalculatorWidget() {
 
           {/* BAH Location */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="mil-bah-location" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               BAH Location
             </label>
             <select
-              value={base}
-              onChange={(e) => setBase(e.target.value)}
+              id="mil-bah-location"
+              value={state.base}
+              onChange={(e) => setState('base', e.target.value)}
               className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
             >
               {BASES.map((b) => (
@@ -210,11 +220,13 @@ export function MilitaryPayCalculatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               BAS Entitlement
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="BAS Entitlement">
               {[true, false].map((val) => (
                 <button
                   key={String(val)}
-                  onClick={() => setReceiveBas(val)}
+                  role="radio"
+                  aria-checked={receiveBas === val}
+                  onClick={() => setState('receiveBas', String(val))}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     receiveBas === val
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
@@ -232,11 +244,13 @@ export function MilitaryPayCalculatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Dependents (for BAH rate)
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="Dependents for BAH rate">
               {[false, true].map((val) => (
                 <button
                   key={String(val)}
-                  onClick={() => setHasDependents(val)}
+                  role="radio"
+                  aria-checked={hasDependents === val}
+                  onClick={() => setState('hasDependents', String(val))}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     hasDependents === val
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
@@ -259,7 +273,7 @@ export function MilitaryPayCalculatorWidget() {
               value={results.totalMonthly}
               format="currency"
               decimals={2}
-              className="font-mono text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -312,10 +326,11 @@ export function MilitaryPayCalculatorWidget() {
           <ShareResults
             title="Military Pay Calculator Results"
             results={shareResults}
+            getShareUrl={getShareUrl}
           />
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Total Monthly"
               value={formatCurrencyExact(results.totalMonthly)}

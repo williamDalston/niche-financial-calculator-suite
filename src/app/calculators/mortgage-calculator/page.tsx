@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Mortgage Payment Calculator | CalcEngine",
     description:
       "Calculate your monthly mortgage payment, total interest, and amortization schedule. Free mortgage calculator with real-time results for home buyers.",
-    url: "https://calcengine.io/calculators/mortgage-calculator",
+    url: "https://calcengine.org/calculators/mortgage-calculator",
   },
   twitter: {
     card: "summary_large_image",

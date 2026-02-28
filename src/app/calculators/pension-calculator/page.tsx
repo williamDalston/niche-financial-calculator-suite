@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Pension Calculator | CalcEngine",
     description:
       "Calculate your pension benefit based on years of service, salary, and multiplier. See COLA projections, survivor benefit options, and lump sum comparison. Free pension calculator.",
-    url: "https://calcengine.io/calculators/pension-calculator",
+    url: "https://calcengine.org/calculators/pension-calculator",
   },
   twitter: {
     card: "summary_large_image",

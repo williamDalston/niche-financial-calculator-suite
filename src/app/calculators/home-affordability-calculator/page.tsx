@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Home Affordability Calculator | CalcEngine",
     description:
       "Find out how much house you can afford based on your income, debts, down payment, and interest rate. Free home affordability calculator with real-time results.",
-    url: "https://calcengine.io/calculators/home-affordability-calculator",
+    url: "https://calcengine.org/calculators/home-affordability-calculator",
   },
   twitter: {
     card: "summary_large_image",

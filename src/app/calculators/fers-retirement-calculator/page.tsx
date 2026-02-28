@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "FERS Retirement Calculator | CalcEngine",
     description:
       "Calculate your Federal Employees Retirement System (FERS) annuity, TSP projections, and total retirement income. Plan your federal retirement with confidence.",
-    url: "https://calcengine.io/calculators/fers-retirement-calculator",
+    url: "https://calcengine.org/calculators/fers-retirement-calculator",
   },
   twitter: {
     card: "summary_large_image",

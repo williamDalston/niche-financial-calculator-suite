@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 
 const calculatorCategories = [
   { label: "Mortgage & Housing", href: "/category/mortgage-and-housing" },
@@ -11,6 +12,7 @@ const calculatorCategories = [
 
 const companyLinks = [
   { label: "About", href: "/about" },
+  { label: "Editorial Policy", href: "/editorial-policy" },
   { label: "Contact", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
@@ -37,24 +39,7 @@ export function Footer() {
           {/* Brand column */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2 group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/10">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <rect x="2" y="2" width="16" height="16" rx="3" stroke="#22C55E" strokeWidth="1.5" />
-                  <path d="M6 14V8" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M10 14V6" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M14 14V10" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </div>
-              <span className="font-display text-lg font-bold text-text-primary tracking-tight">
-                Calc<span className="text-accent-primary">Engine</span>
-              </span>
+              <Logo size="small" />
             </Link>
             <p className="mt-3 max-w-xs text-sm text-text-muted leading-relaxed">
               Free, fast, and accurate financial calculators to help you make

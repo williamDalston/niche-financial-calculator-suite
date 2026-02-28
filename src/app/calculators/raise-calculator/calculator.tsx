@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -21,6 +21,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   primary: "#22C55E",
@@ -47,7 +48,7 @@ const FILING_STATUSES = [
   { label: "Head of Household", value: "head" },
 ];
 
-// 2024 federal income tax brackets
+// 2025 federal income tax brackets
 const TAX_BRACKETS = {
   single: [
     { min: 0, max: 11600, rate: 0.10 },
@@ -102,37 +103,41 @@ function computeTax(income: number, status: string): number {
 }
 
 export function RaiseCalculatorWidget() {
-  const [currentSalary, setCurrentSalary] = useState(65000);
-  const [raiseMode, setRaiseMode] = useState<"percent" | "newSalary">("percent");
-  const [raisePercent, setRaisePercent] = useState(5);
-  const [newSalaryInput, setNewSalaryInput] = useState(68250);
-  const [payFrequency, setPayFrequency] = useState(26);
-  const [filingStatus, setFilingStatus] = useState("single");
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentSalary: 65000,
+      raiseMode: "percent" as string,
+      raisePercent: 5,
+      newSalaryInput: 68250,
+      payFrequency: 26,
+      filingStatus: "single",
+    },
+  });
 
   const results = useMemo(() => {
     let newSalary: number;
     let raiseAmount: number;
     let percentChange: number;
 
-    if (raiseMode === "percent") {
-      newSalary = currentSalary * (1 + raisePercent / 100);
-      raiseAmount = newSalary - currentSalary;
-      percentChange = raisePercent;
+    if (state.raiseMode === "percent") {
+      newSalary = state.currentSalary * (1 + state.raisePercent / 100);
+      raiseAmount = newSalary - state.currentSalary;
+      percentChange = state.raisePercent;
     } else {
-      newSalary = newSalaryInput;
-      raiseAmount = newSalary - currentSalary;
-      percentChange = currentSalary > 0 ? (raiseAmount / currentSalary) * 100 : 0;
+      newSalary = state.newSalaryInput;
+      raiseAmount = newSalary - state.currentSalary;
+      percentChange = state.currentSalary > 0 ? (raiseAmount / state.currentSalary) * 100 : 0;
     }
 
-    const increasePerPaycheck = raiseAmount / payFrequency;
+    const increasePerPaycheck = raiseAmount / state.payFrequency;
 
     // Tax impact
-    const marginalRate = getMarginalRate(newSalary, filingStatus);
-    const oldTax = computeTax(currentSalary, filingStatus);
-    const newTax = computeTax(newSalary, filingStatus);
+    const marginalRate = getMarginalRate(newSalary, state.filingStatus);
+    const oldTax = computeTax(state.currentSalary, state.filingStatus);
+    const newTax = computeTax(newSalary, state.filingStatus);
     const taxOnRaise = newTax - oldTax;
     const afterTaxRaise = raiseAmount - taxOnRaise;
-    const afterTaxPerPaycheck = afterTaxRaise / payFrequency;
+    const afterTaxPerPaycheck = afterTaxRaise / state.payFrequency;
 
     return {
       newSalary,
@@ -146,7 +151,7 @@ export function RaiseCalculatorWidget() {
       oldTax,
       newTax,
     };
-  }, [currentSalary, raiseMode, raisePercent, newSalaryInput, payFrequency, filingStatus]);
+  }, [state.currentSalary, state.raiseMode, state.raisePercent, state.newSalaryInput, state.payFrequency, state.filingStatus]);
 
   const shareResultsData: Record<string, string> = {
     "New Salary": formatCurrency(results.newSalary),
@@ -162,22 +167,22 @@ export function RaiseCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Current Salary */}
           <div>
             <CurrencyInput
               label="Current Annual Salary"
-              value={currentSalary}
-              onChange={setCurrentSalary}
+              value={state.currentSalary}
+              onChange={(v) => setState('currentSalary', v)}
               min={0}
               max={500000}
               step={1000}
             />
             <CustomSlider
-              value={currentSalary}
-              onChange={setCurrentSalary}
+              value={state.currentSalary}
+              onChange={(v) => setState('currentSalary', v)}
               min={20000}
               max={500000}
               step={1000}
@@ -195,9 +200,9 @@ export function RaiseCalculatorWidget() {
             </label>
             <div className="flex gap-2">
               <button
-                onClick={() => setRaiseMode("percent")}
+                onClick={() => setState('raiseMode', "percent")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                  raiseMode === "percent"
+                  state.raiseMode === "percent"
                     ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                     : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                 }`}
@@ -205,9 +210,9 @@ export function RaiseCalculatorWidget() {
                 Percentage
               </button>
               <button
-                onClick={() => setRaiseMode("newSalary")}
+                onClick={() => setState('raiseMode', "newSalary")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                  raiseMode === "newSalary"
+                  state.raiseMode === "newSalary"
                     ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                     : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                 }`}
@@ -218,19 +223,19 @@ export function RaiseCalculatorWidget() {
           </div>
 
           {/* Raise Percent or New Salary */}
-          {raiseMode === "percent" ? (
+          {state.raiseMode === "percent" ? (
             <div>
               <PercentageInput
                 label="Raise Percentage"
-                value={raisePercent}
-                onChange={setRaisePercent}
+                value={state.raisePercent}
+                onChange={(v) => setState('raisePercent', v)}
                 min={0}
                 max={200}
                 step={0.5}
               />
               <CustomSlider
-                value={raisePercent}
-                onChange={setRaisePercent}
+                value={state.raisePercent}
+                onChange={(v) => setState('raisePercent', v)}
                 min={0}
                 max={50}
                 step={0.5}
@@ -241,8 +246,8 @@ export function RaiseCalculatorWidget() {
           ) : (
             <CurrencyInput
               label="New Annual Salary"
-              value={newSalaryInput}
-              onChange={setNewSalaryInput}
+              value={state.newSalaryInput}
+              onChange={(v) => setState('newSalaryInput', v)}
               min={0}
               max={1000000}
               step={1000}
@@ -255,8 +260,8 @@ export function RaiseCalculatorWidget() {
               Pay Frequency
             </label>
             <select
-              value={payFrequency}
-              onChange={(e) => setPayFrequency(Number(e.target.value))}
+              value={state.payFrequency}
+              onChange={(e) => setState('payFrequency', Number(e.target.value))}
               className={selectClass}
             >
               {PAY_FREQUENCIES.map((freq) => (
@@ -276,9 +281,9 @@ export function RaiseCalculatorWidget() {
               {FILING_STATUSES.map((status) => (
                 <button
                   key={status.value}
-                  onClick={() => setFilingStatus(status.value)}
+                  onClick={() => setState('filingStatus', status.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    filingStatus === status.value
+                    state.filingStatus === status.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -299,7 +304,7 @@ export function RaiseCalculatorWidget() {
               value={results.newSalary}
               format="currency"
               decimals={0}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
               +{results.percentChange.toFixed(1)}% increase
@@ -329,7 +334,7 @@ export function RaiseCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="New Salary"
               highlight
@@ -387,6 +392,7 @@ export function RaiseCalculatorWidget() {
           <ShareResults
             title="Raise Calculation"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* After-Tax Results */}
@@ -414,7 +420,7 @@ export function RaiseCalculatorWidget() {
             <ResponsiveContainer width="100%" height={180}>
               <BarChart
                 data={[
-                  { name: "Old Salary", value: currentSalary },
+                  { name: "Old Salary", value: state.currentSalary },
                   { name: "New Salary", value: results.newSalary },
                 ]}
                 layout="vertical"

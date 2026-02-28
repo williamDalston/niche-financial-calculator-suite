@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   PieChart,
   Pie,
@@ -38,24 +39,28 @@ const COLORS = {
 const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#EC4899"];
 
 export function HomeAffordabilityCalculatorWidget() {
-  const [annualIncome, setAnnualIncome] = useState(85000);
-  const [carPayment, setCarPayment] = useState(350);
-  const [studentLoanPayment, setStudentLoanPayment] = useState(200);
-  const [creditCardPayment, setCreditCardPayment] = useState(100);
-  const [otherDebt, setOtherDebt] = useState(0);
-  const [downPaymentAmount, setDownPaymentAmount] = useState(60000);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState(30);
-  const [propertyTaxRate, setPropertyTaxRate] = useState(1.2);
-  const [homeInsurance, setHomeInsurance] = useState(1800);
-  const [pmiRate, setPmiRate] = useState(0.5);
-  const [hoaMonthly, setHoaMonthly] = useState(0);
-  const [maxDTI, setMaxDTI] = useState(36);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      annualIncome: 85000,
+      carPayment: 350,
+      studentLoanPayment: 200,
+      creditCardPayment: 100,
+      otherDebt: 0,
+      downPaymentAmount: 60000,
+      interestRate: 6.5,
+      loanTerm: 30,
+      propertyTaxRate: 1.2,
+      homeInsurance: 1800,
+      pmiRate: 0.5,
+      hoaMonthly: 0,
+      maxDTI: 36,
+    },
+  });
 
   const results = useMemo(() => {
-    const monthlyIncome = annualIncome / 12;
-    const totalMonthlyDebts = carPayment + studentLoanPayment + creditCardPayment + otherDebt;
-    const maxTotalMonthlyPayment = monthlyIncome * (maxDTI / 100);
+    const monthlyIncome = state.annualIncome / 12;
+    const totalMonthlyDebts = state.carPayment + state.studentLoanPayment + state.creditCardPayment + state.otherDebt;
+    const maxTotalMonthlyPayment = monthlyIncome * (state.maxDTI / 100);
     const maxHousingPayment = maxTotalMonthlyPayment - totalMonthlyDebts;
 
     if (maxHousingPayment <= 0) {
@@ -66,19 +71,19 @@ export function HomeAffordabilityCalculatorWidget() {
         monthlyTax: 0,
         monthlyInsurance: 0,
         monthlyPMI: 0,
-        monthlyHOA: hoaMonthly,
+        monthlyHOA: state.hoaMonthly,
         downPaymentNeeded: 0,
         loanAmount: 0,
       };
     }
 
-    const monthlyRate = interestRate / 100 / 12;
-    const numPayments = loanTerm * 12;
+    const monthlyRate = state.interestRate / 100 / 12;
+    const numPayments = state.loanTerm * 12;
     const factor = Math.pow(1 + monthlyRate, numPayments);
     const amortizationFactor = monthlyRate > 0 ? (monthlyRate * factor) / (factor - 1) : 1 / numPayments;
 
-    const monthlyInsurance = homeInsurance / 12;
-    const availableForVariables = maxHousingPayment - monthlyInsurance - hoaMonthly;
+    const monthlyInsurance = state.homeInsurance / 12;
+    const availableForVariables = maxHousingPayment - monthlyInsurance - state.hoaMonthly;
 
     if (availableForVariables <= 0) {
       return {
@@ -88,31 +93,31 @@ export function HomeAffordabilityCalculatorWidget() {
         monthlyTax: 0,
         monthlyInsurance,
         monthlyPMI: 0,
-        monthlyHOA: hoaMonthly,
+        monthlyHOA: state.hoaMonthly,
         downPaymentNeeded: 0,
         loanAmount: 0,
       };
     }
 
-    const monthlyTaxFactor = propertyTaxRate / 100 / 12;
-    const monthlyPMIFactor = pmiRate / 100 / 12;
+    const monthlyTaxFactor = state.propertyTaxRate / 100 / 12;
+    const monthlyPMIFactor = state.pmiRate / 100 / 12;
 
     const coeffH_withPMI = amortizationFactor + monthlyTaxFactor + monthlyPMIFactor;
     const coeffD_withPMI = amortizationFactor + monthlyPMIFactor;
-    const maxHomePriceWithPMI = (availableForVariables + downPaymentAmount * coeffD_withPMI) / coeffH_withPMI;
+    const maxHomePriceWithPMI = (availableForVariables + state.downPaymentAmount * coeffD_withPMI) / coeffH_withPMI;
 
     const coeffH_noPMI = amortizationFactor + monthlyTaxFactor;
     const coeffD_noPMI = amortizationFactor;
-    const maxHomePriceNoPMI = (availableForVariables + downPaymentAmount * coeffD_noPMI) / coeffH_noPMI;
+    const maxHomePriceNoPMI = (availableForVariables + state.downPaymentAmount * coeffD_noPMI) / coeffH_noPMI;
 
     let maxHomePrice: number;
     let hasPMI: boolean;
 
-    if (downPaymentAmount >= maxHomePriceNoPMI * 0.2) {
+    if (state.downPaymentAmount >= maxHomePriceNoPMI * 0.2) {
       maxHomePrice = maxHomePriceNoPMI;
       hasPMI = false;
-    } else if (downPaymentAmount >= maxHomePriceWithPMI * 0.2) {
-      maxHomePrice = downPaymentAmount / 0.2;
+    } else if (state.downPaymentAmount >= maxHomePriceWithPMI * 0.2) {
+      maxHomePrice = state.downPaymentAmount / 0.2;
       hasPMI = false;
     } else {
       maxHomePrice = maxHomePriceWithPMI;
@@ -120,11 +125,11 @@ export function HomeAffordabilityCalculatorWidget() {
     }
 
     maxHomePrice = Math.max(maxHomePrice, 0);
-    const loanAmount = Math.max(maxHomePrice - downPaymentAmount, 0);
+    const loanAmount = Math.max(maxHomePrice - state.downPaymentAmount, 0);
     const principalAndInterest = loanAmount * amortizationFactor;
     const monthlyTax = maxHomePrice * monthlyTaxFactor;
     const monthlyPMI = hasPMI ? loanAmount * monthlyPMIFactor : 0;
-    const totalMonthlyPayment = principalAndInterest + monthlyTax + monthlyInsurance + monthlyPMI + hoaMonthly;
+    const totalMonthlyPayment = principalAndInterest + monthlyTax + monthlyInsurance + monthlyPMI + state.hoaMonthly;
 
     return {
       maxHomePrice: Math.round(maxHomePrice),
@@ -133,14 +138,14 @@ export function HomeAffordabilityCalculatorWidget() {
       monthlyTax,
       monthlyInsurance,
       monthlyPMI,
-      monthlyHOA: hoaMonthly,
-      downPaymentNeeded: downPaymentAmount,
+      monthlyHOA: state.hoaMonthly,
+      downPaymentNeeded: state.downPaymentAmount,
       loanAmount: Math.round(loanAmount),
     };
   }, [
-    annualIncome, carPayment, studentLoanPayment, creditCardPayment, otherDebt,
-    downPaymentAmount, interestRate, loanTerm, propertyTaxRate, homeInsurance,
-    pmiRate, hoaMonthly, maxDTI,
+    state.annualIncome, state.carPayment, state.studentLoanPayment, state.creditCardPayment, state.otherDebt,
+    state.downPaymentAmount, state.interestRate, state.loanTerm, state.propertyTaxRate, state.homeInsurance,
+    state.pmiRate, state.hoaMonthly, state.maxDTI,
   ]);
 
   const pieData = [
@@ -153,22 +158,22 @@ export function HomeAffordabilityCalculatorWidget() {
 
   const incomeScenarios = useMemo(() => {
     const scenarios = [0.75, 1.0, 1.25, 1.5].map((mult) => {
-      const income = Math.round(annualIncome * mult);
+      const income = Math.round(state.annualIncome * mult);
       const monthlyIncome = income / 12;
-      const totalDebts = carPayment + studentLoanPayment + creditCardPayment + otherDebt;
-      const maxPayment = monthlyIncome * (maxDTI / 100) - totalDebts;
+      const totalDebts = state.carPayment + state.studentLoanPayment + state.creditCardPayment + state.otherDebt;
+      const maxPayment = monthlyIncome * (state.maxDTI / 100) - totalDebts;
 
-      const monthlyRate = interestRate / 100 / 12;
-      const numPayments = loanTerm * 12;
+      const monthlyRate = state.interestRate / 100 / 12;
+      const numPayments = state.loanTerm * 12;
       const factor = Math.pow(1 + monthlyRate, numPayments);
       const amortFactor = monthlyRate > 0 ? (monthlyRate * factor) / (factor - 1) : 1 / numPayments;
 
-      const monthlyTaxFactor = propertyTaxRate / 100 / 12;
-      const monthlyIns = homeInsurance / 12;
-      const available = maxPayment - monthlyIns - hoaMonthly;
+      const monthlyTaxFactor = state.propertyTaxRate / 100 / 12;
+      const monthlyIns = state.homeInsurance / 12;
+      const available = maxPayment - monthlyIns - state.hoaMonthly;
       const coeffH = amortFactor + monthlyTaxFactor;
       const coeffD = amortFactor;
-      const price = available > 0 ? Math.round((available + downPaymentAmount * coeffD) / coeffH) : 0;
+      const price = available > 0 ? Math.round((available + state.downPaymentAmount * coeffD) / coeffH) : 0;
 
       return {
         income: `$${(income / 1000).toFixed(0)}k`,
@@ -176,7 +181,7 @@ export function HomeAffordabilityCalculatorWidget() {
       };
     });
     return scenarios;
-  }, [annualIncome, carPayment, studentLoanPayment, creditCardPayment, otherDebt, downPaymentAmount, interestRate, loanTerm, propertyTaxRate, homeInsurance, hoaMonthly, maxDTI]);
+  }, [state.annualIncome, state.carPayment, state.studentLoanPayment, state.creditCardPayment, state.otherDebt, state.downPaymentAmount, state.interestRate, state.loanTerm, state.propertyTaxRate, state.homeInsurance, state.hoaMonthly, state.maxDTI]);
 
   const shareResults = {
     "Max Home Price": formatCurrency(results.maxHomePrice),
@@ -189,20 +194,20 @@ export function HomeAffordabilityCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Annual Gross Income */}
           <CurrencyInput
             label="Annual Gross Income"
-            value={annualIncome}
-            onChange={setAnnualIncome}
+            value={state.annualIncome}
+            onChange={(v) => setState('annualIncome', v)}
             min={0}
             step={1000}
           />
           <CustomSlider
-            value={annualIncome}
-            onChange={setAnnualIncome}
+            value={state.annualIncome}
+            onChange={(v) => setState('annualIncome', v)}
             min={20000}
             max={500000}
             step={5000}
@@ -212,32 +217,32 @@ export function HomeAffordabilityCalculatorWidget() {
           {/* Monthly Debts */}
           <div>
             <p className="mb-3 text-sm font-medium text-[#94A3B8]">Monthly Debts</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <CurrencyInput
                 label="Car Payment"
-                value={carPayment}
-                onChange={setCarPayment}
+                value={state.carPayment}
+                onChange={(v) => setState('carPayment', v)}
                 min={0}
                 step={25}
               />
               <CurrencyInput
                 label="Student Loan"
-                value={studentLoanPayment}
-                onChange={setStudentLoanPayment}
+                value={state.studentLoanPayment}
+                onChange={(v) => setState('studentLoanPayment', v)}
                 min={0}
                 step={25}
               />
               <CurrencyInput
                 label="Credit Card"
-                value={creditCardPayment}
-                onChange={setCreditCardPayment}
+                value={state.creditCardPayment}
+                onChange={(v) => setState('creditCardPayment', v)}
                 min={0}
                 step={25}
               />
               <CurrencyInput
                 label="Other Debts"
-                value={otherDebt}
-                onChange={setOtherDebt}
+                value={state.otherDebt}
+                onChange={(v) => setState('otherDebt', v)}
                 min={0}
                 step={25}
               />
@@ -247,14 +252,14 @@ export function HomeAffordabilityCalculatorWidget() {
           {/* Down Payment */}
           <CurrencyInput
             label="Down Payment Amount"
-            value={downPaymentAmount}
-            onChange={setDownPaymentAmount}
+            value={state.downPaymentAmount}
+            onChange={(v) => setState('downPaymentAmount', v)}
             min={0}
             step={1000}
           />
           <CustomSlider
-            value={downPaymentAmount}
-            onChange={setDownPaymentAmount}
+            value={state.downPaymentAmount}
+            onChange={(v) => setState('downPaymentAmount', v)}
             min={0}
             max={200000}
             step={5000}
@@ -262,11 +267,11 @@ export function HomeAffordabilityCalculatorWidget() {
           />
 
           {/* Interest Rate & Loan Term */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <PercentageInput
               label="Interest Rate"
-              value={interestRate}
-              onChange={setInterestRate}
+              value={state.interestRate}
+              onChange={(v) => setState('interestRate', v)}
               min={0}
               max={15}
               step={0.125}
@@ -276,8 +281,8 @@ export function HomeAffordabilityCalculatorWidget() {
                 Loan Term (years)
               </label>
               <select
-                value={loanTerm}
-                onChange={(e) => setLoanTerm(Number(e.target.value))}
+                value={state.loanTerm}
+                onChange={(e) => setState('loanTerm', Number(e.target.value))}
                 className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
               >
                 <option value={15}>15 years</option>
@@ -288,34 +293,34 @@ export function HomeAffordabilityCalculatorWidget() {
           </div>
 
           {/* Property Tax, Insurance, PMI, HOA */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <PercentageInput
               label="Property Tax Rate"
-              value={propertyTaxRate}
-              onChange={setPropertyTaxRate}
+              value={state.propertyTaxRate}
+              onChange={(v) => setState('propertyTaxRate', v)}
               min={0}
               max={5}
               step={0.1}
             />
             <CurrencyInput
               label="Insurance ($/year)"
-              value={homeInsurance}
-              onChange={setHomeInsurance}
+              value={state.homeInsurance}
+              onChange={(v) => setState('homeInsurance', v)}
               min={0}
               step={100}
             />
             <PercentageInput
               label="PMI Rate"
-              value={pmiRate}
-              onChange={setPmiRate}
+              value={state.pmiRate}
+              onChange={(v) => setState('pmiRate', v)}
               min={0}
               max={3}
               step={0.1}
             />
             <CurrencyInput
               label="HOA ($/month)"
-              value={hoaMonthly}
-              onChange={setHoaMonthly}
+              value={state.hoaMonthly}
+              onChange={(v) => setState('hoaMonthly', v)}
               min={0}
               step={25}
             />
@@ -324,15 +329,15 @@ export function HomeAffordabilityCalculatorWidget() {
           {/* Max DTI */}
           <PercentageInput
             label="Max Debt-to-Income Ratio"
-            value={maxDTI}
-            onChange={setMaxDTI}
+            value={state.maxDTI}
+            onChange={(v) => setState('maxDTI', v)}
             min={20}
             max={50}
             step={1}
           />
           <CustomSlider
-            value={maxDTI}
-            onChange={setMaxDTI}
+            value={state.maxDTI}
+            onChange={(v) => setState('maxDTI', v)}
             min={20}
             max={50}
             step={1}
@@ -360,7 +365,7 @@ export function HomeAffordabilityCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Max Home Price"
               value={<AnimatedNumber value={results.maxHomePrice} format="currency" className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
@@ -389,7 +394,7 @@ export function HomeAffordabilityCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="Home Affordability Calculator Results" results={shareResults} />
+          <ShareResults title="Home Affordability Calculator Results" results={shareResults} getShareUrl={getShareUrl} />
 
           {/* Monthly Payment Breakdown */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">

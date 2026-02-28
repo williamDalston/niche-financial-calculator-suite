@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Wage Gap Calculator | CalcEngine",
     description:
       "Analyze the gender wage gap for your occupation, experience level, and location. See median salary comparisons, adjusted gap data, and the lifetime cost of pay inequity.",
-    url: "https://calcengine.io/calculators/wage-gap-calculator",
+    url: "https://calcengine.org/calculators/wage-gap-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -53,7 +53,7 @@ const faqs = [
   {
     question: "What is the current gender wage gap in the United States?",
     answer:
-      "As of 2024, women earn approximately 83.2 cents for every dollar men earn when comparing median annual earnings for full-time, year-round workers. This translates to an annual gap of about $10,000 in median earnings. The gap is wider for women of color: Black women earn about 70 cents, and Latina women earn about 65 cents for every dollar earned by white, non-Hispanic men.",
+      "As of 2025, women earn approximately 83.2 cents for every dollar men earn when comparing median annual earnings for full-time, year-round workers. This translates to an annual gap of about $10,000 in median earnings. The gap is wider for women of color: Black women earn about 70 cents, and Latina women earn about 65 cents for every dollar earned by white, non-Hispanic men.",
   },
   {
     question: "What causes the wage gap?",

@@ -94,7 +94,7 @@ function LineItemEditor({
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <div key={item.id} className="flex gap-2 items-center">
+        <div key={item.id} className="flex flex-col sm:flex-row gap-2 sm:items-center">
           <input
             type="text"
             value={item.label}
@@ -107,7 +107,7 @@ function LineItemEditor({
             onChange={(val) => onUpdate(item.id, "value", val)}
             min={0}
             step={1000}
-            className="w-36"
+            className="w-full sm:w-36"
           />
           <button
             onClick={() => onRemove(item.id)}
@@ -207,7 +207,7 @@ export function NetWorthCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Assets */}
@@ -238,7 +238,7 @@ export function NetWorthCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <StatCard
               label="Net Worth"
               highlight

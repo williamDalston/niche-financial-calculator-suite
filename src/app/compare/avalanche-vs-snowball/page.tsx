@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ad-unit";
 
 export const metadata: Metadata = {
   title:
@@ -10,11 +11,18 @@ export const metadata: Metadata = {
     title: "Avalanche vs Snowball Method: Which Debt Payoff Strategy Is Best?",
     description:
       "Compare the debt avalanche and debt snowball methods side by side. Learn which saves the most money and which keeps you motivated.",
-    url: "https://calcengine.io/compare/avalanche-vs-snowball",
+    url: "https://calcengine.org/compare/avalanche-vs-snowball",
     type: "article",
   },
   alternates: {
     canonical: "/compare/avalanche-vs-snowball",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "Avalanche vs Snowball Method: Which Debt Payoff Strategy Is Best? | CalcEngine",
+    description:
+      "Compare the debt avalanche and debt snowball methods side by side. Learn which payoff strategy saves the most money, which keeps you motivated, and how to choose the right one for your situation.",
   },
 };
 
@@ -75,18 +83,18 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   publisher: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   datePublished: "2026-02-24",
   dateModified: "2026-02-24",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://calcengine.io/compare/avalanche-vs-snowball",
+    "@id": "https://calcengine.org/compare/avalanche-vs-snowball",
   },
 };
 
@@ -899,6 +907,9 @@ export default function AvalancheVsSnowballGuidePage() {
                 </div>
               </div>
             </section>
+
+            {/* ── Ad Unit ── */}
+            <AdUnit className="mt-12" />
 
             {/* ── Section 10: FAQ ── */}
             <section id="faq" className="mt-14 scroll-mt-24">

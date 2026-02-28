@@ -10,18 +10,18 @@ const TakeHomePayWidget = dynamic(() => import("./calculator").then((m) => m.Tak
 export const metadata: Metadata = {
   title: "Take-Home Pay Calculator | CalcEngine",
   description:
-    "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2024 tax brackets.",
+    "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2025 tax brackets.",
   openGraph: {
     title: "Take-Home Pay Calculator | CalcEngine",
     description:
-      "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2024 tax brackets.",
-    url: "https://calcengine.io/calculators/take-home-pay-calculator",
+      "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2025 tax brackets.",
+    url: "https://calcengine.org/calculators/take-home-pay-calculator",
   },
   twitter: {
     card: "summary_large_image",
     title: "Take-Home Pay Calculator | CalcEngine",
     description:
-      "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2024 tax brackets.",
+      "Calculate your take-home pay after federal and state taxes, Social Security, Medicare, and deductions. Free paycheck calculator for 2025 tax brackets.",
   },
   alternates: {
     canonical: "/calculators/take-home-pay-calculator",
@@ -32,10 +32,10 @@ const howItWorks = `
 <p>The take-home pay calculator estimates your actual paycheck amount after all mandatory deductions and taxes are applied to your gross salary. Understanding the gap between your gross and net income is essential for realistic budgeting and financial planning.</p>
 
 <h3>Federal Income Tax</h3>
-<p>The United States uses a progressive tax system with seven tax brackets for 2024. This means different portions of your income are taxed at different rates. For example, a single filer earning $80,000 does not pay 22% on the entire amount. Instead, the first $11,600 is taxed at 10%, the next $35,550 (from $11,601 to $47,150) at 12%, and the remaining $32,850 (from $47,151 to $80,000) at 22%. This results in an effective tax rate of about 16.1%, significantly lower than the marginal rate of 22%.</p>
+<p>The United States uses a progressive tax system with seven tax brackets for 2025. This means different portions of your income are taxed at different rates. For example, a single filer earning $80,000 does not pay 22% on the entire amount. Instead, the first $11,925 is taxed at 10%, the next $36,550 (from $11,926 to $48,475) at 12%, and the remaining $31,525 (from $48,476 to $80,000) at 22%. This results in an effective tax rate of about 15.8%, significantly lower than the marginal rate of 22%.</p>
 
 <h3>FICA Taxes: Social Security and Medicare</h3>
-<p>Every employee pays Federal Insurance Contributions Act (FICA) taxes, which fund Social Security and Medicare. Social Security tax is 6.2% of your earnings up to $168,600 (the 2024 wage base limit). Your employer pays an additional 6.2%, for a combined 12.4%. Medicare tax is 1.45% on all earnings, with an additional 0.9% surtax on earnings above $200,000 for single filers. These taxes are not progressive — they apply from the first dollar earned.</p>
+<p>Every employee pays Federal Insurance Contributions Act (FICA) taxes, which fund Social Security and Medicare. Social Security tax is 6.2% of your earnings up to $176,100 (the 2025 wage base limit). Your employer pays an additional 6.2%, for a combined 12.4%. Medicare tax is 1.45% on all earnings, with an additional 0.9% surtax on earnings above $200,000 for single filers. These taxes are not progressive — they apply from the first dollar earned.</p>
 
 <h3>State Income Tax</h3>
 <p>State income tax varies widely. Nine states (Alaska, Florida, Nevada, New Hampshire, South Dakota, Tennessee, Texas, Washington, and Wyoming) have no state income tax on wages. California has the highest top rate at 13.3%, though most earners pay a much lower effective rate. This calculator uses simplified flat rates for the most common states to give you a reasonable estimate. For precise state tax calculations, consult your state's tax authority.</p>
@@ -49,7 +49,7 @@ const howItWorks = `
 
 const formula = `Federal Tax = Sum of (taxable income in each bracket x bracket rate)
 
-Social Security = 6.2% x min(Gross Income, $168,600)
+Social Security = 6.2% x min(Gross Income, $176,100)
 Medicare = 1.45% x Gross Income + 0.9% x max(0, Gross Income - $200,000)
 
 Net Pay = Gross Income - Federal Tax - State Tax - Social Security - Medicare - Pre-tax Deductions
@@ -75,7 +75,7 @@ const faqs = [
   {
     question: "What is the Social Security wage base limit?",
     answer:
-      "For 2024, Social Security tax (6.2%) only applies to the first $168,600 of earnings. Income above this threshold is not subject to Social Security tax. This means the maximum Social Security tax you can pay in 2024 is $10,453.20. Medicare tax, however, has no wage base limit — it applies to all earnings.",
+      "For 2025, Social Security tax (6.2%) only applies to the first $176,100 of earnings. Income above this threshold is not subject to Social Security tax. This means the maximum Social Security tax you can pay in 2025 is $10,918.20. Medicare tax, however, has no wage base limit — it applies to all earnings.",
   },
   {
     question: "How does filing status affect my take-home pay?",
@@ -90,7 +90,7 @@ const faqs = [
   {
     question: "How accurate is this calculator?",
     answer:
-      "This calculator provides a reasonable estimate using 2024 federal tax brackets and simplified state tax rates. Actual withholding may differ based on your specific W-4 elections, additional income sources, itemized deductions, tax credits, and your state's actual progressive tax brackets. For tax planning purposes, consult a tax professional or use IRS Tax Withholding Estimator.",
+      "This calculator provides a reasonable estimate using 2025 federal tax brackets and simplified state tax rates. Actual withholding may differ based on your specific W-4 elections, additional income sources, itemized deductions, tax credits, and your state's actual progressive tax brackets. For tax planning purposes, consult a tax professional or use IRS Tax Withholding Estimator.",
   },
 ];
 
@@ -129,7 +129,7 @@ const editorialContent = `
 <p>Many people either over-withhold or under-withhold federal taxes. If you consistently receive a large tax refund (over $1,000), you are essentially giving the government an interest-free loan. Consider adjusting your W-4 to reduce withholding and increase your per-paycheck take-home pay. The IRS Tax Withholding Estimator can help you fill out your W-4 accurately.</p>
 
 <h3>Maximize Pre-Tax Deductions</h3>
-<p>Contributing to a traditional 401(k) or 403(b) reduces your taxable income dollar-for-dollar, up to $23,000 in 2024 ($30,500 if age 50+). If you are in the 22% tax bracket, every $1,000 contributed saves you $220 in federal taxes. Health Savings Accounts (HSAs) offer a triple tax advantage: contributions are tax-deductible, growth is tax-free, and qualified withdrawals are tax-free.</p>
+<p>Contributing to a traditional 401(k) or 403(b) reduces your taxable income dollar-for-dollar, up to $23,500 in 2025 ($31,000 if age 50+). If you are in the 22% tax bracket, every $1,000 contributed saves you $220 in federal taxes. Health Savings Accounts (HSAs) offer a triple tax advantage: contributions are tax-deductible, growth is tax-free, and qualified withdrawals are tax-free.</p>
 
 <h3>Consider Your State</h3>
 <p>If you work remotely and have flexibility in where you live, state income tax can be a significant factor. Moving from California (top rate 13.3%) to Texas (0%) could save a six-figure earner over $10,000 per year in state taxes alone. However, consider the full picture including cost of living, property taxes, and quality of life.</p>
@@ -139,7 +139,7 @@ export default function TakeHomePayPage() {
   return (
     <CalculatorLayout
       title="Take-Home Pay Calculator"
-      description="Estimate your actual paycheck after federal and state taxes, Social Security, Medicare, and pre-tax deductions. Uses 2024 tax brackets."
+      description="Estimate your actual paycheck after federal and state taxes, Social Security, Medicare, and pre-tax deductions. Uses 2025 tax brackets."
       slug="take-home-pay-calculator"
       category={{ name: "Tax Calculators", slug: "tax-calculators" }}
       ctaText="File your taxes online — free for simple returns"

@@ -113,7 +113,7 @@ export function CompoundInterestWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Principal */}
@@ -225,7 +225,7 @@ export function CompoundInterestWidget() {
               value={results.finalBalance}
               format="currency"
               decimals={0}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -241,7 +241,7 @@ export function CompoundInterestWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Final Balance"
               highlight

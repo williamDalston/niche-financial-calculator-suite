@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Raise Calculator | CalcEngine",
     description:
       "Calculate the impact of a salary raise on your annual income, per-paycheck increase, and after-tax take-home pay. Free raise and salary increase calculator.",
-    url: "https://calcengine.io/calculators/raise-calculator",
+    url: "https://calcengine.org/calculators/raise-calculator",
   },
   twitter: {
     card: "summary_large_image",

@@ -958,7 +958,7 @@ export function MortgageCalculatorWidget() {
               format="currency"
               decimals={2}
               duration={500}
-              className="font-mono text-4xl sm:text-5xl font-bold text-[#22C55E] result-glow inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] result-glow inline-block transition-transform duration-150"
             />
             <p className="mt-2 text-xs text-[#94A3B8]">
               Principal & Interest only
@@ -966,7 +966,7 @@ export function MortgageCalculatorWidget() {
           </div>
 
           {/* -- 2x2 Stat Cards Grid -- */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Loan Amount"
               icon={IconHome}

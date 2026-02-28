@@ -19,6 +19,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrencyExact } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   primary: "#22C55E",
@@ -34,29 +35,35 @@ const COLORS = {
 const TIP_PRESETS = [15, 18, 20, 22, 25];
 
 export function TipCalculatorWidget() {
-  const [billAmount, setBillAmount] = useState(85);
-  const [tipPercent, setTipPercent] = useState(20);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      billAmount: 85,
+      tipPercent: 20,
+      numPeople: 1,
+      roundUp: 0,
+      preTaxMode: 0,
+      taxAmount: 0,
+    },
+  });
+
+  // UI-only state (not persisted in URL)
   const [customTip, setCustomTip] = useState(false);
-  const [numPeople, setNumPeople] = useState(1);
-  const [roundUp, setRoundUp] = useState(false);
-  const [preTaxMode, setPreTaxMode] = useState(false);
-  const [taxAmount, setTaxAmount] = useState(0);
 
   const results = useMemo(() => {
-    const tipBase = preTaxMode && taxAmount > 0
-      ? Math.max(billAmount - taxAmount, 0)
-      : billAmount;
-    const rawTip = tipBase * (tipPercent / 100);
+    const tipBase = !!state.preTaxMode && state.taxAmount > 0
+      ? Math.max(state.billAmount - state.taxAmount, 0)
+      : state.billAmount;
+    const rawTip = tipBase * (state.tipPercent / 100);
 
-    let totalBill = billAmount + rawTip;
+    let totalBill = state.billAmount + rawTip;
     let tipAmount = rawTip;
 
-    if (roundUp) {
+    if (state.roundUp) {
       totalBill = Math.ceil(totalBill);
-      tipAmount = totalBill - billAmount;
+      tipAmount = totalBill - state.billAmount;
     }
 
-    const people = Math.max(numPeople, 1);
+    const people = Math.max(state.numPeople, 1);
     const perPersonTotal = totalBill / people;
     const perPersonTip = tipAmount / people;
 
@@ -64,16 +71,16 @@ export function TipCalculatorWidget() {
     const comparisonPercentages = [10, 15, 18, 20, 22, 25, 30];
     const comparison = comparisonPercentages.map((pct) => {
       const tip = tipBase * (pct / 100);
-      let total = billAmount + tip;
-      if (roundUp) {
+      let total = state.billAmount + tip;
+      if (state.roundUp) {
         total = Math.ceil(total);
       }
       return {
         percent: `${pct}%`,
-        tip: roundUp ? total - billAmount : tip,
+        tip: state.roundUp ? total - state.billAmount : tip,
         total,
         perPerson: total / people,
-        isSelected: pct === tipPercent,
+        isSelected: pct === state.tipPercent,
       };
     });
 
@@ -84,7 +91,7 @@ export function TipCalculatorWidget() {
       perPersonTotal,
       comparison,
     };
-  }, [billAmount, tipPercent, numPeople, roundUp, preTaxMode, taxAmount]);
+  }, [state.billAmount, state.tipPercent, state.numPeople, state.roundUp, state.preTaxMode, state.taxAmount]);
 
   const chartData = results.comparison.map((c) => ({
     name: c.percent,
@@ -95,26 +102,26 @@ export function TipCalculatorWidget() {
   const shareResultsData: Record<string, string> = {
     "Tip Amount": formatCurrencyExact(results.tipAmount),
     "Total Bill": formatCurrencyExact(results.totalBill),
-    "Tip Percentage": `${tipPercent}%`,
-    ...(numPeople > 1
+    "Tip Percentage": `${state.tipPercent}%`,
+    ...(state.numPeople > 1
       ? {
           "Per Person Tip": formatCurrencyExact(results.perPersonTip),
           "Per Person Total": formatCurrencyExact(results.perPersonTotal),
-          "Split Between": `${numPeople} people`,
+          "Split Between": `${state.numPeople} people`,
         }
       : {}),
   };
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Bill Amount */}
           <CurrencyInput
             label="Bill Amount"
-            value={billAmount}
-            onChange={setBillAmount}
+            value={state.billAmount}
+            onChange={(v) => setState('billAmount', v)}
             min={0}
             max={10000}
             step={1}
@@ -130,11 +137,11 @@ export function TipCalculatorWidget() {
                 <button
                   key={pct}
                   onClick={() => {
-                    setTipPercent(pct);
+                    setState('tipPercent', pct);
                     setCustomTip(false);
                   }}
                   className={`rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    tipPercent === pct && !customTip
+                    state.tipPercent === pct && !customTip
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -156,8 +163,8 @@ export function TipCalculatorWidget() {
             {customTip && (
               <CustomSlider
                 label="Custom Tip %"
-                value={tipPercent}
-                onChange={setTipPercent}
+                value={state.tipPercent}
+                onChange={(v) => setState('tipPercent', v)}
                 min={0}
                 max={50}
                 step={1}
@@ -174,27 +181,27 @@ export function TipCalculatorWidget() {
             </label>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setNumPeople(Math.max(1, numPeople - 1))}
+                onClick={() => setState('numPeople', Math.max(1, state.numPeople - 1))}
                 className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#1E293B] bg-[#0B1120] text-lg text-[#94A3B8] transition-colors hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
               >
                 -
               </button>
               <input
                 type="number"
-                value={numPeople}
-                onChange={(e) => setNumPeople(Math.max(1, Number(e.target.value)))}
+                value={state.numPeople}
+                onChange={(e) => setState('numPeople', Math.max(1, Number(e.target.value)))}
                 className="h-12 w-20 rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-center text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
                 min={1}
                 step={1}
               />
               <button
-                onClick={() => setNumPeople(numPeople + 1)}
+                onClick={() => setState('numPeople', state.numPeople + 1)}
                 className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#1E293B] bg-[#0B1120] text-lg text-[#94A3B8] transition-colors hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
               >
                 +
               </button>
               <span className="text-sm text-[#94A3B8]">
-                {numPeople === 1 ? "person" : "people"}
+                {state.numPeople === 1 ? "person" : "people"}
               </span>
             </div>
           </div>
@@ -202,46 +209,54 @@ export function TipCalculatorWidget() {
           {/* Toggles */}
           <div className="space-y-3">
             {/* Round Up */}
-            <label className="flex cursor-pointer items-center justify-between rounded-lg border border-[#1E293B] bg-[#0B1120] p-3">
-              <span className="text-sm text-[#94A3B8]">Round up to nearest dollar</span>
-              <div
+            <div className="flex items-center justify-between rounded-lg border border-[#1E293B] bg-[#0B1120] p-3">
+              <span id="round-up-label" className="text-sm text-[#94A3B8]">Round up to nearest dollar</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!!state.roundUp}
+                aria-labelledby="round-up-label"
+                onClick={() => setState('roundUp', state.roundUp ? 0 : 1)}
                 className={`relative h-6 w-11 rounded-full transition-colors ${
-                  roundUp ? "bg-[#22C55E]" : "bg-[#1E293B]"
+                  state.roundUp ? "bg-[#22C55E]" : "bg-[#1E293B]"
                 }`}
-                onClick={() => setRoundUp(!roundUp)}
               >
                 <div
                   className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-                    roundUp ? "translate-x-5" : "translate-x-0.5"
+                    state.roundUp ? "translate-x-5" : "translate-x-0.5"
                   }`}
                 />
-              </div>
-            </label>
+              </button>
+            </div>
 
             {/* Pre-tax toggle */}
-            <label className="flex cursor-pointer items-center justify-between rounded-lg border border-[#1E293B] bg-[#0B1120] p-3">
-              <span className="text-sm text-[#94A3B8]">Tip on pre-tax amount</span>
-              <div
+            <div className="flex items-center justify-between rounded-lg border border-[#1E293B] bg-[#0B1120] p-3">
+              <span id="pre-tax-label" className="text-sm text-[#94A3B8]">Tip on pre-tax amount</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!!state.preTaxMode}
+                aria-labelledby="pre-tax-label"
+                onClick={() => setState('preTaxMode', state.preTaxMode ? 0 : 1)}
                 className={`relative h-6 w-11 rounded-full transition-colors ${
-                  preTaxMode ? "bg-[#22C55E]" : "bg-[#1E293B]"
+                  state.preTaxMode ? "bg-[#22C55E]" : "bg-[#1E293B]"
                 }`}
-                onClick={() => setPreTaxMode(!preTaxMode)}
               >
                 <div
                   className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-                    preTaxMode ? "translate-x-5" : "translate-x-0.5"
+                    state.preTaxMode ? "translate-x-5" : "translate-x-0.5"
                   }`}
                 />
-              </div>
-            </label>
+              </button>
+            </div>
 
-            {preTaxMode && (
+            {!!state.preTaxMode && (
               <CurrencyInput
                 label="Tax Amount on Bill"
-                value={taxAmount}
-                onChange={setTaxAmount}
+                value={state.taxAmount}
+                onChange={(v) => setState('taxAmount', v)}
                 min={0}
-                max={billAmount}
+                max={state.billAmount}
                 step={0.01}
               />
             )}
@@ -257,7 +272,7 @@ export function TipCalculatorWidget() {
               value={results.tipAmount}
               format="currency"
               decimals={2}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -273,8 +288,8 @@ export function TipCalculatorWidget() {
           </div>
 
           {/* Per-Person Amounts (when splitting) */}
-          {numPeople > 1 && (
-            <div className="grid grid-cols-2 gap-3">
+          {state.numPeople > 1 && (
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
                 <p className="mb-1 text-xs text-[#94A3B8]">Per Person Total</p>
                 <AnimatedNumber
@@ -297,7 +312,7 @@ export function TipCalculatorWidget() {
           )}
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Tip Amount"
               highlight
@@ -351,6 +366,7 @@ export function TipCalculatorWidget() {
           <ShareResults
             title="Tip Calculation"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* Comparison Chart */}
@@ -400,7 +416,7 @@ export function TipCalculatorWidget() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-[#94A3B8]">Tip %</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Tip</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Total</th>
-                  {numPeople > 1 && (
+                  {state.numPeople > 1 && (
                     <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Per Person</th>
                   )}
                 </tr>
@@ -420,7 +436,7 @@ export function TipCalculatorWidget() {
                     <td className="px-4 py-2 text-right font-mono text-[#F1F5F9]">
                       {formatCurrencyExact(row.total)}
                     </td>
-                    {numPeople > 1 && (
+                    {state.numPeople > 1 && (
                       <td className="px-4 py-2 text-right font-mono text-[#F1F5F9]">
                         {formatCurrencyExact(row.perPerson)}
                       </td>

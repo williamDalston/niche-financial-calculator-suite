@@ -62,8 +62,8 @@ export function CalculatorFilter() {
               onClick={() => setActiveCategory(cat.slug)}
               className={`flex-shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-[#22C55E]/10 border-[#22C55E] text-[#22C55E]"
-                  : "bg-transparent border-[#1E293B] text-[#94A3B8] hover:border-[#94A3B8]/50 hover:text-[#F1F5F9]"
+                  ? "bg-accent-primary/10 border-accent-primary text-accent-primary"
+                  : "bg-transparent border-border text-text-muted hover:border-text-muted/50 hover:text-text-primary"
               }`}
             >
               {cat.label}
@@ -78,7 +78,7 @@ export function CalculatorFilter() {
           <Link
             key={calc.slug}
             href={`/calculators/${calc.slug}`}
-            className="group flex items-start gap-3 rounded-xl border border-[#1E293B] bg-[#162032] p-5 transition-all duration-200 hover:border-[#22C55E]/50 hover:shadow-lg hover:shadow-[#22C55E]/5 hover-lift"
+            className="group flex items-start gap-3 rounded-xl border border-border bg-bg-surface p-5 transition-all duration-200 hover:border-accent-primary/50 hover:shadow-lg hover:shadow-accent-primary/5 hover-lift"
           >
             <span
               className="mt-0.5 text-2xl flex-shrink-0"
@@ -87,13 +87,13 @@ export function CalculatorFilter() {
               {calc.icon}
             </span>
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-[#F1F5F9] group-hover:text-[#22C55E] transition-colors truncate">
+              <h3 className="text-sm font-semibold text-text-primary group-hover:text-accent-primary transition-colors truncate">
                 {calc.title}
               </h3>
-              <p className="mt-0.5 text-xs font-medium text-[#3B82F6]">
+              <p className="mt-0.5 text-xs font-medium text-accent-secondary">
                 {calc.category.name}
               </p>
-              <p className="mt-1 text-xs text-[#94A3B8] leading-relaxed line-clamp-2">
+              <p className="mt-1 text-xs text-text-muted leading-relaxed line-clamp-2">
                 {calc.description}
               </p>
             </div>
@@ -103,7 +103,7 @@ export function CalculatorFilter() {
 
       {/* ---- Empty state ---- */}
       {filtered.length === 0 && (
-        <div className="mt-12 text-center text-sm text-[#94A3B8]">
+        <div className="mt-12 text-center text-sm text-text-muted">
           No calculators found in this category.
         </div>
       )}

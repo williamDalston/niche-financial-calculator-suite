@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Loan Payment Calculator | CalcEngine",
     description:
       "Calculate your monthly loan payment, total interest, total cost, and payoff date. See how extra payments can save you money. Free loan amortization calculator.",
-    url: "https://calcengine.io/calculators/loan-calculator",
+    url: "https://calcengine.org/calculators/loan-calculator",
   },
   twitter: {
     card: "summary_large_image",

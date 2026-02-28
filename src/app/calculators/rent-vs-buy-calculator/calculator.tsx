@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -23,6 +23,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -45,29 +46,33 @@ const COLORS = {
 /* ------------------------------------------------------------------ */
 
 export function RentVsBuyCalculatorWidget() {
-  const [monthlyRent, setMonthlyRent] = useState(2000);
-  const [annualRentIncrease, setAnnualRentIncrease] = useState(3);
-  const [homePrice, setHomePrice] = useState(400000);
-  const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-  const [mortgageRate, setMortgageRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState(30);
-  const [propertyTaxRate, setPropertyTaxRate] = useState(1.2);
-  const [homeInsurance, setHomeInsurance] = useState(1500);
-  const [maintenancePercent, setMaintenancePercent] = useState(1);
-  const [hoaMonthly, setHoaMonthly] = useState(0);
-  const [homeAppreciationRate, setHomeAppreciationRate] = useState(3.5);
-  const [investmentReturnRate, setInvestmentReturnRate] = useState(7);
-  const [timeHorizon, setTimeHorizon] = useState(10);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      monthlyRent: 2000,
+      annualRentIncrease: 3,
+      homePrice: 400000,
+      downPaymentPercent: 20,
+      mortgageRate: 6.5,
+      loanTerm: 30,
+      propertyTaxRate: 1.2,
+      homeInsurance: 1500,
+      maintenancePercent: 1,
+      hoaMonthly: 0,
+      homeAppreciationRate: 3.5,
+      investmentReturnRate: 7,
+      timeHorizon: 10,
+    },
+  });
 
   const results = useMemo(() => {
-    const downPayment = homePrice * (downPaymentPercent / 100);
-    const loanAmount = homePrice - downPayment;
-    const monthlyRate = mortgageRate / 100 / 12;
-    const numPayments = loanTerm * 12;
+    const downPayment = state.homePrice * (state.downPaymentPercent / 100);
+    const loanAmount = state.homePrice - downPayment;
+    const monthlyRate = state.mortgageRate / 100 / 12;
+    const numPayments = state.loanTerm * 12;
 
     // Calculate monthly mortgage payment
     let monthlyMortgage = 0;
-    if (loanAmount > 0 && mortgageRate > 0) {
+    if (loanAmount > 0 && state.mortgageRate > 0) {
       const factor = Math.pow(1 + monthlyRate, numPayments);
       monthlyMortgage = loanAmount * (monthlyRate * factor) / (factor - 1);
     }
@@ -82,15 +87,15 @@ export function RentVsBuyCalculatorWidget() {
 
     let rentCumulative = 0;
     let buyCumulative = downPayment; // Buyer spent down payment upfront
-    let currentRent = monthlyRent;
-    let currentHomeValue = homePrice;
+    let currentRent = state.monthlyRent;
+    let currentHomeValue = state.homePrice;
     let loanBalance = loanAmount;
     let renterPortfolio = downPayment; // Renter invests what would have been the down payment
-    const monthlyInvestmentReturn = investmentReturnRate / 100 / 12;
+    const monthlyInvestmentReturn = state.investmentReturnRate / 100 / 12;
 
     let breakevenYear = -1;
 
-    for (let year = 1; year <= timeHorizon; year++) {
+    for (let year = 1; year <= state.timeHorizon; year++) {
       let yearlyRentCost = 0;
       let yearlyBuyCost = 0;
 
@@ -103,13 +108,13 @@ export function RentVsBuyCalculatorWidget() {
         const principalPayment = monthlyMortgage - interestPayment;
         loanBalance = Math.max(loanBalance - principalPayment, 0);
 
-        const monthlyPropertyTax = (currentHomeValue * (propertyTaxRate / 100)) / 12;
-        const monthlyInsurance = homeInsurance / 12;
-        const monthlyMaintenance = (currentHomeValue * (maintenancePercent / 100)) / 12;
-        yearlyBuyCost += monthlyMortgage + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance + hoaMonthly;
+        const monthlyPropertyTax = (currentHomeValue * (state.propertyTaxRate / 100)) / 12;
+        const monthlyInsurance = state.homeInsurance / 12;
+        const monthlyMaintenance = (currentHomeValue * (state.maintenancePercent / 100)) / 12;
+        yearlyBuyCost += monthlyMortgage + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance + state.hoaMonthly;
 
         // Renter invests the difference
-        const buyerMonthlyTotal = monthlyMortgage + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance + hoaMonthly;
+        const buyerMonthlyTotal = monthlyMortgage + monthlyPropertyTax + monthlyInsurance + monthlyMaintenance + state.hoaMonthly;
         const monthlySavings = buyerMonthlyTotal - currentRent;
         if (monthlySavings > 0) {
           renterPortfolio += monthlySavings;
@@ -118,10 +123,10 @@ export function RentVsBuyCalculatorWidget() {
       }
 
       // Apply annual rent increase for next year
-      currentRent *= (1 + annualRentIncrease / 100);
+      currentRent *= (1 + state.annualRentIncrease / 100);
 
       // Apply home appreciation
-      currentHomeValue *= (1 + homeAppreciationRate / 100);
+      currentHomeValue *= (1 + state.homeAppreciationRate / 100);
 
       rentCumulative += yearlyRentCost;
       buyCumulative += yearlyBuyCost;
@@ -167,10 +172,10 @@ export function RentVsBuyCalculatorWidget() {
       renterNetWealth,
     };
   }, [
-    monthlyRent, annualRentIncrease, homePrice, downPaymentPercent,
-    mortgageRate, loanTerm, propertyTaxRate, homeInsurance,
-    maintenancePercent, hoaMonthly, homeAppreciationRate,
-    investmentReturnRate, timeHorizon,
+    state.monthlyRent, state.annualRentIncrease, state.homePrice, state.downPaymentPercent,
+    state.mortgageRate, state.loanTerm, state.propertyTaxRate, state.homeInsurance,
+    state.maintenancePercent, state.hoaMonthly, state.homeAppreciationRate,
+    state.investmentReturnRate, state.timeHorizon,
   ]);
 
   const wealthComparisonData = [
@@ -191,7 +196,7 @@ export function RentVsBuyCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           <h3 className="text-lg font-semibold text-[#F1F5F9]">Renting Details</h3>
@@ -200,14 +205,14 @@ export function RentVsBuyCalculatorWidget() {
           <div>
             <CurrencyInput
               label="Monthly Rent"
-              value={monthlyRent}
-              onChange={setMonthlyRent}
+              value={state.monthlyRent}
+              onChange={(v) => setState('monthlyRent', v)}
               min={0}
               step={50}
             />
             <CustomSlider
-              value={monthlyRent}
-              onChange={setMonthlyRent}
+              value={state.monthlyRent}
+              onChange={(v) => setState('monthlyRent', v)}
               min={500}
               max={5000}
               step={50}
@@ -219,8 +224,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Annual Rent Increase */}
           <PercentageInput
             label="Annual Rent Increase"
-            value={annualRentIncrease}
-            onChange={setAnnualRentIncrease}
+            value={state.annualRentIncrease}
+            onChange={(v) => setState('annualRentIncrease', v)}
             min={0}
             max={10}
             step={0.5}
@@ -229,8 +234,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Investment Return Rate */}
           <PercentageInput
             label="Investment Return Rate (renter's savings)"
-            value={investmentReturnRate}
-            onChange={setInvestmentReturnRate}
+            value={state.investmentReturnRate}
+            onChange={(v) => setState('investmentReturnRate', v)}
             min={0}
             max={15}
             step={0.5}
@@ -242,14 +247,14 @@ export function RentVsBuyCalculatorWidget() {
           <div>
             <CurrencyInput
               label="Home Purchase Price"
-              value={homePrice}
-              onChange={setHomePrice}
+              value={state.homePrice}
+              onChange={(v) => setState('homePrice', v)}
               min={0}
               step={5000}
             />
             <CustomSlider
-              value={homePrice}
-              onChange={setHomePrice}
+              value={state.homePrice}
+              onChange={(v) => setState('homePrice', v)}
               min={50000}
               max={2000000}
               step={5000}
@@ -265,8 +270,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Down Payment */}
           <PercentageInput
             label="Down Payment"
-            value={downPaymentPercent}
-            onChange={setDownPaymentPercent}
+            value={state.downPaymentPercent}
+            onChange={(v) => setState('downPaymentPercent', v)}
             min={0}
             max={100}
             step={1}
@@ -275,8 +280,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Mortgage Rate */}
           <PercentageInput
             label="Mortgage Rate"
-            value={mortgageRate}
-            onChange={setMortgageRate}
+            value={state.mortgageRate}
+            onChange={(v) => setState('mortgageRate', v)}
             min={0}
             max={15}
             step={0.125}
@@ -291,9 +296,9 @@ export function RentVsBuyCalculatorWidget() {
               {[15, 20, 30].map((term) => (
                 <button
                   key={term}
-                  onClick={() => setLoanTerm(term)}
+                  onClick={() => setState('loanTerm', term)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    loanTerm === term
+                    state.loanTerm === term
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -307,8 +312,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Property Tax Rate */}
           <PercentageInput
             label="Property Tax Rate (% of home value)"
-            value={propertyTaxRate}
-            onChange={setPropertyTaxRate}
+            value={state.propertyTaxRate}
+            onChange={(v) => setState('propertyTaxRate', v)}
             min={0}
             max={5}
             step={0.1}
@@ -317,8 +322,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Home Insurance */}
           <CurrencyInput
             label="Annual Home Insurance"
-            value={homeInsurance}
-            onChange={setHomeInsurance}
+            value={state.homeInsurance}
+            onChange={(v) => setState('homeInsurance', v)}
             min={0}
             step={100}
           />
@@ -326,8 +331,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Maintenance */}
           <PercentageInput
             label="Annual Maintenance (% of home value)"
-            value={maintenancePercent}
-            onChange={setMaintenancePercent}
+            value={state.maintenancePercent}
+            onChange={(v) => setState('maintenancePercent', v)}
             min={0}
             max={5}
             step={0.25}
@@ -336,8 +341,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* HOA */}
           <CurrencyInput
             label="Monthly HOA"
-            value={hoaMonthly}
-            onChange={setHoaMonthly}
+            value={state.hoaMonthly}
+            onChange={(v) => setState('hoaMonthly', v)}
             min={0}
             step={25}
             placeholder="0"
@@ -346,8 +351,8 @@ export function RentVsBuyCalculatorWidget() {
           {/* Home Appreciation */}
           <PercentageInput
             label="Expected Home Appreciation Rate"
-            value={homeAppreciationRate}
-            onChange={setHomeAppreciationRate}
+            value={state.homeAppreciationRate}
+            onChange={(v) => setState('homeAppreciationRate', v)}
             min={0}
             max={10}
             step={0.5}
@@ -357,8 +362,8 @@ export function RentVsBuyCalculatorWidget() {
           <div>
             <CustomSlider
               label="Time Horizon (years)"
-              value={timeHorizon}
-              onChange={setTimeHorizon}
+              value={state.timeHorizon}
+              onChange={(v) => setState('timeHorizon', v)}
               min={1}
               max={30}
               step={1}
@@ -370,9 +375,9 @@ export function RentVsBuyCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <StatCard
-              label={`Over ${timeHorizon} Years, ${verdict} Wins By`}
+              label={`Over ${state.timeHorizon} Years, ${verdict} Wins By`}
               highlight
               value={
                 <AnimatedNumber
@@ -435,6 +440,7 @@ export function RentVsBuyCalculatorWidget() {
           <ShareResults
             title="Rent vs Buy Calculation Results"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* Line Chart: Cumulative Cost Over Time */}
@@ -474,7 +480,7 @@ export function RentVsBuyCalculatorWidget() {
 
           {/* Bar Chart: Wealth Comparison */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Net Wealth Comparison at Year {timeHorizon}</p>
+            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Net Wealth Comparison at Year {state.timeHorizon}</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={wealthComparisonData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

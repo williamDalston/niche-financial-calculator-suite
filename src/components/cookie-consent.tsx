@@ -1,28 +1,57 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
     if (!consent) {
-      // Delay entrance slightly for smoother page load experience
       const timer = setTimeout(() => setVisible(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
 
+  /* Focus trap: move focus into dialog when it appears */
+  useEffect(() => {
+    if (!visible || dismissed) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    const firstButton = dialogRef.current?.querySelector("button");
+    if (firstButton) (firstButton as HTMLElement).focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [visible, dismissed]);
+
   const handleConsent = useCallback((choice: "accepted" | "rejected") => {
     setDismissed(true);
-    // Wait for exit animation before removing from DOM
     setTimeout(() => {
       localStorage.setItem("cookie-consent", choice);
       window.dispatchEvent(new Event("cookie-consent-change"));
       setVisible(false);
+      previousFocusRef.current?.focus();
     }, 300);
   }, []);
 
@@ -30,11 +59,13 @@ export function CookieConsent() {
 
   return (
     <div
+      ref={dialogRef}
       className={`fixed bottom-0 inset-x-0 z-[60] p-4 sm:p-6 transition-all duration-300 ${
         dismissed ? "translate-y-full opacity-0" : "translate-y-0 opacity-100 animate-slide-up"
       }`}
       role="dialog"
       aria-label="Cookie consent"
+      aria-modal="true"
     >
       <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-bg-surface/95 backdrop-blur-xl p-5 sm:p-6 shadow-2xl shadow-black/40">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -69,13 +100,13 @@ export function CookieConsent() {
           <div className="flex gap-3 shrink-0 w-full sm:w-auto">
             <button
               onClick={() => handleConsent("rejected")}
-              className="flex-1 sm:flex-initial rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-text-muted transition-all duration-200 hover:text-text-primary hover:border-text-muted hover:bg-bg-primary/50"
+              className="flex-1 sm:flex-initial rounded-xl border border-border px-4 py-3 min-h-[44px] text-sm font-medium text-text-muted transition-all duration-200 hover:text-text-primary hover:border-text-muted hover:bg-bg-primary/50"
             >
               Decline
             </button>
             <button
               onClick={() => handleConsent("accepted")}
-              className="flex-1 sm:flex-initial rounded-xl bg-accent-primary px-5 py-2.5 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-primary/90 hover:shadow-lg hover:shadow-accent-primary/20"
+              className="flex-1 sm:flex-initial rounded-xl bg-accent-primary px-5 py-3 min-h-[44px] text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-primary/90 hover:shadow-lg hover:shadow-accent-primary/20"
             >
               Accept
             </button>

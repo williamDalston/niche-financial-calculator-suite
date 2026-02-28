@@ -17,11 +17,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://adservice.google.com",
+      "script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://adservice.google.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https: blob:",
       "font-src 'self'",
-      "connect-src 'self' https://pagead2.googlesyndication.com https://www.google-analytics.com https://adservice.google.com",
+      "connect-src 'self' https://pagead2.googlesyndication.com https://www.google-analytics.com https://adservice.google.com https://vitals.vercel-insights.com https://va.vercel-scripts.com",
       "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
     ].join("; "),
   },

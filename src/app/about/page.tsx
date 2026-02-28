@@ -9,7 +9,13 @@ export const metadata: Metadata = {
     title: "About CalcEngine | Free Financial Calculators",
     description:
       "Learn about CalcEngine — the fastest, most accurate free financial calculators on the web.",
-    url: "https://calcengine.io/about",
+    url: "https://calcengine.org/about",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About CalcEngine | Free Financial Calculators",
+    description:
+      "Learn about CalcEngine — the fastest, most accurate free financial calculators on the web. All calculations run client-side for complete privacy.",
   },
   alternates: {
     canonical: "/about",
@@ -116,7 +122,7 @@ export default function AboutPage() {
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 text-center">
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl animate-fade-in-up">
+          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl animate-fade-in-up">
             About <span className="text-accent-primary">CalcEngine</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-text-muted leading-relaxed animate-fade-in-up animate-fade-in-up-delay-1">
@@ -215,7 +221,7 @@ export default function AboutPage() {
             </p>
           </div>
           <Link
-            href="/"
+            href="/calculators"
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-accent-primary px-6 py-3 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-primary/90 hover:shadow-lg hover:shadow-accent-primary/20"
           >
             Browse All Calculators
@@ -271,7 +277,7 @@ export default function AboutPage() {
                     Email
                   </p>
                   <p className="mt-0.5 text-sm font-medium text-text-primary">
-                    hello@calcengine.io
+                    hello@calcengine.org
                   </p>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -18,6 +18,7 @@ import { PercentageInput } from "@/components/ui/percentage-input";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   standard: "#3B82F6",
@@ -144,14 +145,18 @@ function buildGraduatedAmortization(
 }
 
 export function StudentLoanCalculatorWidget() {
-  const [loanBalance, setLoanBalance] = useState(35000);
-  const [interestRate, setInterestRate] = useState(5.5);
-  const [loanTermYears, setLoanTermYears] = useState(10);
-  const [extraPayment, setExtraPayment] = useState(0);
-  const [repaymentPlan, setRepaymentPlan] = useState<RepaymentPlan>("standard");
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      loanBalance: 35000,
+      interestRate: 5.5,
+      loanTermYears: 10,
+      extraPayment: 0,
+      repaymentPlan: "standard" as string,
+    },
+  });
 
   const results = useMemo(() => {
-    if (loanBalance <= 0 || interestRate < 0) {
+    if (state.loanBalance <= 0 || state.interestRate < 0) {
       return {
         monthlyPayment: 0,
         totalInterest: 0,
@@ -165,33 +170,33 @@ export function StudentLoanCalculatorWidget() {
     }
 
     let monthlyPayment: number;
-    let termYears = loanTermYears;
+    let termYears = state.loanTermYears;
 
-    switch (repaymentPlan) {
+    switch (state.repaymentPlan) {
       case "standard":
-        monthlyPayment = calcStandardPayment(loanBalance, interestRate, loanTermYears);
+        monthlyPayment = calcStandardPayment(state.loanBalance, state.interestRate, state.loanTermYears);
         break;
       case "graduated":
-        monthlyPayment = calcStandardPayment(loanBalance, interestRate, loanTermYears) * 0.6;
-        termYears = loanTermYears;
+        monthlyPayment = calcStandardPayment(state.loanBalance, state.interestRate, state.loanTermYears) * 0.6;
+        termYears = state.loanTermYears;
         break;
       case "extended":
         termYears = 25;
-        monthlyPayment = calcStandardPayment(loanBalance, interestRate, 25);
+        monthlyPayment = calcStandardPayment(state.loanBalance, state.interestRate, 25);
         break;
       case "income-driven":
         termYears = 20;
-        monthlyPayment = calcStandardPayment(loanBalance, interestRate, 20);
+        monthlyPayment = calcStandardPayment(state.loanBalance, state.interestRate, 20);
         break;
       default:
-        monthlyPayment = calcStandardPayment(loanBalance, interestRate, loanTermYears);
+        monthlyPayment = calcStandardPayment(state.loanBalance, state.interestRate, state.loanTermYears);
     }
 
     let amortization: AmortRow[];
-    if (repaymentPlan === "graduated") {
-      amortization = buildGraduatedAmortization(loanBalance, interestRate, termYears);
+    if (state.repaymentPlan === "graduated") {
+      amortization = buildGraduatedAmortization(state.loanBalance, state.interestRate, termYears);
     } else {
-      amortization = buildAmortization(loanBalance, interestRate, monthlyPayment, extraPayment, termYears * 12);
+      amortization = buildAmortization(state.loanBalance, state.interestRate, monthlyPayment, state.extraPayment, termYears * 12);
     }
 
     const lastRow = amortization[amortization.length - 1];
@@ -199,9 +204,9 @@ export function StudentLoanCalculatorWidget() {
     const totalCost = lastRow?.totalPaid ?? 0;
     const payoffMonths = amortization.length;
 
-    const baselineAmort = buildAmortization(loanBalance, interestRate, monthlyPayment, 0, termYears * 12);
+    const baselineAmort = buildAmortization(state.loanBalance, state.interestRate, monthlyPayment, 0, termYears * 12);
     const baselineInterest = baselineAmort[baselineAmort.length - 1]?.totalInterest ?? 0;
-    const interestSaved = extraPayment > 0 ? baselineInterest - totalInterest : 0;
+    const interestSaved = state.extraPayment > 0 ? baselineInterest - totalInterest : 0;
 
     const plans: RepaymentPlan[] = ["standard", "graduated", "extended", "income-driven"];
     const planComparisons = plans.map((plan) => {
@@ -209,20 +214,20 @@ export function StudentLoanCalculatorWidget() {
       let amort: AmortRow[];
       switch (plan) {
         case "standard":
-          pmt = calcStandardPayment(loanBalance, interestRate, 10);
-          amort = buildAmortization(loanBalance, interestRate, pmt, 0, 120);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 10);
+          amort = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 120);
           break;
         case "graduated":
-          amort = buildGraduatedAmortization(loanBalance, interestRate, 10);
+          amort = buildGraduatedAmortization(state.loanBalance, state.interestRate, 10);
           pmt = amort[0]?.payment ?? 0;
           break;
         case "extended":
-          pmt = calcStandardPayment(loanBalance, interestRate, 25);
-          amort = buildAmortization(loanBalance, interestRate, pmt, 0, 300);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 25);
+          amort = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 300);
           break;
         case "income-driven":
-          pmt = calcStandardPayment(loanBalance, interestRate, 20);
-          amort = buildAmortization(loanBalance, interestRate, pmt, 0, 240);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 20);
+          amort = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 240);
           break;
         default:
           pmt = 0;
@@ -246,19 +251,19 @@ export function StudentLoanCalculatorWidget() {
       let pmt: number;
       switch (plan) {
         case "standard":
-          pmt = calcStandardPayment(loanBalance, interestRate, 10);
-          planAmorts[plan] = buildAmortization(loanBalance, interestRate, pmt, 0, 120);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 10);
+          planAmorts[plan] = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 120);
           break;
         case "graduated":
-          planAmorts[plan] = buildGraduatedAmortization(loanBalance, interestRate, 10);
+          planAmorts[plan] = buildGraduatedAmortization(state.loanBalance, state.interestRate, 10);
           break;
         case "extended":
-          pmt = calcStandardPayment(loanBalance, interestRate, 25);
-          planAmorts[plan] = buildAmortization(loanBalance, interestRate, pmt, 0, 300);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 25);
+          planAmorts[plan] = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 300);
           break;
         case "income-driven":
-          pmt = calcStandardPayment(loanBalance, interestRate, 20);
-          planAmorts[plan] = buildAmortization(loanBalance, interestRate, pmt, 0, 240);
+          pmt = calcStandardPayment(state.loanBalance, state.interestRate, 20);
+          planAmorts[plan] = buildAmortization(state.loanBalance, state.interestRate, pmt, 0, 240);
           break;
       }
     });
@@ -268,7 +273,7 @@ export function StudentLoanCalculatorWidget() {
       plans.forEach((plan) => {
         const amort = planAmorts[plan];
         if (y === 0) {
-          row[plan] = loanBalance;
+          row[plan] = state.loanBalance;
         } else {
           const monthIndex = y * 12 - 1;
           if (monthIndex < amort.length) {
@@ -282,7 +287,7 @@ export function StudentLoanCalculatorWidget() {
     }
 
     return {
-      monthlyPayment: repaymentPlan === "graduated" ? amortization[0]?.payment ?? 0 : monthlyPayment,
+      monthlyPayment: state.repaymentPlan === "graduated" ? amortization[0]?.payment ?? 0 : monthlyPayment,
       totalInterest,
       totalCost,
       payoffMonths,
@@ -291,7 +296,7 @@ export function StudentLoanCalculatorWidget() {
       planComparisons,
       balanceOverTime,
     };
-  }, [loanBalance, interestRate, loanTermYears, extraPayment, repaymentPlan]);
+  }, [state.loanBalance, state.interestRate, state.loanTermYears, state.extraPayment, state.repaymentPlan]);
 
   const payoffDate = useMemo(() => {
     const now = new Date();
@@ -309,20 +314,20 @@ export function StudentLoanCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Loan Balance */}
           <CurrencyInput
             label="Total Loan Balance"
-            value={loanBalance}
-            onChange={setLoanBalance}
+            value={state.loanBalance}
+            onChange={(v) => setState('loanBalance', v)}
             min={0}
             step={1000}
           />
           <CustomSlider
-            value={loanBalance}
-            onChange={setLoanBalance}
+            value={state.loanBalance}
+            onChange={(v) => setState('loanBalance', v)}
             min={1000}
             max={300000}
             step={1000}
@@ -332,8 +337,8 @@ export function StudentLoanCalculatorWidget() {
           {/* Interest Rate */}
           <PercentageInput
             label="Interest Rate"
-            value={interestRate}
-            onChange={setInterestRate}
+            value={state.interestRate}
+            onChange={(v) => setState('interestRate', v)}
             min={0}
             max={15}
             step={0.1}
@@ -342,8 +347,8 @@ export function StudentLoanCalculatorWidget() {
           {/* Loan Term */}
           <CustomSlider
             label="Loan Term (years)"
-            value={loanTermYears}
-            onChange={setLoanTermYears}
+            value={state.loanTermYears}
+            onChange={(v) => setState('loanTermYears', v)}
             min={1}
             max={30}
             step={1}
@@ -353,14 +358,14 @@ export function StudentLoanCalculatorWidget() {
           {/* Extra Monthly Payment */}
           <CurrencyInput
             label="Extra Monthly Payment"
-            value={extraPayment}
-            onChange={setExtraPayment}
+            value={state.extraPayment}
+            onChange={(v) => setState('extraPayment', v)}
             min={0}
             step={25}
           />
           <CustomSlider
-            value={extraPayment}
-            onChange={setExtraPayment}
+            value={state.extraPayment}
+            onChange={(v) => setState('extraPayment', v)}
             min={0}
             max={1000}
             step={25}
@@ -376,9 +381,9 @@ export function StudentLoanCalculatorWidget() {
               {(Object.keys(PLAN_LABELS) as RepaymentPlan[]).map((plan) => (
                 <button
                   key={plan}
-                  onClick={() => setRepaymentPlan(plan)}
+                  onClick={() => setState('repaymentPlan', plan)}
                   className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    repaymentPlan === plan
+                    state.repaymentPlan === plan
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -396,15 +401,15 @@ export function StudentLoanCalculatorWidget() {
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
             <p className="mb-2 text-sm text-[#94A3B8]">Monthly Payment</p>
             <AnimatedNumber value={results.monthlyPayment} format="currency" decimals={2} />
-            {extraPayment > 0 && (
+            {state.extraPayment > 0 && (
               <span className="ml-2 text-base text-[#94A3B8]">
-                + {formatCurrency(extraPayment)} extra
+                + {formatCurrency(state.extraPayment)} extra
               </span>
             )}
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Monthly Payment"
               value={<AnimatedNumber value={results.monthlyPayment} format="currency" decimals={2} className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
@@ -434,7 +439,7 @@ export function StudentLoanCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="Student Loan Calculator Results" results={shareResultsData} />
+          <ShareResults title="Student Loan Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Balance Over Time Chart */}
           {results.balanceOverTime.length > 0 && (
@@ -473,9 +478,9 @@ export function StudentLoanCalculatorWidget() {
                       type="monotone"
                       dataKey={plan}
                       stroke={PLAN_COLORS[plan]}
-                      strokeWidth={repaymentPlan === plan ? 3 : 1.5}
+                      strokeWidth={state.repaymentPlan === plan ? 3 : 1.5}
                       dot={false}
-                      opacity={repaymentPlan === plan ? 1 : 0.4}
+                      opacity={state.repaymentPlan === plan ? 1 : 0.4}
                     />
                   ))}
                 </LineChart>

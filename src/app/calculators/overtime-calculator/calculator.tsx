@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   ResponsiveContainer,
   Tooltip,
@@ -36,28 +37,32 @@ type InputMode = "hourly" | "salary";
 type PayPeriod = "weekly" | "biweekly";
 
 export function OvertimeCalculatorWidget() {
-  const [inputMode, setInputMode] = useState<InputMode>("hourly");
-  const [hourlyRate, setHourlyRate] = useState(25);
-  const [annualSalary, setAnnualSalary] = useState(52000);
-  const [hoursWorked, setHoursWorked] = useState(50);
-  const [otMultiplier, setOtMultiplier] = useState(1.5);
-  const [payPeriod, setPayPeriod] = useState<PayPeriod>("weekly");
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      inputMode: "hourly" as string,
+      hourlyRate: 25,
+      annualSalary: 52000,
+      hoursWorked: 50,
+      otMultiplier: 1.5,
+      payPeriod: "weekly" as string,
+    },
+  });
 
   const results = useMemo(() => {
     const effectiveHourlyRate =
-      inputMode === "hourly" ? hourlyRate : annualSalary / 2080;
+      state.inputMode === "hourly" ? state.hourlyRate : state.annualSalary / 2080;
 
     const standardHours = 40;
-    const overtimeHours = Math.max(hoursWorked - standardHours, 0);
-    const regularHours = Math.min(hoursWorked, standardHours);
+    const overtimeHours = Math.max(state.hoursWorked - standardHours, 0);
+    const regularHours = Math.min(state.hoursWorked, standardHours);
 
     const regularPay = regularHours * effectiveHourlyRate;
-    const overtimePay = overtimeHours * effectiveHourlyRate * otMultiplier;
+    const overtimePay = overtimeHours * effectiveHourlyRate * state.otMultiplier;
     const totalGrossPay = regularPay + overtimePay;
 
-    const effectiveRate = hoursWorked > 0 ? totalGrossPay / hoursWorked : 0;
+    const effectiveRate = state.hoursWorked > 0 ? totalGrossPay / state.hoursWorked : 0;
 
-    const periodMultiplier = payPeriod === "biweekly" ? 2 : 1;
+    const periodMultiplier = state.payPeriod === "biweekly" ? 2 : 1;
     const periodRegularPay = regularPay * periodMultiplier;
     const periodOvertimePay = overtimePay * periodMultiplier;
     const periodTotalPay = totalGrossPay * periodMultiplier;
@@ -75,11 +80,11 @@ export function OvertimeCalculatorWidget() {
       periodTotalPay,
       periodMultiplier,
     };
-  }, [inputMode, hourlyRate, annualSalary, hoursWorked, otMultiplier, payPeriod]);
+  }, [state.inputMode, state.hourlyRate, state.annualSalary, state.hoursWorked, state.otMultiplier, state.payPeriod]);
 
   const payBreakdownData = [
     {
-      name: payPeriod === "weekly" ? "Weekly Pay" : "Biweekly Pay",
+      name: state.payPeriod === "weekly" ? "Weekly Pay" : "Biweekly Pay",
       "Regular Pay": Math.round(results.periodRegularPay),
       "Overtime Pay": Math.round(results.periodOvertimePay),
     },
@@ -92,7 +97,7 @@ export function OvertimeCalculatorWidget() {
     },
     {
       name: "OT Rate",
-      rate: results.effectiveHourlyRate * otMultiplier,
+      rate: results.effectiveHourlyRate * state.otMultiplier,
     },
     {
       name: "Effective Rate",
@@ -112,7 +117,7 @@ export function OvertimeCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Input Mode */}
@@ -124,9 +129,9 @@ export function OvertimeCalculatorWidget() {
               {(["hourly", "salary"] as const).map((mode) => (
                 <button
                   key={mode}
-                  onClick={() => setInputMode(mode)}
+                  onClick={() => setState('inputMode', mode)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    inputMode === mode
+                    state.inputMode === mode
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -138,19 +143,19 @@ export function OvertimeCalculatorWidget() {
           </div>
 
           {/* Hourly Rate or Salary */}
-          {inputMode === "hourly" ? (
+          {state.inputMode === "hourly" ? (
             <div>
               <CurrencyInput
                 label="Regular Hourly Rate"
-                value={hourlyRate}
-                onChange={setHourlyRate}
+                value={state.hourlyRate}
+                onChange={(v) => setState('hourlyRate', v)}
                 min={0}
                 max={500}
                 step={0.5}
               />
               <CustomSlider
-                value={hourlyRate}
-                onChange={setHourlyRate}
+                value={state.hourlyRate}
+                onChange={(v) => setState('hourlyRate', v)}
                 min={7.25}
                 max={100}
                 step={0.25}
@@ -163,15 +168,15 @@ export function OvertimeCalculatorWidget() {
             <div>
               <CurrencyInput
                 label="Annual Salary"
-                value={annualSalary}
-                onChange={setAnnualSalary}
+                value={state.annualSalary}
+                onChange={(v) => setState('annualSalary', v)}
                 min={0}
                 max={500000}
                 step={1000}
               />
               <CustomSlider
-                value={annualSalary}
-                onChange={setAnnualSalary}
+                value={state.annualSalary}
+                onChange={(v) => setState('annualSalary', v)}
                 min={15000}
                 max={200000}
                 step={1000}
@@ -180,16 +185,16 @@ export function OvertimeCalculatorWidget() {
                 className="mt-2"
               />
               <p className="mt-1 text-xs text-[#94A3B8]">
-                Hourly equivalent: {formatCurrencyExact(annualSalary / 2080)}/hr (based on 2,080 hours/year)
+                Hourly equivalent: {formatCurrencyExact(state.annualSalary / 2080)}/hr (based on 2,080 hours/year)
               </p>
             </div>
           )}
 
           {/* Hours Worked */}
           <CustomSlider
-            label={`Hours Worked This Week: ${hoursWorked}`}
-            value={hoursWorked}
-            onChange={setHoursWorked}
+            label={`Hours Worked This Week: ${state.hoursWorked}`}
+            value={state.hoursWorked}
+            onChange={(v) => setState('hoursWorked', v)}
             min={0}
             max={80}
             step={0.5}
@@ -206,9 +211,9 @@ export function OvertimeCalculatorWidget() {
               {[1.5, 2.0].map((mult) => (
                 <button
                   key={mult}
-                  onClick={() => setOtMultiplier(mult)}
+                  onClick={() => setState('otMultiplier', mult)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    otMultiplier === mult
+                    state.otMultiplier === mult
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -228,9 +233,9 @@ export function OvertimeCalculatorWidget() {
               {(["weekly", "biweekly"] as const).map((period) => (
                 <button
                   key={period}
-                  onClick={() => setPayPeriod(period)}
+                  onClick={() => setState('payPeriod', period)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    payPeriod === period
+                    state.payPeriod === period
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -246,12 +251,12 @@ export function OvertimeCalculatorWidget() {
         <div className="space-y-6">
           {/* Primary Result: Total Gross Pay */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Total Gross Pay ({payPeriod === "weekly" ? "Weekly" : "Biweekly"})</p>
+            <p className="mb-2 text-sm text-[#94A3B8]">Total Gross Pay ({state.payPeriod === "weekly" ? "Weekly" : "Biweekly"})</p>
             <AnimatedNumber
               value={results.periodTotalPay}
               format="currency"
               decimals={2}
-              className="font-mono text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -281,10 +286,11 @@ export function OvertimeCalculatorWidget() {
           <ShareResults
             title="Overtime Calculator Results"
             results={shareResults}
+            getShareUrl={getShareUrl}
           />
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Total Gross"
               value={formatCurrencyExact(results.periodTotalPay)}
@@ -298,12 +304,12 @@ export function OvertimeCalculatorWidget() {
             <StatCard
               label="OT Hours"
               value={String(results.overtimeHours)}
-              subvalue={results.overtimeHours > 0 ? `${otMultiplier}x rate` : "No overtime"}
+              subvalue={results.overtimeHours > 0 ? `${state.otMultiplier}x rate` : "No overtime"}
             />
             <StatCard
               label="OT Pay"
               value={formatCurrencyExact(results.periodOvertimePay)}
-              subvalue={results.overtimeHours > 0 ? `${results.overtimeHours} hrs x ${formatCurrencyExact(results.effectiveHourlyRate * otMultiplier)}` : undefined}
+              subvalue={results.overtimeHours > 0 ? `${results.overtimeHours} hrs x ${formatCurrencyExact(results.effectiveHourlyRate * state.otMultiplier)}` : undefined}
             />
             <StatCard
               label="Effective Hourly Rate"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { trackFaqExpand } from "@/lib/track-event";
 
 export interface FaqItem {
   question: string;
@@ -9,6 +10,7 @@ export interface FaqItem {
 
 interface FaqSectionProps {
   faqs: FaqItem[];
+  slug?: string;
 }
 
 /**
@@ -18,12 +20,18 @@ interface FaqSectionProps {
  * The matching FAQPage JSON-LD schema is emitted by CalculatorLayout so
  * structured data stays in one central place.
  */
-export function FaqSection({ faqs }: FaqSectionProps) {
+export function FaqSection({ faqs, slug }: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = useCallback((index: number) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  }, []);
+    setOpenIndex((prev) => {
+      const next = prev === index ? null : index;
+      if (next !== null && slug) {
+        trackFaqExpand(slug, faqs[index].question);
+      }
+      return next;
+    });
+  }, [faqs, slug]);
 
   if (faqs.length === 0) return null;
 
@@ -31,12 +39,12 @@ export function FaqSection({ faqs }: FaqSectionProps) {
     <section className="mt-16" aria-labelledby="faq-heading">
       <h2
         id="faq-heading"
-        className="mb-6 text-2xl font-semibold text-[#F1F5F9]"
+        className="mb-6 font-display text-2xl font-bold text-text-primary"
       >
         Frequently Asked Questions
       </h2>
 
-      <div className="divide-y divide-[#1E293B] rounded-lg border border-[#1E293B] bg-[#162032]">
+      <div className="divide-y divide-border rounded-lg border border-border bg-bg-surface">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
           const panelId = `faq-panel-${index}`;
@@ -47,7 +55,7 @@ export function FaqSection({ faqs }: FaqSectionProps) {
               key={index}
               className={`border-l-2 transition-all duration-300 ${
                 isOpen
-                  ? "border-l-[#22C55E] bg-[#0B1120]/30"
+                  ? "border-l-accent-primary bg-bg-primary/30"
                   : "border-l-transparent"
               }`}
             >
@@ -55,7 +63,7 @@ export function FaqSection({ faqs }: FaqSectionProps) {
                 <button
                   id={triggerId}
                   type="button"
-                  className="flex w-full items-center justify-between px-5 py-4 text-left text-[#F1F5F9] transition-colors hover:bg-[#0B1120]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6] focus-visible:ring-inset"
+                  className="flex w-full items-center justify-between px-4 py-4 sm:px-5 text-left text-text-primary transition-colors hover:bg-bg-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-surface min-h-[44px]"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => toggle(index)}
@@ -63,7 +71,7 @@ export function FaqSection({ faqs }: FaqSectionProps) {
                   <span className="pr-4 font-medium">{faq.question}</span>
 
                   <svg
-                    className={`h-5 w-5 shrink-0 text-[#94A3B8] transition-transform duration-300 ${
+                    className={`h-5 w-5 shrink-0 text-text-muted transition-transform duration-300 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                     xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +92,7 @@ export function FaqSection({ faqs }: FaqSectionProps) {
                 id={panelId}
                 role="region"
                 aria-labelledby={triggerId}
+                aria-hidden={!isOpen}
                 className="grid transition-all duration-300 ease-in-out"
                 style={{
                   gridTemplateRows: isOpen ? "1fr" : "0fr",
@@ -91,7 +100,7 @@ export function FaqSection({ faqs }: FaqSectionProps) {
                 }}
               >
                 <div className="overflow-hidden">
-                  <div className="px-5 pb-4 pt-0 text-[#94A3B8] leading-relaxed">
+                  <div className="px-4 pb-4 pt-0 sm:px-5 text-sm sm:text-base text-text-muted leading-relaxed">
                     {faq.answer}
                   </div>
                 </div>

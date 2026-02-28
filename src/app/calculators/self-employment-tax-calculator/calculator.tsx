@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -21,6 +21,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   primary: "#22C55E",
@@ -42,7 +43,7 @@ const FILING_STATUSES = [
   { label: "Head of Household", value: "head" },
 ];
 
-// 2024 federal income tax brackets
+// 2025 federal income tax brackets
 const TAX_BRACKETS = {
   single: [
     { min: 0, max: 11600, rate: 0.10 },
@@ -137,22 +138,26 @@ function computeFederalTax(taxableIncome: number, status: string): number {
 }
 
 export function SelfEmploymentTaxCalculatorWidget() {
-  const [grossIncome, setGrossIncome] = useState(120000);
-  const [businessExpenses, setBusinessExpenses] = useState(20000);
-  const [filingStatus, setFilingStatus] = useState("single");
-  const [otherIncome, setOtherIncome] = useState(0);
-  const [quarterlyPaid, setQuarterlyPaid] = useState(0);
-  const [state, setState] = useState("CA");
+  const [calcState, setCalcState, getShareUrl] = useCalculatorState({
+    defaults: {
+      grossIncome: 120000,
+      businessExpenses: 20000,
+      filingStatus: "single",
+      otherIncome: 0,
+      quarterlyPaid: 0,
+      usState: "CA",
+    },
+  });
 
   const results = useMemo(() => {
     // Net self-employment income
-    const netSEIncome = Math.max(grossIncome - businessExpenses, 0);
+    const netSEIncome = Math.max(calcState.grossIncome - calcState.businessExpenses, 0);
 
     // SE tax is calculated on 92.35% of net SE income
     const seTaxableIncome = netSEIncome * 0.9235;
 
     // Social Security portion (12.4% up to wage base, considering W-2 wages)
-    const ssWagesAlreadyCovered = Math.min(otherIncome, SS_WAGE_BASE);
+    const ssWagesAlreadyCovered = Math.min(calcState.otherIncome, SS_WAGE_BASE);
     const ssRemainingBase = Math.max(SS_WAGE_BASE - ssWagesAlreadyCovered, 0);
     const ssTaxable = Math.min(seTaxableIncome, ssRemainingBase);
     const ssTax = ssTaxable * SE_TAX_RATE_SS;
@@ -161,7 +166,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
     const medicareTax = seTaxableIncome * SE_TAX_RATE_MEDICARE;
 
     // Additional Medicare (0.9% over $200k combined income)
-    const totalIncome = netSEIncome + otherIncome;
+    const totalIncome = netSEIncome + calcState.otherIncome;
     const additionalMedicareBase = Math.max(
       totalIncome - ADDITIONAL_MEDICARE_THRESHOLD,
       0
@@ -178,29 +183,29 @@ export function SelfEmploymentTaxCalculatorWidget() {
 
     // Federal income tax
     const standardDeduction =
-      filingStatus === "married" ? 29200 : filingStatus === "head" ? 21900 : 14600;
+      calcState.filingStatus === "married" ? 29200 : calcState.filingStatus === "head" ? 21900 : 14600;
     const taxableIncome = Math.max(
-      netSEIncome + otherIncome - seDeduction - standardDeduction,
+      netSEIncome + calcState.otherIncome - seDeduction - standardDeduction,
       0
     );
-    const federalTax = computeFederalTax(taxableIncome, filingStatus);
+    const federalTax = computeFederalTax(taxableIncome, calcState.filingStatus);
 
     // State tax (simplified)
-    const stateRate = STATE_TAX_RATES[state] || 0;
-    const stateTax = Math.max(netSEIncome + otherIncome - standardDeduction, 0) * stateRate;
+    const stateRate = STATE_TAX_RATES[calcState.usState] || 0;
+    const stateTax = Math.max(netSEIncome + calcState.otherIncome - standardDeduction, 0) * stateRate;
 
     // Total tax liability
     const totalTax = totalSETax + federalTax + stateTax;
 
     // Effective rate
-    const totalGross = netSEIncome + otherIncome;
+    const totalGross = netSEIncome + calcState.otherIncome;
     const effectiveRate = totalGross > 0 ? (totalTax / totalGross) * 100 : 0;
 
     // Take-home
     const takeHome = totalGross - totalTax;
 
     // Quarterly estimated payment
-    const remainingTax = Math.max(totalTax - quarterlyPaid, 0);
+    const remainingTax = Math.max(totalTax - calcState.quarterlyPaid, 0);
     const quartersRemaining = 4;
     const quarterlyPayment = remainingTax / quartersRemaining;
 
@@ -219,7 +224,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
       quarterlyPayment,
       remainingTax,
     };
-  }, [grossIncome, businessExpenses, filingStatus, otherIncome, quarterlyPaid, state]);
+  }, [calcState.grossIncome, calcState.businessExpenses, calcState.filingStatus, calcState.otherIncome, calcState.quarterlyPaid, calcState.usState]);
 
   const pieData = [
     { name: "Take-Home", value: Math.max(Math.round(results.takeHome), 0) },
@@ -251,22 +256,22 @@ export function SelfEmploymentTaxCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Gross Income */}
           <div>
             <CurrencyInput
               label="Gross Self-Employment Income"
-              value={grossIncome}
-              onChange={setGrossIncome}
+              value={calcState.grossIncome}
+              onChange={(v) => setCalcState('grossIncome', v)}
               min={0}
               max={500000}
               step={1000}
             />
             <CustomSlider
-              value={grossIncome}
-              onChange={setGrossIncome}
+              value={calcState.grossIncome}
+              onChange={(v) => setCalcState('grossIncome', v)}
               min={0}
               max={500000}
               step={1000}
@@ -280,8 +285,8 @@ export function SelfEmploymentTaxCalculatorWidget() {
           {/* Business Expenses */}
           <CurrencyInput
             label="Business Expenses / Deductions"
-            value={businessExpenses}
-            onChange={setBusinessExpenses}
+            value={calcState.businessExpenses}
+            onChange={(v) => setCalcState('businessExpenses', v)}
             min={0}
             max={500000}
             step={500}
@@ -292,13 +297,15 @@ export function SelfEmploymentTaxCalculatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Filing Status
             </label>
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex flex-col gap-2 sm:flex-row" role="radiogroup" aria-label="Filing Status">
               {FILING_STATUSES.map((status) => (
                 <button
                   key={status.value}
-                  onClick={() => setFilingStatus(status.value)}
+                  role="radio"
+                  aria-checked={calcState.filingStatus === status.value}
+                  onClick={() => setCalcState('filingStatus', status.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    filingStatus === status.value
+                    calcState.filingStatus === status.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -312,8 +319,8 @@ export function SelfEmploymentTaxCalculatorWidget() {
           {/* Other Income (W-2 Wages) */}
           <CurrencyInput
             label="Other Income (W-2 Wages)"
-            value={otherIncome}
-            onChange={setOtherIncome}
+            value={calcState.otherIncome}
+            onChange={(v) => setCalcState('otherIncome', v)}
             min={0}
             max={500000}
             step={1000}
@@ -322,8 +329,8 @@ export function SelfEmploymentTaxCalculatorWidget() {
           {/* Quarterly Payments Made */}
           <CurrencyInput
             label="Estimated Quarterly Payments Already Made"
-            value={quarterlyPaid}
-            onChange={setQuarterlyPaid}
+            value={calcState.quarterlyPaid}
+            onChange={(v) => setCalcState('quarterlyPaid', v)}
             min={0}
             max={200000}
             step={100}
@@ -331,12 +338,13 @@ export function SelfEmploymentTaxCalculatorWidget() {
 
           {/* State */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="se-state" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               State
             </label>
             <select
-              value={state}
-              onChange={(e) => setState(e.target.value)}
+              id="se-state"
+              value={calcState.usState}
+              onChange={(e) => setCalcState('usState', e.target.value)}
               className={selectClass}
             >
               {STATES.map((s) => (
@@ -357,7 +365,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
               value={results.totalTax}
               format="currency"
               decimals={0}
-              className="font-mono text-3xl font-bold text-[#EF4444] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#EF4444] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
               Effective tax rate: {results.effectiveRate.toFixed(1)}%
@@ -398,7 +406,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Total Tax"
               highlight
@@ -474,6 +482,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
           <ShareResults
             title="Self-Employment Tax Calculation"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* SE Tax Details */}
@@ -508,7 +517,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
           </div>
 
           {/* Income Allocation Pie Chart */}
-          {results.netSEIncome + otherIncome > 0 && (
+          {results.netSEIncome + calcState.otherIncome > 0 && (
             <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
               <p className="mb-3 text-sm font-medium text-[#94A3B8]">
                 Income Allocation

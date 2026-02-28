@@ -1,5 +1,9 @@
+import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import { CalculatorErrorBoundary } from "@/components/calculator-error-boundary";
+import { CalculatorDisclaimer } from "@/components/calculator-disclaimer";
+import { CalculatorViewTracker } from "@/components/calculator-view-tracker";
 import { CtaBlock } from "@/components/cta-block";
 import { FaqSection } from "@/components/faq-section";
 import { RelatedCalculators } from "@/components/related-calculators";
@@ -44,6 +48,8 @@ export interface CalculatorLayoutProps {
   editorialContent?: string;
   /** Date the calculator was last updated (shown below the title). */
   lastUpdated?: string;
+  /** Data sources for the disclaimer (optional). */
+  sources?: { name: string; url?: string }[];
 }
 
 /* ------------------------------------------------------------------ */
@@ -52,7 +58,6 @@ export interface CalculatorLayoutProps {
 
 function buildFaqSchema(faqs: FaqItem[]) {
   return {
-    "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faqs.map((faq) => ({
       "@type": "Question",
@@ -67,11 +72,10 @@ function buildFaqSchema(faqs: FaqItem[]) {
 
 function buildWebAppSchema(title: string, description: string, slug: string) {
   return {
-    "@context": "https://schema.org",
     "@type": "WebApplication",
     name: title,
     description,
-    url: `https://calcengine.io/${slug}`,
+    url: `https://calcengine.org/calculators/${slug}`,
     applicationCategory: "FinanceApplication",
     operatingSystem: "Web",
     offers: {
@@ -79,19 +83,52 @@ function buildWebAppSchema(title: string, description: string, slug: string) {
       price: "0",
       priceCurrency: "USD",
     },
+    publisher: {
+      "@type": "Organization",
+      name: "CalcEngine",
+      url: "https://calcengine.org",
+    },
   };
 }
 
 function buildBreadcrumbSchema(items: BreadcrumbItem[]) {
   return {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: item.label,
-      item: `https://calcengine.io${item.href}`,
+      item: `https://calcengine.org${item.href}`,
     })),
+  };
+}
+
+function buildArticleSchema(
+  title: string,
+  description: string,
+  slug: string,
+  lastUpdated?: string,
+) {
+  return {
+    "@type": "Article",
+    headline: title,
+    description,
+    url: `https://calcengine.org/calculators/${slug}`,
+    ...(lastUpdated ? { dateModified: lastUpdated } : {}),
+    author: {
+      "@type": "Organization",
+      name: "CalcEngine",
+      url: "https://calcengine.org",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "CalcEngine",
+      url: "https://calcengine.org",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://calcengine.org/favicon.svg",
+      },
+    },
   };
 }
 
@@ -134,6 +171,14 @@ const proseClasses = [
  *   8. Editorial context prose section
  *   9. JSON-LD structured data  (FAQPage, WebApplication, BreadcrumbList)
  */
+/** Strip dangerous tags from HTML (script, iframe, object, embed, form). */
+function sanitizeHtml(html: string): string {
+  return html.replace(
+    /<\s*\/?\s*(script|iframe|object|embed|form|link|style)\b[^>]*>/gi,
+    ""
+  );
+}
+
 /** Estimate reading time from an HTML string (strip tags, count words). */
 function estimateReadingTime(html: string): number {
   const text = html.replace(/<[^>]*>/g, " ");
@@ -156,16 +201,17 @@ export function CalculatorLayout({
   relatedCalculators,
   editorialContent,
   lastUpdated,
+  sources,
 }: CalculatorLayoutProps) {
   /* ---------- Breadcrumb items ---------- */
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Home", href: "/" },
-    { label: category.name, href: `/${category.slug}` },
+    { label: category.name, href: `/category/${category.slug}` },
     {
       // Strip everything after the em-dash if the title follows the
       // "[Name] -- Free 2026 [Type]" convention.
       label: title.includes("\u2014") ? title.split("\u2014")[0].trim() : title,
-      href: `/${slug}`,
+      href: `/calculators/${slug}`,
     },
   ];
 
@@ -173,6 +219,9 @@ export function CalculatorLayout({
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* -------- Analytics: track page view -------- */}
+      <CalculatorViewTracker slug={slug} category={category.slug} />
+
       {/* -------- 1. Breadcrumbs -------- */}
       <Breadcrumbs items={breadcrumbItems} />
 
@@ -183,7 +232,7 @@ export function CalculatorLayout({
       />
 
       {/* -------- 2. H1 Title -------- */}
-      <h1 className="mb-3 font-display text-3xl font-bold text-text-primary sm:text-4xl animate-fade-in-up">
+      <h1 className="mb-3 font-display text-2xl font-bold text-text-primary sm:text-3xl md:text-4xl animate-fade-in-up">
         {title}
       </h1>
 
@@ -201,7 +250,7 @@ export function CalculatorLayout({
         )}</div>
 
       {/* -------- 3. Calculator Widget (above the fold) -------- */}
-      <div className="mb-2 animate-fade-in-up animate-fade-in-up-delay-1">
+      <div className="mb-8 animate-fade-in-up animate-fade-in-up-delay-1">
         <CalculatorErrorBoundary>{children}</CalculatorErrorBoundary>
       </div>
 
@@ -212,8 +261,34 @@ export function CalculatorLayout({
             text={ctaText}
             href={ctaHref}
             description={ctaDescription}
+            slug={slug}
           />
         </div>
+      )}
+
+      {/* -------- 4b. Compact "Explore More" strip -------- */}
+      {relatedCalculators.length > 0 && (
+        <nav
+          className="mt-8 no-print animate-fade-in-up animate-fade-in-up-delay-1"
+          aria-label="Explore related calculators"
+          data-no-print
+        >
+          <p className="mb-3 text-sm font-medium text-text-muted">
+            Explore more calculators
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {relatedCalculators.slice(0, 3).map((calc) => (
+              <Link
+                key={calc.slug}
+                href={`/calculators/${calc.slug}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-surface px-3.5 py-2.5 text-sm text-text-muted transition-colors hover:border-accent-primary/40 hover:text-accent-primary min-h-[44px]"
+              >
+                <span aria-hidden="true">{calc.icon}</span>
+                {calc.title}
+              </Link>
+            ))}
+          </div>
+        </nav>
       )}
 
       {/* -------- 5. How This Calculator Works -------- */}
@@ -235,18 +310,21 @@ export function CalculatorLayout({
 
         <div
           className={proseClasses}
-          dangerouslySetInnerHTML={{ __html: howItWorks }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(howItWorks) }}
         />
       </section>
 
+      {/* -------- 5b. In-article ad unit -------- */}
+      <AdUnit className="mt-12" />
+
       {/* -------- 6. FAQ Section -------- */}
       <div className="animate-fade-in-up animate-fade-in-up-delay-3">
-        <FaqSection faqs={faqs} />
+        <FaqSection faqs={faqs} slug={slug} />
       </div>
 
       {/* -------- 7. Related Calculators -------- */}
       <div className="no-print animate-fade-in-up animate-fade-in-up-delay-4" data-no-print>
-        <RelatedCalculators calculators={relatedCalculators} />
+        <RelatedCalculators calculators={relatedCalculators} fromSlug={slug} />
       </div>
 
       {/* -------- 8. Editorial Context -------- */}
@@ -260,28 +338,27 @@ export function CalculatorLayout({
           </h2>
           <div
             className={proseClasses}
-            dangerouslySetInnerHTML={{ __html: editorialContent }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(editorialContent) }}
           />
         </section>
       )}
 
-      {/* -------- 9. JSON-LD Structured Data -------- */}
+      {/* -------- 9. Disclaimer (YMYL trust signal) -------- */}
+      <CalculatorDisclaimer sources={sources} />
+
+      {/* -------- 10. JSON-LD Structured Data (combined @graph) -------- */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildFaqSchema(faqs)),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildWebAppSchema(title, description, slug)),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildBreadcrumbSchema(breadcrumbItems)),
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              buildFaqSchema(faqs),
+              buildWebAppSchema(title, description, slug),
+              buildBreadcrumbSchema(breadcrumbItems),
+              buildArticleSchema(title, description, slug, lastUpdated),
+            ],
+          }),
         }}
       />
     </article>

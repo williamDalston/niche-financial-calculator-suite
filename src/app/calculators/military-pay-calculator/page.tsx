@@ -8,20 +8,20 @@ const MilitaryPayCalculatorWidget = dynamic(() => import("./calculator").then((m
 });
 
 export const metadata: Metadata = {
-  title: "Military Pay Calculator 2024 | CalcEngine",
+  title: "Military Pay Calculator 2025 | CalcEngine",
   description:
-    "Calculate your 2024 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
+    "Calculate your 2025 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
   openGraph: {
-    title: "Military Pay Calculator 2024 | CalcEngine",
+    title: "Military Pay Calculator 2025 | CalcEngine",
     description:
-      "Calculate your 2024 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
-    url: "https://calcengine.io/calculators/military-pay-calculator",
+      "Calculate your 2025 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
+    url: "https://calcengine.org/calculators/military-pay-calculator",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Military Pay Calculator 2024 | CalcEngine",
+    title: "Military Pay Calculator 2025 | CalcEngine",
     description:
-      "Calculate your 2024 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
+      "Calculate your 2025 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary.",
   },
   alternates: {
     canonical: "/calculators/military-pay-calculator",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 const howItWorks = `
-<p>The Military Pay Calculator estimates your total military compensation based on the 2024 Department of Defense pay tables. Military compensation includes several components beyond base pay, making it significantly more valuable than the base pay figure alone. This calculator helps service members, recruits, and military families understand the full picture of military earnings.</p>
+<p>The Military Pay Calculator estimates your total military compensation based on the 2025 Department of Defense pay tables. Military compensation includes several components beyond base pay, making it significantly more valuable than the base pay figure alone. This calculator helps service members, recruits, and military families understand the full picture of military earnings.</p>
 
 <h3>Components of Military Pay</h3>
 <p>Military compensation consists of three primary components: base pay, Basic Allowance for Housing (BAH), and Basic Allowance for Subsistence (BAS). Base pay is determined by your pay grade (rank) and years of service, and it is subject to federal and state income taxes. BAH and BAS, on the other hand, are tax-free allowances, making them particularly valuable from a total compensation perspective.</p>
@@ -41,7 +41,7 @@ const howItWorks = `
 <p>BAH is designed to offset the cost of housing in the civilian market when government quarters are not provided. The rate varies significantly by duty station location and whether the member has dependents. For example, BAH at Joint Base Pearl Harbor-Hickam, HI, is substantially higher than at Fort Moore, GA, reflecting the difference in local housing costs. BAH rates are recalculated annually based on rental surveys in each military housing area.</p>
 
 <h3>BAS: Basic Allowance for Subsistence</h3>
-<p>BAS is intended to offset the cost of meals. In 2024, the enlisted BAS rate is $452.56 per month and the officer rate is $311.68 per month. Officers receive a lower rate because BAS was historically designed to subsidize only the member's meals, while enlisted members historically ate in dining facilities. Most service members who live off-base receive BAS unless they are required to eat in a government dining facility.</p>
+<p>BAS is intended to offset the cost of meals. In 2025, the enlisted BAS rate is $460.25 per month and the officer rate is $311.68 per month. Officers receive a lower rate because BAS was historically designed to subsidize only the member's meals, while enlisted members historically ate in dining facilities. Most service members who live off-base receive BAS unless they are required to eat in a government dining facility.</p>
 
 <h3>Tax-Equivalent Salary</h3>
 <p>Because BAH and BAS are not subject to federal or state income tax, the true value of military compensation is higher than the gross dollar amount suggests. This calculator estimates the tax-equivalent civilian salary by grossing up the tax-free allowances at an assumed 27% combined marginal tax rate. For example, $1,500 in tax-free BAH is equivalent to approximately $2,055 in pre-tax civilian income. This makes military compensation significantly more competitive than base pay alone would suggest, especially in high-cost duty stations.</p>
@@ -54,7 +54,7 @@ const formula = `Total Monthly Pay = Base Pay + BAH + BAS
 
 Base Pay = Determined by pay grade and years of service (DoD pay tables)
 BAH = Based on duty station and dependent status (tax-free)
-BAS = $452.56/month (enlisted) or $311.68/month (officer) (tax-free)
+BAS = $460.25/month (enlisted) or $311.68/month (officer) (tax-free)
 
 Annual Compensation = Total Monthly Pay x 12
 Tax-Equivalent Salary = (Base Pay x 12) + ((BAH + BAS) x 12) / (1 - Marginal Tax Rate)`;
@@ -88,7 +88,7 @@ const faqs = [
   {
     question: "How does the military Thrift Savings Plan (TSP) work?",
     answer:
-      "The TSP is the military equivalent of a 401(k). Under the Blended Retirement System (BRS), the government automatically contributes 1% of base pay and matches up to an additional 4% for a total of 5% matching. Service members can contribute up to $23,000 per year (2024 limit, $30,500 if age 50+) to traditional or Roth TSP accounts. The TSP offers six investment funds with extremely low expense ratios, making it one of the best retirement savings vehicles available.",
+      "The TSP is the military equivalent of a 401(k). Under the Blended Retirement System (BRS), the government automatically contributes 1% of base pay and matches up to an additional 4% for a total of 5% matching. Service members can contribute up to $23,500 per year (2025 limit, $31,000 if age 50+) to traditional or Roth TSP accounts. The TSP offers six investment funds with extremely low expense ratios, making it one of the best retirement savings vehicles available.",
   },
 ];
 
@@ -137,7 +137,7 @@ export default function MilitaryPayCalculatorPage() {
   return (
     <CalculatorLayout
       title="Military Pay Calculator"
-      description="Calculate your 2024 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary."
+      description="Calculate your 2025 military pay including base pay, BAH, BAS, and total compensation. See pay progression by years of service and tax-equivalent civilian salary."
       slug="military-pay-calculator"
       category={{ name: "Government Pay", slug: "government-pay" }}
       ctaText="Browse military-friendly banking & financial services"

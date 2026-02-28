@@ -9,7 +9,13 @@ export const metadata: Metadata = {
     title: "Privacy Policy | CalcEngine",
     description:
       "CalcEngine privacy policy. All calculations run client-side. We never see your financial data.",
-    url: "https://calcengine.io/privacy",
+    url: "https://calcengine.org/privacy",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | CalcEngine",
+    description:
+      "CalcEngine privacy policy. Learn how we handle your data — all calculations run client-side in your browser. We never see your financial information.",
   },
   alternates: {
     canonical: "/privacy",
@@ -392,7 +398,7 @@ export default function PrivacyPolicyPage() {
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                   </svg>
                   <span className="text-sm text-text-primary">
-                    info@alstonanalytics.com
+                    hello@calcengine.org
                   </span>
                 </div>
                 <div className="flex items-center gap-3">

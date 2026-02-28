@@ -31,7 +31,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://calcengine.io"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://calcengine.org"),
   title: {
     default: "CalcEngine | Free Financial Calculators",
     template: "%s | CalcEngine",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
     siteName: "CalcEngine",
     title: "CalcEngine | Free Financial Calculators",
     description:
@@ -53,12 +53,18 @@ export const metadata: Metadata = {
     description:
       "Free, fast, and accurate financial calculators for mortgages, salary, retirement, taxes, debt payoff, and more.",
   },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || "",
-    other: {
-      "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION || "",
-    },
-  },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || process.env.NEXT_PUBLIC_BING_VERIFICATION
+    ? {
+        verification: {
+          ...(process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
+            ? { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION }
+            : {}),
+          ...(process.env.NEXT_PUBLIC_BING_VERIFICATION
+            ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_VERIFICATION } }
+            : {}),
+        },
+      }
+    : {}),
   other: {
     "theme-color": "#0B1120",
   },
@@ -70,6 +76,19 @@ export const metadata: Metadata = {
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "CalcEngine",
+  url: "https://calcengine.org",
+  logo: "https://calcengine.org/favicon.svg",
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "hello@calcengine.org",
+    contactType: "customer support",
   },
 };
 
@@ -86,8 +105,13 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
       </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-lg focus:bg-accent-primary focus:px-4 focus:py-2 focus:text-bg-primary focus:font-semibold focus:outline-none">
           Skip to main content
         </a>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ad-unit";
 
 export const metadata: Metadata = {
   title: "401(k) vs IRA: The Complete 2026 Guide | CalcEngine",
@@ -9,11 +10,17 @@ export const metadata: Metadata = {
     title: "401(k) vs IRA: The Complete 2026 Guide",
     description:
       "401(k) or IRA — which retirement account is right for you? Compare contribution limits, tax benefits, and find the optimal retirement savings strategy.",
-    url: "https://calcengine.io/compare/401k-vs-ira",
+    url: "https://calcengine.org/compare/401k-vs-ira",
     type: "article",
   },
   alternates: {
     canonical: "/compare/401k-vs-ira",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "401(k) vs IRA: The Complete 2026 Guide | CalcEngine",
+    description:
+      "401(k) or IRA — which retirement account is right for you? Our comprehensive 2026 guide compares contribution limits, tax benefits, employer matches, and the optimal savings strategy.",
   },
 };
 
@@ -72,18 +79,18 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   publisher: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   datePublished: "2026-02-24",
   dateModified: "2026-02-24",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://calcengine.io/compare/401k-vs-ira",
+    "@id": "https://calcengine.org/compare/401k-vs-ira",
   },
 };
 
@@ -707,6 +714,9 @@ export default function FourOhOneKVsIraGuidePage() {
                 </div>
               </div>
             </section>
+
+            {/* ── Ad Unit ── */}
+            <AdUnit className="mt-12" />
 
             {/* ── Section 9: FAQ ── */}
             <section id="faq" className="mt-14 scroll-mt-24">

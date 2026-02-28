@@ -9,10 +9,16 @@ export const metadata: Metadata = {
     title: "Financial Guides & Comparisons",
     description:
       "In-depth financial comparison guides to help you make confident money decisions.",
-    url: "https://calcengine.io/compare",
+    url: "https://calcengine.org/compare",
   },
   alternates: {
     canonical: "/compare",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Financial Guides & Comparisons | CalcEngine",
+    description:
+      "In-depth financial comparison guides: rent vs buy, 401(k) vs IRA, Roth vs Traditional, and more. Make confident money decisions with CalcEngine.",
   },
 };
 
@@ -69,11 +75,58 @@ const guides: GuideCard[] = [
   },
 ];
 
+/* ─── JSON-LD ─── */
+
+const liveGuides = guides.filter((g) => g.status === "live");
+
+const itemListJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Financial Guides & Comparisons",
+  description:
+    "In-depth financial comparison guides to help you make confident money decisions.",
+  url: "https://calcengine.org/compare",
+  numberOfItems: liveGuides.length,
+  itemListElement: liveGuides.map((guide, idx) => ({
+    "@type": "ListItem",
+    position: idx + 1,
+    name: guide.title,
+    url: `https://calcengine.org${guide.href}`,
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: "https://calcengine.org/",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Guides",
+      item: "https://calcengine.org/compare",
+    },
+  ],
+};
+
 /* ─── Page Component ─── */
 
 export default function CompareIndexPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ─── Hero ─── */}
       <section className="relative overflow-hidden border-b border-border">
         <div
@@ -194,7 +247,7 @@ export default function CompareIndexPage() {
             debt, and more.
           </p>
           <Link
-            href="/"
+            href="/calculators"
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-accent-primary px-6 py-3 text-sm font-semibold text-bg-primary transition-all duration-200 hover:bg-accent-primary/90 hover:shadow-lg hover:shadow-accent-primary/20"
           >
             Browse All Calculators

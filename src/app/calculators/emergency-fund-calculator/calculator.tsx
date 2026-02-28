@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -20,6 +20,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   primary: "#22C55E",
@@ -51,28 +52,32 @@ const RISK_OPTIONS = [
 ];
 
 export function EmergencyFundCalculatorWidget() {
-  const [housing, setHousing] = useState(1500);
-  const [food, setFood] = useState(600);
-  const [transportation, setTransportation] = useState(400);
-  const [insurance, setInsurance] = useState(300);
-  const [utilities, setUtilities] = useState(250);
-  const [debtPayments, setDebtPayments] = useState(200);
-  const [currentSavings, setCurrentSavings] = useState(5000);
-  const [monthlyContribution, setMonthlyContribution] = useState(500);
-  const [riskTolerance, setRiskTolerance] = useState(6);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      housing: 1500,
+      food: 600,
+      transportation: 400,
+      insurance: 300,
+      utilities: 250,
+      debtPayments: 200,
+      currentSavings: 5000,
+      monthlyContribution: 500,
+      riskTolerance: 6,
+    },
+  });
 
   const results = useMemo(() => {
     const totalMonthlyExpenses =
-      housing + food + transportation + insurance + utilities + debtPayments;
-    const targetAmount = totalMonthlyExpenses * riskTolerance;
-    const amountNeeded = Math.max(targetAmount - currentSavings, 0);
+      state.housing + state.food + state.transportation + state.insurance + state.utilities + state.debtPayments;
+    const targetAmount = totalMonthlyExpenses * state.riskTolerance;
+    const amountNeeded = Math.max(targetAmount - state.currentSavings, 0);
     const progressPercent =
       targetAmount > 0
-        ? Math.min((currentSavings / targetAmount) * 100, 100)
+        ? Math.min((state.currentSavings / targetAmount) * 100, 100)
         : 0;
     const monthsToFunded =
-      monthlyContribution > 0 && amountNeeded > 0
-        ? Math.ceil(amountNeeded / monthlyContribution)
+      state.monthlyContribution > 0 && amountNeeded > 0
+        ? Math.ceil(amountNeeded / state.monthlyContribution)
         : amountNeeded <= 0
         ? 0
         : Infinity;
@@ -87,7 +92,7 @@ export function EmergencyFundCalculatorWidget() {
     for (let m = 0; m <= Math.min(projectionMonths, 60); m++) {
       projectionData.push({
         month: m,
-        savings: Math.min(currentSavings + monthlyContribution * m, targetAmount),
+        savings: Math.min(state.currentSavings + state.monthlyContribution * m, targetAmount),
         target: targetAmount,
       });
     }
@@ -101,29 +106,29 @@ export function EmergencyFundCalculatorWidget() {
       projectionData,
     };
   }, [
-    housing,
-    food,
-    transportation,
-    insurance,
-    utilities,
-    debtPayments,
-    currentSavings,
-    monthlyContribution,
-    riskTolerance,
+    state.housing,
+    state.food,
+    state.transportation,
+    state.insurance,
+    state.utilities,
+    state.debtPayments,
+    state.currentSavings,
+    state.monthlyContribution,
+    state.riskTolerance,
   ]);
 
   const expenseBreakdown = [
-    { name: "Housing", value: housing },
-    { name: "Food", value: food },
-    { name: "Transportation", value: transportation },
-    { name: "Insurance", value: insurance },
-    { name: "Utilities", value: utilities },
-    { name: "Debt Payments", value: debtPayments },
+    { name: "Housing", value: state.housing },
+    { name: "Food", value: state.food },
+    { name: "Transportation", value: state.transportation },
+    { name: "Insurance", value: state.insurance },
+    { name: "Utilities", value: state.utilities },
+    { name: "Debt Payments", value: state.debtPayments },
   ].filter((e) => e.value > 0);
 
   const shareResultsData: Record<string, string> = {
     "Target Amount": formatCurrency(results.targetAmount),
-    "Current Savings": formatCurrency(currentSavings),
+    "Current Savings": formatCurrency(state.currentSavings),
     "Progress": `${results.progressPercent.toFixed(1)}%`,
     "Amount Needed": formatCurrency(results.amountNeeded),
     "Months to Goal": results.monthsToFunded === Infinity
@@ -136,7 +141,7 @@ export function EmergencyFundCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-[#94A3B8]">
@@ -145,8 +150,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Housing (Rent/Mortgage)"
-            value={housing}
-            onChange={setHousing}
+            value={state.housing}
+            onChange={(v) => setState('housing', v)}
             min={0}
             max={10000}
             step={50}
@@ -154,8 +159,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Food / Groceries"
-            value={food}
-            onChange={setFood}
+            value={state.food}
+            onChange={(v) => setState('food', v)}
             min={0}
             max={5000}
             step={25}
@@ -163,8 +168,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Transportation"
-            value={transportation}
-            onChange={setTransportation}
+            value={state.transportation}
+            onChange={(v) => setState('transportation', v)}
             min={0}
             max={5000}
             step={25}
@@ -172,8 +177,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Insurance (Health, Life, etc.)"
-            value={insurance}
-            onChange={setInsurance}
+            value={state.insurance}
+            onChange={(v) => setState('insurance', v)}
             min={0}
             max={5000}
             step={25}
@@ -181,8 +186,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Utilities (Electric, Water, Internet)"
-            value={utilities}
-            onChange={setUtilities}
+            value={state.utilities}
+            onChange={(v) => setState('utilities', v)}
             min={0}
             max={3000}
             step={25}
@@ -190,8 +195,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Minimum Debt Payments"
-            value={debtPayments}
-            onChange={setDebtPayments}
+            value={state.debtPayments}
+            onChange={(v) => setState('debtPayments', v)}
             min={0}
             max={10000}
             step={25}
@@ -201,8 +206,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Current Emergency Savings"
-            value={currentSavings}
-            onChange={setCurrentSavings}
+            value={state.currentSavings}
+            onChange={(v) => setState('currentSavings', v)}
             min={0}
             max={500000}
             step={100}
@@ -210,8 +215,8 @@ export function EmergencyFundCalculatorWidget() {
 
           <CurrencyInput
             label="Monthly Savings Contribution"
-            value={monthlyContribution}
-            onChange={setMonthlyContribution}
+            value={state.monthlyContribution}
+            onChange={(v) => setState('monthlyContribution', v)}
             min={0}
             max={20000}
             step={50}
@@ -226,9 +231,9 @@ export function EmergencyFundCalculatorWidget() {
               {RISK_OPTIONS.map((opt) => (
                 <button
                   key={opt.key}
-                  onClick={() => setRiskTolerance(opt.value)}
+                  onClick={() => setState('riskTolerance', opt.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    riskTolerance === opt.value
+                    state.riskTolerance === opt.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -249,10 +254,10 @@ export function EmergencyFundCalculatorWidget() {
               value={results.targetAmount}
               format="currency"
               decimals={0}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
-              {riskTolerance} months of essential expenses
+              {state.riskTolerance} months of essential expenses
             </p>
           </div>
 
@@ -282,7 +287,7 @@ export function EmergencyFundCalculatorWidget() {
               />
             </div>
             <div className="mt-2 flex justify-between text-xs text-[#94A3B8]">
-              <span>{formatCurrency(currentSavings)} saved</span>
+              <span>{formatCurrency(state.currentSavings)} saved</span>
               <span>{formatCurrency(results.targetAmount)} target</span>
             </div>
           </div>
@@ -321,7 +326,7 @@ export function EmergencyFundCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Target Amount"
               highlight
@@ -386,6 +391,7 @@ export function EmergencyFundCalculatorWidget() {
           <ShareResults
             title="Emergency Fund Calculation"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* Expense Breakdown Pie Chart */}

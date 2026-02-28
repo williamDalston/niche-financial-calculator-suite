@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   PieChart,
   Pie,
@@ -21,6 +21,7 @@ import {
   ShareResults,
   StatCard,
 } from "@/components/ui";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatPercentRatio as formatPercent } from "@/lib/formatters";
 
 const COLORS = {
@@ -58,78 +59,85 @@ interface TaxBracket {
 
 const BRACKETS: Record<FilingStatus, TaxBracket[]> = {
   single: [
-    { min: 0, max: 11600, rate: 0.10 },
-    { min: 11600, max: 47150, rate: 0.12 },
-    { min: 47150, max: 100525, rate: 0.22 },
-    { min: 100525, max: 191950, rate: 0.24 },
-    { min: 191950, max: 243725, rate: 0.32 },
-    { min: 243725, max: 609350, rate: 0.35 },
-    { min: 609350, max: Infinity, rate: 0.37 },
+    { min: 0, max: 11925, rate: 0.10 },
+    { min: 11925, max: 48475, rate: 0.12 },
+    { min: 48475, max: 103350, rate: 0.22 },
+    { min: 103350, max: 197300, rate: 0.24 },
+    { min: 197300, max: 250525, rate: 0.32 },
+    { min: 250525, max: 626350, rate: 0.35 },
+    { min: 626350, max: Infinity, rate: 0.37 },
   ],
   mfj: [
-    { min: 0, max: 23200, rate: 0.10 },
-    { min: 23200, max: 94300, rate: 0.12 },
-    { min: 94300, max: 201050, rate: 0.22 },
-    { min: 201050, max: 383900, rate: 0.24 },
-    { min: 383900, max: 487450, rate: 0.32 },
-    { min: 487450, max: 731200, rate: 0.35 },
-    { min: 731200, max: Infinity, rate: 0.37 },
+    { min: 0, max: 23850, rate: 0.10 },
+    { min: 23850, max: 96950, rate: 0.12 },
+    { min: 96950, max: 206700, rate: 0.22 },
+    { min: 206700, max: 394600, rate: 0.24 },
+    { min: 394600, max: 501050, rate: 0.32 },
+    { min: 501050, max: 751600, rate: 0.35 },
+    { min: 751600, max: Infinity, rate: 0.37 },
   ],
   mfs: [
-    { min: 0, max: 11600, rate: 0.10 },
-    { min: 11600, max: 47150, rate: 0.12 },
-    { min: 47150, max: 100525, rate: 0.22 },
-    { min: 100525, max: 191950, rate: 0.24 },
-    { min: 191950, max: 243725, rate: 0.32 },
-    { min: 243725, max: 365600, rate: 0.35 },
-    { min: 365600, max: Infinity, rate: 0.37 },
+    { min: 0, max: 11925, rate: 0.10 },
+    { min: 11925, max: 48475, rate: 0.12 },
+    { min: 48475, max: 103350, rate: 0.22 },
+    { min: 103350, max: 197300, rate: 0.24 },
+    { min: 197300, max: 250525, rate: 0.32 },
+    { min: 250525, max: 375800, rate: 0.35 },
+    { min: 375800, max: Infinity, rate: 0.37 },
   ],
   hoh: [
-    { min: 0, max: 16550, rate: 0.10 },
-    { min: 16550, max: 63100, rate: 0.12 },
-    { min: 63100, max: 100500, rate: 0.22 },
-    { min: 100500, max: 191950, rate: 0.24 },
-    { min: 191950, max: 243700, rate: 0.32 },
-    { min: 243700, max: 609350, rate: 0.35 },
-    { min: 609350, max: Infinity, rate: 0.37 },
+    { min: 0, max: 17000, rate: 0.10 },
+    { min: 17000, max: 64850, rate: 0.12 },
+    { min: 64850, max: 103350, rate: 0.22 },
+    { min: 103350, max: 197300, rate: 0.24 },
+    { min: 197300, max: 250500, rate: 0.32 },
+    { min: 250500, max: 626350, rate: 0.35 },
+    { min: 626350, max: Infinity, rate: 0.37 },
   ],
 };
 
 const STANDARD_DEDUCTIONS: Record<FilingStatus, number> = {
-  single: 14600,
-  mfj: 29200,
-  mfs: 14600,
-  hoh: 21900,
+  single: 15000,
+  mfj: 30000,
+  mfs: 15000,
+  hoh: 22500,
 };
 
 
 export function FederalTaxCalculatorWidget() {
-  const [filingStatus, setFilingStatus] = useState<FilingStatus>("single");
-  const [grossIncome, setGrossIncome] = useState(85000);
-  const [iraDeduction, setIraDeduction] = useState(0);
-  const [studentLoanInterest, setStudentLoanInterest] = useState(0);
-  const [hsaDeduction, setHsaDeduction] = useState(0);
-  const [deductionType, setDeductionType] = useState<"standard" | "itemized">("standard");
-  const [mortgageInterest, setMortgageInterest] = useState(0);
-  const [saltDeduction, setSaltDeduction] = useState(0);
-  const [charitableDeduction, setCharitableDeduction] = useState(0);
-  const [numDependents, setNumDependents] = useState(0);
-  const [childTaxCreditChildren, setChildTaxCreditChildren] = useState(0);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      filingStatus: "single" as string,
+      grossIncome: 85000,
+      iraDeduction: 0,
+      studentLoanInterest: 0,
+      hsaDeduction: 0,
+      deductionType: "standard" as string,
+      mortgageInterest: 0,
+      saltDeduction: 0,
+      charitableDeduction: 0,
+      numDependents: 0,
+      childTaxCreditChildren: 0,
+    },
+  });
+
+  const filingStatus = state.filingStatus as FilingStatus;
+  const deductionType = state.deductionType as "standard" | "itemized";
 
   const results = useMemo(() => {
-    const aboveTheLineDeductions = iraDeduction + studentLoanInterest + hsaDeduction;
-    const agi = Math.max(grossIncome - aboveTheLineDeductions, 0);
+    const aboveTheLineDeductions = state.iraDeduction + state.studentLoanInterest + state.hsaDeduction;
+    const agi = Math.max(state.grossIncome - aboveTheLineDeductions, 0);
 
     let deductionAmount: number;
-    if (deductionType === "standard") {
-      deductionAmount = STANDARD_DEDUCTIONS[filingStatus];
+    if (state.deductionType === "standard") {
+      deductionAmount = STANDARD_DEDUCTIONS[state.filingStatus as FilingStatus];
     } else {
-      const cappedSalt = Math.min(saltDeduction, 10000);
-      deductionAmount = mortgageInterest + cappedSalt + charitableDeduction;
+      const cappedSalt = Math.min(state.saltDeduction, 10000);
+      deductionAmount = state.mortgageInterest + cappedSalt + state.charitableDeduction;
     }
 
     const taxableIncome = Math.max(agi - deductionAmount, 0);
-    const brackets = BRACKETS[filingStatus];
+    const brackets = BRACKETS[state.filingStatus as FilingStatus];
 
     let totalTax = 0;
     let marginalRate = 0;
@@ -151,10 +159,11 @@ export function FederalTaxCalculatorWidget() {
       }
     }
 
-    const childTaxCredit = childTaxCreditChildren * 2000;
-    const taxAfterCredits = Math.max(totalTax - childTaxCredit, 0);
-    const effectiveRate = grossIncome > 0 ? taxAfterCredits / grossIncome : 0;
-    const takeHome = grossIncome - taxAfterCredits;
+    const childTaxCredit = state.childTaxCreditChildren * 2000;
+    const otherDependentCredit = state.numDependents * 500;
+    const taxAfterCredits = Math.max(totalTax - childTaxCredit - otherDependentCredit, 0);
+    const effectiveRate = state.grossIncome > 0 ? taxAfterCredits / state.grossIncome : 0;
+    const takeHome = state.grossIncome - taxAfterCredits;
 
     return {
       agi,
@@ -169,17 +178,17 @@ export function FederalTaxCalculatorWidget() {
       takeHome,
     };
   }, [
-    filingStatus,
-    grossIncome,
-    iraDeduction,
-    studentLoanInterest,
-    hsaDeduction,
-    deductionType,
-    mortgageInterest,
-    saltDeduction,
-    charitableDeduction,
-    numDependents,
-    childTaxCreditChildren,
+    state.filingStatus,
+    state.grossIncome,
+    state.iraDeduction,
+    state.studentLoanInterest,
+    state.hsaDeduction,
+    state.deductionType,
+    state.mortgageInterest,
+    state.saltDeduction,
+    state.charitableDeduction,
+    state.numDependents,
+    state.childTaxCreditChildren,
   ]);
 
   const pieData = [
@@ -199,17 +208,18 @@ export function FederalTaxCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Filing Status */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="ft-filing-status" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Filing Status
             </label>
             <select
+              id="ft-filing-status"
               value={filingStatus}
-              onChange={(e) => setFilingStatus(e.target.value as FilingStatus)}
+              onChange={(e) => setState('filingStatus', e.target.value)}
               className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
             >
               <option value="single">Single</option>
@@ -223,15 +233,15 @@ export function FederalTaxCalculatorWidget() {
           <div>
             <CurrencyInput
               label="Gross Income"
-              value={grossIncome}
-              onChange={setGrossIncome}
+              value={state.grossIncome}
+              onChange={(v) => setState('grossIncome', v)}
               min={0}
               max={1000000}
               step={1000}
             />
             <CustomSlider
-              value={grossIncome}
-              onChange={setGrossIncome}
+              value={state.grossIncome}
+              onChange={(v) => setState('grossIncome', v)}
               min={0}
               max={1000000}
               step={1000}
@@ -249,26 +259,26 @@ export function FederalTaxCalculatorWidget() {
             <div className="space-y-3">
               <CurrencyInput
                 label="IRA Contribution"
-                value={iraDeduction}
-                onChange={setIraDeduction}
+                value={state.iraDeduction}
+                onChange={(v) => setState('iraDeduction', v)}
                 min={0}
                 max={7000}
                 step={100}
               />
               <CurrencyInput
                 label="Student Loan Interest"
-                value={studentLoanInterest}
-                onChange={setStudentLoanInterest}
+                value={state.studentLoanInterest}
+                onChange={(v) => setState('studentLoanInterest', v)}
                 min={0}
                 max={2500}
                 step={100}
               />
               <CurrencyInput
                 label="HSA Contribution"
-                value={hsaDeduction}
-                onChange={setHsaDeduction}
+                value={state.hsaDeduction}
+                onChange={(v) => setState('hsaDeduction', v)}
                 min={0}
-                max={8300}
+                max={8550}
                 step={100}
               />
             </div>
@@ -283,7 +293,7 @@ export function FederalTaxCalculatorWidget() {
               {(["standard", "itemized"] as const).map((type) => (
                 <button
                   key={type}
-                  onClick={() => setDeductionType(type)}
+                  onClick={() => setState('deductionType', type)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     deductionType === type
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
@@ -301,22 +311,22 @@ export function FederalTaxCalculatorWidget() {
             <div className="space-y-3 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
               <CurrencyInput
                 label="Mortgage Interest"
-                value={mortgageInterest}
-                onChange={setMortgageInterest}
+                value={state.mortgageInterest}
+                onChange={(v) => setState('mortgageInterest', v)}
                 min={0}
                 step={100}
               />
               <CurrencyInput
                 label="State & Local Taxes (SALT, capped at $10,000)"
-                value={saltDeduction}
-                onChange={setSaltDeduction}
+                value={state.saltDeduction}
+                onChange={(v) => setState('saltDeduction', v)}
                 min={0}
                 step={100}
               />
               <CurrencyInput
                 label="Charitable Contributions"
-                value={charitableDeduction}
-                onChange={setCharitableDeduction}
+                value={state.charitableDeduction}
+                onChange={(v) => setState('charitableDeduction', v)}
                 min={0}
                 step={100}
               />
@@ -324,28 +334,30 @@ export function FederalTaxCalculatorWidget() {
           )}
 
           {/* Dependents */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+              <label htmlFor="ft-dependents" className="mb-2 block text-sm font-medium text-[#94A3B8]">
                 Dependents
               </label>
               <input
+                id="ft-dependents"
                 type="number"
-                value={numDependents}
-                onChange={(e) => setNumDependents(Number(e.target.value))}
+                value={state.numDependents}
+                onChange={(e) => setState('numDependents', Number(e.target.value))}
                 className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
                 min={0}
                 max={20}
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+              <label htmlFor="ft-children" className="mb-2 block text-sm font-medium text-[#94A3B8]">
                 Children (Tax Credit)
               </label>
               <input
+                id="ft-children"
                 type="number"
-                value={childTaxCreditChildren}
-                onChange={(e) => setChildTaxCreditChildren(Number(e.target.value))}
+                value={state.childTaxCreditChildren}
+                onChange={(e) => setState('childTaxCreditChildren', Number(e.target.value))}
                 className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
                 min={0}
                 max={20}
@@ -362,7 +374,7 @@ export function FederalTaxCalculatorWidget() {
             <AnimatedNumber
               value={results.taxAfterCredits}
               format="currency"
-              className="font-mono text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -400,10 +412,11 @@ export function FederalTaxCalculatorWidget() {
           <ShareResults
             title="Federal Tax Calculator Results"
             results={shareResults}
+            getShareUrl={getShareUrl}
           />
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Federal Tax"
               value={formatCurrency(results.taxAfterCredits)}
@@ -426,7 +439,7 @@ export function FederalTaxCalculatorWidget() {
               label="Take-Home"
               value={formatCurrency(results.takeHome)}
               className="col-span-2"
-              subvalue={`${grossIncome > 0 ? Math.round((results.takeHome / grossIncome) * 100) : 0}% of gross income`}
+              subvalue={`${state.grossIncome > 0 ? Math.round((results.takeHome / state.grossIncome) * 100) : 0}% of gross income`}
             />
           </div>
 
@@ -468,7 +481,7 @@ export function FederalTaxCalculatorWidget() {
           )}
 
           {/* Pie Chart - Income Allocation */}
-          {grossIncome > 0 && (
+          {state.grossIncome > 0 && (
             <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
               <p className="mb-3 text-sm font-medium text-[#94A3B8]">Income Allocation</p>
               <ResponsiveContainer width="100%" height={200}>
@@ -501,11 +514,11 @@ export function FederalTaxCalculatorWidget() {
               <div className="mt-2 flex justify-center gap-6 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: COLORS.quaternary }} />
-                  <span className="text-[#94A3B8]">Federal Tax ({grossIncome > 0 ? Math.round(results.taxAfterCredits / grossIncome * 100) : 0}%)</span>
+                  <span className="text-[#94A3B8]">Federal Tax ({state.grossIncome > 0 ? Math.round(results.taxAfterCredits / state.grossIncome * 100) : 0}%)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: COLORS.primary }} />
-                  <span className="text-[#94A3B8]">Take-Home ({grossIncome > 0 ? Math.round(results.takeHome / grossIncome * 100) : 0}%)</span>
+                  <span className="text-[#94A3B8]">Take-Home ({state.grossIncome > 0 ? Math.round(results.takeHome / state.grossIncome * 100) : 0}%)</span>
                 </div>
               </div>
             </div>

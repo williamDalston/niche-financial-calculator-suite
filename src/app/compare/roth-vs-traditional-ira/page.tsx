@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ad-unit";
 
 export const metadata: Metadata = {
   title: "Roth vs Traditional IRA: The Complete 2026 Guide | CalcEngine",
@@ -9,11 +10,17 @@ export const metadata: Metadata = {
     title: "Roth vs Traditional IRA: The Complete 2026 Guide",
     description:
       "Roth IRA or Traditional IRA? 2026 guide covering tax treatment, income limits, contribution limits, RMDs, and free calculators.",
-    url: "https://calcengine.io/compare/roth-vs-traditional-ira",
+    url: "https://calcengine.org/compare/roth-vs-traditional-ira",
     type: "article",
   },
   alternates: {
     canonical: "/compare/roth-vs-traditional-ira",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Roth vs Traditional IRA: The Complete 2026 Guide | CalcEngine",
+    description:
+      "Roth IRA or Traditional IRA? Our 2026 guide breaks down tax treatment, income limits, contribution limits, RMDs, and when each account type makes sense. Free calculators included.",
   },
 };
 
@@ -72,18 +79,18 @@ const jsonLd = {
   author: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   publisher: {
     "@type": "Organization",
     name: "CalcEngine",
-    url: "https://calcengine.io",
+    url: "https://calcengine.org",
   },
   datePublished: "2026-02-24",
   dateModified: "2026-02-24",
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://calcengine.io/compare/roth-vs-traditional-ira",
+    "@id": "https://calcengine.org/compare/roth-vs-traditional-ira",
   },
 };
 
@@ -766,6 +773,9 @@ export default function RothVsTraditionalIRAGuidePage() {
                 </div>
               </div>
             </section>
+
+            {/* ── Ad Unit ── */}
+            <AdUnit className="mt-12" />
 
             {/* ── Section 9: FAQ ── */}
             <section id="faq" className="mt-14 scroll-mt-24">

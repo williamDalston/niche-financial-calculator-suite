@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   BarChart,
   Bar,
@@ -41,32 +42,36 @@ const COLORS = {
 /* ------------------------------------------------------------------ */
 
 export function HourlyToSalaryCalculatorWidget() {
-  const [hourlyRate, setHourlyRate] = useState(25);
-  const [hoursPerWeek, setHoursPerWeek] = useState(40);
-  const [weeksPerYear, setWeeksPerYear] = useState(52);
-  const [overtimeHours, setOvertimeHours] = useState(0);
-  const [overtimeMultiplier, setOvertimeMultiplier] = useState(1.5);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      hourlyRate: 25,
+      hoursPerWeek: 40,
+      weeksPerYear: 52,
+      overtimeHours: 0,
+      overtimeMultiplier: 1.5,
+    },
+  });
 
   const results = useMemo(() => {
-    const regularAnnual = hourlyRate * hoursPerWeek * weeksPerYear;
-    const overtimeRate = hourlyRate * overtimeMultiplier;
-    const overtimeAnnual = overtimeRate * overtimeHours * weeksPerYear;
+    const regularAnnual = state.hourlyRate * state.hoursPerWeek * state.weeksPerYear;
+    const overtimeRate = state.hourlyRate * state.overtimeMultiplier;
+    const overtimeAnnual = overtimeRate * state.overtimeHours * state.weeksPerYear;
     const totalAnnual = regularAnnual + overtimeAnnual;
 
     const regularMonthly = regularAnnual / 12;
     const totalMonthly = totalAnnual / 12;
 
-    const regularBiweekly = hourlyRate * hoursPerWeek * 2;
-    const overtimeBiweekly = overtimeRate * overtimeHours * 2;
+    const regularBiweekly = state.hourlyRate * state.hoursPerWeek * 2;
+    const overtimeBiweekly = overtimeRate * state.overtimeHours * 2;
     const totalBiweekly = regularBiweekly + overtimeBiweekly;
 
-    const regularWeekly = hourlyRate * hoursPerWeek;
-    const overtimeWeekly = overtimeRate * overtimeHours;
+    const regularWeekly = state.hourlyRate * state.hoursPerWeek;
+    const overtimeWeekly = overtimeRate * state.overtimeHours;
     const totalWeekly = regularWeekly + overtimeWeekly;
 
-    const totalDailyHours = hoursPerWeek / 5;
-    const overtimeDailyHours = overtimeHours / 5;
-    const regularDaily = hourlyRate * totalDailyHours;
+    const totalDailyHours = state.hoursPerWeek / 5;
+    const overtimeDailyHours = state.overtimeHours / 5;
+    const regularDaily = state.hourlyRate * totalDailyHours;
     const overtimeDaily = overtimeRate * overtimeDailyHours;
     const totalDaily = regularDaily + overtimeDaily;
 
@@ -84,7 +89,7 @@ export function HourlyToSalaryCalculatorWidget() {
       totalDaily,
       overtimeRate,
     };
-  }, [hourlyRate, hoursPerWeek, weeksPerYear, overtimeHours, overtimeMultiplier]);
+  }, [state.hourlyRate, state.hoursPerWeek, state.weeksPerYear, state.overtimeHours, state.overtimeMultiplier]);
 
   const payPeriodData = [
     { name: "Annual", regular: Math.round(results.regularAnnual), overtime: Math.round(results.overtimeAnnual) },
@@ -105,28 +110,28 @@ export function HourlyToSalaryCalculatorWidget() {
     Biweekly: formatCurrency(results.totalBiweekly),
     Weekly: formatCurrency(results.totalWeekly),
     Daily: formatCurrency(results.totalDaily),
-    ...(overtimeHours > 0
+    ...(state.overtimeHours > 0
       ? { "OT Earnings": formatCurrency(results.overtimeAnnual) }
       : {}),
   };
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Hourly Rate */}
           <div>
             <CurrencyInput
               label="Hourly Rate"
-              value={hourlyRate}
-              onChange={setHourlyRate}
+              value={state.hourlyRate}
+              onChange={(v) => setState('hourlyRate', v)}
               min={0}
               step={0.5}
             />
             <CustomSlider
-              value={hourlyRate}
-              onChange={setHourlyRate}
+              value={state.hourlyRate}
+              onChange={(v) => setState('hourlyRate', v)}
               min={7.25}
               max={150}
               step={0.25}
@@ -138,8 +143,8 @@ export function HourlyToSalaryCalculatorWidget() {
           {/* Hours Per Week */}
           <CustomSlider
             label="Hours Per Week"
-            value={hoursPerWeek}
-            onChange={setHoursPerWeek}
+            value={state.hoursPerWeek}
+            onChange={(v) => setState('hoursPerWeek', v)}
             min={1}
             max={80}
             step={1}
@@ -148,13 +153,14 @@ export function HourlyToSalaryCalculatorWidget() {
 
           {/* Weeks Per Year */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="weeks-per-year" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Weeks Per Year
             </label>
             <input
+              id="weeks-per-year"
               type="number"
-              value={weeksPerYear}
-              onChange={(e) => setWeeksPerYear(Number(e.target.value))}
+              value={state.weeksPerYear}
+              onChange={(e) => setState('weeksPerYear', Number(e.target.value))}
               className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
               min={1}
               max={52}
@@ -165,8 +171,8 @@ export function HourlyToSalaryCalculatorWidget() {
           {/* Overtime Hours */}
           <CustomSlider
             label="Overtime Hours Per Week"
-            value={overtimeHours}
-            onChange={setOvertimeHours}
+            value={state.overtimeHours}
+            onChange={(v) => setState('overtimeHours', v)}
             min={0}
             max={40}
             step={1}
@@ -178,18 +184,20 @@ export function HourlyToSalaryCalculatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Overtime Rate Multiplier
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="Overtime Rate Multiplier">
               {[1.5, 2.0].map((mult) => (
                 <button
                   key={mult}
-                  onClick={() => setOvertimeMultiplier(mult)}
+                  role="radio"
+                  aria-checked={state.overtimeMultiplier === mult}
+                  onClick={() => setState('overtimeMultiplier', mult)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    overtimeMultiplier === mult
+                    state.overtimeMultiplier === mult
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
                 >
-                  {mult}x ({formatCurrencyExact(hourlyRate * mult)}/hr)
+                  {mult}x ({formatCurrencyExact(state.hourlyRate * mult)}/hr)
                 </button>
               ))}
             </div>
@@ -199,7 +207,7 @@ export function HourlyToSalaryCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             <StatCard
               label="Annual Salary"
               highlight
@@ -211,7 +219,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 />
               }
               subvalue={
-                overtimeHours > 0
+                state.overtimeHours > 0
                   ? `${formatCurrency(results.regularAnnual)} base + ${formatCurrency(results.overtimeAnnual)} OT`
                   : undefined
               }
@@ -257,7 +265,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 />
               }
             />
-            {overtimeHours > 0 && (
+            {state.overtimeHours > 0 && (
               <StatCard
                 label="OT Earnings (Annual)"
                 value={
@@ -276,6 +284,7 @@ export function HourlyToSalaryCalculatorWidget() {
           <ShareResults
             title="Hourly to Salary Calculation Results"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* Bar Chart: Pay by Period */}
@@ -304,8 +313,8 @@ export function HourlyToSalaryCalculatorWidget() {
                   formatter={(value) => formatCurrency(value as number)}
                 />
                 <Legend wrapperStyle={{ color: COLORS.textMuted, fontSize: 12 }} />
-                <Bar dataKey="regular" name="Regular Pay" stackId="a" fill={COLORS.primary} radius={overtimeHours > 0 ? [0, 0, 0, 0] : [4, 4, 0, 0]} />
-                {overtimeHours > 0 && (
+                <Bar dataKey="regular" name="Regular Pay" stackId="a" fill={COLORS.primary} radius={state.overtimeHours > 0 ? [0, 0, 0, 0] : [4, 4, 0, 0]} />
+                {state.overtimeHours > 0 && (
                   <Bar dataKey="overtime" name="Overtime Pay" stackId="a" fill={COLORS.overtime} radius={[4, 4, 0, 0]} />
                 )}
               </BarChart>
@@ -313,7 +322,7 @@ export function HourlyToSalaryCalculatorWidget() {
           </div>
 
           {/* Comparison: With vs Without Overtime */}
-          {overtimeHours > 0 && (
+          {state.overtimeHours > 0 && (
             <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
               <p className="mb-3 text-sm font-medium text-[#94A3B8]">Annual: With vs Without Overtime</p>
               <ResponsiveContainer width="100%" height={120}>

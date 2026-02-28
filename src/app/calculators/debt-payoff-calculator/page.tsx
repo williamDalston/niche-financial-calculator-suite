@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Debt Payoff Calculator | CalcEngine",
     description:
       "Create a debt payoff plan using the avalanche or snowball method. See your debt-free date, total interest, and how extra payments accelerate your payoff timeline.",
-    url: "https://calcengine.io/calculators/debt-payoff-calculator",
+    url: "https://calcengine.org/calculators/debt-payoff-calculator",
   },
   twitter: {
     card: "summary_large_image",

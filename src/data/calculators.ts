@@ -255,15 +255,6 @@ export const calculators: CalculatorInfo[] = [
     searchVolume: "90K",
   },
   {
-    title: "Take-Home Pay Calculator",
-    slug: "take-home-pay-calculator",
-    description:
-      "Estimate your net pay after federal and state taxes, FICA, and deductions are applied.",
-    icon: "💰",
-    category: categories.taxCalculators,
-    searchVolume: "90K",
-  },
-  {
     title: "Self-Employment Tax Calculator",
     slug: "self-employment-tax-calculator",
     description:

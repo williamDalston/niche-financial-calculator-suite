@@ -72,6 +72,11 @@ export function AnimatedNumber({
 }: AnimatedNumberProps) {
   const [displayValue, setDisplayValue] = useState(0);
   const [isPulsing, setIsPulsing] = useState(false);
+  
+  /* Check reduced motion preference - safe for SSR */
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* Refs to persist across renders without triggering re-renders */
   const currentValueRef = useRef(0);
@@ -84,6 +89,13 @@ export function AnimatedNumber({
       /* Cancel any running animation */
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
+      }
+
+      /* Skip animation for reduced motion */
+      if (reducedMotion) {
+        currentValueRef.current = to;
+        setDisplayValue(to);
+        return;
       }
 
       /* Trigger scale pulse */
@@ -115,9 +127,11 @@ export function AnimatedNumber({
 
       animationFrameRef.current = requestAnimationFrame(tick);
     },
-    [duration]
+    [duration, reducedMotion]
   );
 
+  /* eslint-disable react-hooks/set-state-in-effect */
+  // Animation effect - setState calls via animate() are intentional for smooth number transitions
   useEffect(() => {
     let isMounted = true;
 
@@ -144,6 +158,7 @@ export function AnimatedNumber({
       }
     };
   }, [value, animate]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const formattedValue = formatValue(displayValue, format, decimals);
 
@@ -151,15 +166,13 @@ export function AnimatedNumber({
     <span
       className={
         className ??
-        "font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+        "font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
       }
-      style={{
-        transform: isPulsing ? "scale(1.02)" : "scale(1)",
-        transition: "transform 150ms ease-out",
-      }}
-      aria-live="polite"
-      aria-atomic="true"
-      role="status"
+      style={
+        isPulsing && !reducedMotion
+          ? { transform: "scale(1.02)", transition: "transform 150ms ease-out" }
+          : undefined
+      }
     >
       {prefix}
       {formattedValue}

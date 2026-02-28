@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   AreaChart,
   Area,
@@ -20,6 +20,7 @@ import { CustomSlider } from "@/components/ui/custom-slider";
 import { PercentageInput } from "@/components/ui/percentage-input";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 
 const COLORS = {
@@ -61,29 +62,33 @@ const TSP_FUNDS: FundOption[] = [
 type ContributionType = "traditional" | "roth" | "mixed";
 
 export function TspCalculatorWidget() {
-  const [currentAge, setCurrentAge] = useState(35);
-  const [retirementAge, setRetirementAge] = useState(62);
-  const [currentBalance, setCurrentBalance] = useState(50000);
-  const [payPeriodContribution, setPayPeriodContribution] = useState(750);
-  const [annualSalary, setAnnualSalary] = useState(85000);
-  const [selectedFund, setSelectedFund] = useState("C");
-  const [contributionType, setContributionType] = useState<ContributionType>("traditional");
-  const [employerMatchPct, setEmployerMatchPct] = useState(5);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentAge: 35,
+      retirementAge: 62,
+      currentBalance: 50000,
+      payPeriodContribution: 750,
+      annualSalary: 85000,
+      selectedFund: "C" as string,
+      contributionType: "traditional" as string,
+      employerMatchPct: 5,
+    },
+  });
 
-  const expectedReturn = TSP_FUNDS.find((f) => f.name === selectedFund)?.returnRate ?? 7;
+  const expectedReturn = TSP_FUNDS.find((f) => f.name === state.selectedFund)?.returnRate ?? 7;
 
   const results = useMemo(() => {
-    const yearsToRetirement = Math.max(retirementAge - currentAge, 0);
+    const yearsToRetirement = Math.max(state.retirementAge - state.currentAge, 0);
     const monthlyReturn = expectedReturn / 100 / 12;
     const payPeriodsPerYear = 26; // Biweekly
-    const annualContribution = payPeriodContribution * payPeriodsPerYear;
+    const annualContribution = state.payPeriodContribution * payPeriodsPerYear;
     const monthlyContribution = annualContribution / 12;
 
-    const annualMatch = annualSalary * (employerMatchPct / 100);
+    const annualMatch = state.annualSalary * (state.employerMatchPct / 100);
     const monthlyMatch = annualMatch / 12;
 
-    let balance = currentBalance;
-    let totalEmployeeContributions = currentBalance;
+    let balance = state.currentBalance;
+    let totalEmployeeContributions = state.currentBalance;
     let totalEmployerMatch = 0;
 
     const growthData: {
@@ -94,9 +99,9 @@ export function TspCalculatorWidget() {
       growth: number;
     }[] = [
       {
-        age: currentAge,
-        balance: Math.round(currentBalance),
-        contributions: Math.round(currentBalance),
+        age: state.currentAge,
+        balance: Math.round(state.currentBalance),
+        contributions: Math.round(state.currentBalance),
         match: 0,
         growth: 0,
       },
@@ -112,7 +117,7 @@ export function TspCalculatorWidget() {
       const investmentGrowth = balance - totalEmployeeContributions - totalEmployerMatch;
 
       growthData.push({
-        age: currentAge + y,
+        age: state.currentAge + y,
         balance: Math.round(balance),
         contributions: Math.round(totalEmployeeContributions),
         match: Math.round(totalEmployerMatch),
@@ -128,15 +133,15 @@ export function TspCalculatorWidget() {
     const monthlyIncome = annualWithdrawal / 12;
 
     // Tax considerations
-    const traditionalTaxNote = contributionType === "traditional"
+    const traditionalTaxNote = state.contributionType === "traditional"
       ? "Withdrawals taxed as ordinary income"
-      : contributionType === "roth"
+      : state.contributionType === "roth"
       ? "Qualified withdrawals are tax-free"
       : "Traditional portion taxed; Roth portion tax-free";
 
     // Pie chart data for fund allocation visual
     const allocationData = [
-      { name: TSP_FUNDS.find((f) => f.name === selectedFund)?.label ?? selectedFund, value: 100 },
+      { name: TSP_FUNDS.find((f) => f.name === state.selectedFund)?.label ?? state.selectedFund, value: 100 },
     ];
 
     return {
@@ -152,7 +157,7 @@ export function TspCalculatorWidget() {
       annualContribution,
       annualMatch,
     };
-  }, [currentAge, retirementAge, currentBalance, payPeriodContribution, annualSalary, expectedReturn, employerMatchPct, contributionType, selectedFund]);
+  }, [state.currentAge, state.retirementAge, state.currentBalance, state.payPeriodContribution, state.annualSalary, expectedReturn, state.employerMatchPct, state.contributionType, state.selectedFund]);
 
   // Pie data for balance composition
   const compositionData = [
@@ -173,14 +178,14 @@ export function TspCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Ages */}
           <CustomSlider
             label="Current Age"
-            value={currentAge}
-            onChange={setCurrentAge}
+            value={state.currentAge}
+            onChange={(v) => setState('currentAge', v)}
             min={18}
             max={80}
             step={1}
@@ -189,8 +194,8 @@ export function TspCalculatorWidget() {
 
           <CustomSlider
             label="Retirement Age"
-            value={retirementAge}
-            onChange={setRetirementAge}
+            value={state.retirementAge}
+            onChange={(v) => setState('retirementAge', v)}
             min={50}
             max={80}
             step={1}
@@ -200,14 +205,14 @@ export function TspCalculatorWidget() {
           {/* Current TSP Balance */}
           <CurrencyInput
             label="Current TSP Balance"
-            value={currentBalance}
-            onChange={setCurrentBalance}
+            value={state.currentBalance}
+            onChange={(v) => setState('currentBalance', v)}
             min={0}
             step={5000}
           />
           <CustomSlider
-            value={currentBalance}
-            onChange={setCurrentBalance}
+            value={state.currentBalance}
+            onChange={(v) => setState('currentBalance', v)}
             min={0}
             max={1000000}
             step={5000}
@@ -217,20 +222,20 @@ export function TspCalculatorWidget() {
           {/* Pay Period Contribution */}
           <CurrencyInput
             label="Pay Period Contribution"
-            value={payPeriodContribution}
-            onChange={setPayPeriodContribution}
+            value={state.payPeriodContribution}
+            onChange={(v) => setState('payPeriodContribution', v)}
             min={0}
             step={50}
           />
           <p className="text-xs text-[#94A3B8]">
-            {formatCurrency(payPeriodContribution * 26)}/year (26 pay periods)
+            {formatCurrency(state.payPeriodContribution * 26)}/year (26 pay periods)
           </p>
 
           {/* Annual Salary */}
           <CurrencyInput
             label="Annual Salary"
-            value={annualSalary}
-            onChange={setAnnualSalary}
+            value={state.annualSalary}
+            onChange={(v) => setState('annualSalary', v)}
             min={0}
             step={1000}
           />
@@ -238,14 +243,14 @@ export function TspCalculatorWidget() {
           {/* Employer Match */}
           <PercentageInput
             label="Employer Match (% of salary)"
-            value={employerMatchPct}
-            onChange={setEmployerMatchPct}
+            value={state.employerMatchPct}
+            onChange={(v) => setState('employerMatchPct', v)}
             min={0}
             max={10}
             step={0.5}
           />
           <p className="text-xs text-[#94A3B8]">
-            FERS auto 1% + up to 4% match = 5% max. Match = {formatCurrency(annualSalary * employerMatchPct / 100)}/year
+            FERS auto 1% + up to 4% match = 5% max. Match = {formatCurrency(state.annualSalary * state.employerMatchPct / 100)}/year
           </p>
 
           {/* Fund Selection */}
@@ -257,9 +262,9 @@ export function TspCalculatorWidget() {
               {TSP_FUNDS.map((fund) => (
                 <button
                   key={fund.name}
-                  onClick={() => setSelectedFund(fund.name)}
+                  onClick={() => setState('selectedFund', fund.name)}
                   className={`rounded-lg border px-3 py-3 text-xs font-medium transition-colors ${
-                    selectedFund === fund.name
+                    state.selectedFund === fund.name
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -280,9 +285,9 @@ export function TspCalculatorWidget() {
               {(["traditional", "roth", "mixed"] as ContributionType[]).map((type) => (
                 <button
                   key={type}
-                  onClick={() => setContributionType(type)}
+                  onClick={() => setState('contributionType', type)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium capitalize transition-colors ${
-                    contributionType === type
+                    state.contributionType === type
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -303,7 +308,7 @@ export function TspCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Projected Balance"
               value={<AnimatedNumber value={results.projectedBalance} format="currency" className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
@@ -329,7 +334,7 @@ export function TspCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="TSP Calculator Results" results={shareResultsData} />
+          <ShareResults title="TSP Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Tax Note */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">

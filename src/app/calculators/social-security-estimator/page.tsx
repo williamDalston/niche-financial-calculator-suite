@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Social Security Estimator | CalcEngine",
     description:
       "Estimate your Social Security retirement benefits at ages 62, full retirement age, and 70. Compare cumulative lifetime benefits with crossover analysis.",
-    url: "https://calcengine.io/calculators/social-security-estimator",
+    url: "https://calcengine.org/calculators/social-security-estimator",
   },
   twitter: {
     card: "summary_large_image",
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
 };
 
 const howItWorks = `
-<p>The Social Security Estimator calculates your projected monthly retirement benefit based on the Social Security Administration's benefit formula, including the 2024 bend points for computing your Primary Insurance Amount (PIA). It compares benefits at different claiming ages from 62 to 70, showing you how the timing of your claim affects both monthly income and total lifetime benefits.</p>
+<p>The Social Security Estimator calculates your projected monthly retirement benefit based on the Social Security Administration's benefit formula, including the 2025 bend points for computing your Primary Insurance Amount (PIA). It compares benefits at different claiming ages from 62 to 70, showing you how the timing of your claim affects both monthly income and total lifetime benefits.</p>
 
 <h3>How Social Security Benefits Are Calculated</h3>
 <p>The Social Security Administration calculates your benefit in three steps. First, it indexes your annual earnings for wage inflation and selects the highest 35 years. Second, it divides the total of those 35 years by 420 (35 years times 12 months) to determine your Average Indexed Monthly Earnings (AIME). Third, it applies a progressive formula with "bend points" to compute your Primary Insurance Amount (PIA), which is your monthly benefit at your Full Retirement Age.</p>
 
 <h3>The PIA Formula and Bend Points</h3>
-<p>The 2024 PIA formula uses two bend points to create a progressive benefit structure. You receive 90% of your first $1,174 in AIME, plus 32% of AIME between $1,174 and $7,078, plus 15% of AIME above $7,078. This progressive structure means that lower-income workers replace a larger percentage of their pre-retirement income through Social Security. For example, a worker with a $3,000 AIME receives a PIA of approximately $1,641 (55% replacement rate), while a worker with a $10,000 AIME receives a PIA of approximately $3,378 (34% replacement rate).</p>
+<p>The 2025 PIA formula uses two bend points to create a progressive benefit structure. You receive 90% of your first $1,174 in AIME, plus 32% of AIME between $1,174 and $7,078, plus 15% of AIME above $7,078. This progressive structure means that lower-income workers replace a larger percentage of their pre-retirement income through Social Security. For example, a worker with a $3,000 AIME receives a PIA of approximately $1,641 (55% replacement rate), while a worker with a $10,000 AIME receives a PIA of approximately $3,378 (34% replacement rate).</p>
 
 <h3>Full Retirement Age (FRA)</h3>
 <p>Your Full Retirement Age depends on your birth year. For anyone born in 1960 or later, the FRA is 67. For those born between 1943 and 1954, it is 66. Birth years 1955-1959 have FRAs between 66 and 67, increasing by two months for each year. Your FRA is significant because it is the age at which you receive your full PIA with no reduction or increase. Claiming before FRA permanently reduces your benefit; claiming after FRA permanently increases it.</p>
@@ -53,7 +53,7 @@ const howItWorks = `
 <p>This calculator offers two input modes. The AIME mode lets you enter your exact Average Indexed Monthly Earnings if you know it from your Social Security statement. The simplified income mode estimates your AIME based on your current annual income and years of work history, assuming consistent earnings. For a more precise estimate, create an account at ssa.gov to see your actual earnings record and personalized benefit estimate.</p>
 `;
 
-const formula = `PIA (Primary Insurance Amount) using 2024 bend points:
+const formula = `PIA (Primary Insurance Amount) using 2025 bend points:
   PIA = 90% x min(AIME, $1,174)
       + 32% x max(0, min(AIME, $7,078) - $1,174)
       + 15% x max(0, AIME - $7,078)
@@ -94,12 +94,12 @@ const faqs = [
   {
     question: "Can I work while receiving Social Security?",
     answer:
-      "Yes, but if you claim before your FRA, the earnings test may temporarily reduce your benefits. In 2024, if you earn more than $22,320 while collecting before FRA, $1 in benefits is withheld for every $2 earned above the limit. In the year you reach FRA, the threshold rises to $59,520 with a $1 reduction per $3 over the limit. After reaching FRA, there is no earnings test, and any previously withheld benefits are recalculated to give you credit for the months benefits were reduced.",
+      "Yes, but if you claim before your FRA, the earnings test may temporarily reduce your benefits. In 2025, if you earn more than $22,320 while collecting before FRA, $1 in benefits is withheld for every $2 earned above the limit. In the year you reach FRA, the threshold rises to $59,520 with a $1 reduction per $3 over the limit. After reaching FRA, there is no earnings test, and any previously withheld benefits are recalculated to give you credit for the months benefits were reduced.",
   },
   {
     question: "What is the maximum Social Security benefit?",
     answer:
-      "The maximum monthly Social Security benefit in 2024 depends on when you claim: approximately $2,710 at age 62, $3,822 at FRA (67), and $4,873 at age 70. To receive the maximum, you must have earned at or above the Social Security taxable earnings cap ($168,600 in 2024) for at least 35 years. Most workers receive significantly less than the maximum. The average monthly benefit in 2024 is approximately $1,907 for retired workers.",
+      "The maximum monthly Social Security benefit in 2025 depends on when you claim: approximately $2,710 at age 62, $3,822 at FRA (67), and $4,873 at age 70. To receive the maximum, you must have earned at or above the Social Security taxable earnings cap ($168,600 in 2025) for at least 35 years. Most workers receive significantly less than the maximum. The average monthly benefit in 2025 is approximately $1,976 for retired workers.",
   },
 ];
 

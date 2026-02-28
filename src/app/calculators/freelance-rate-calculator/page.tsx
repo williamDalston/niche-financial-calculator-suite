@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Freelance Rate Calculator | CalcEngine",
     description:
       "Calculate your ideal freelance hourly rate based on your target income, expenses, taxes, and desired profit margin. Free rate calculator with project-based pricing suggestions.",
-    url: "https://calcengine.io/calculators/freelance-rate-calculator",
+    url: "https://calcengine.org/calculators/freelance-rate-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "What is the self-employment tax and how is it calculated?",
     answer:
-      "Self-employment tax covers Social Security (12.4%) and Medicare (2.9%) taxes, totaling 15.3% on the first $168,600 of net self-employment income (2024 threshold). As an employee, your employer pays half and you pay half. As a freelancer, you pay both halves. However, you can deduct the employer-equivalent portion (7.65%) from your adjusted gross income when filing taxes. You also pay regular federal and state income taxes on top of self-employment tax.",
+      "Self-employment tax covers Social Security (12.4%) and Medicare (2.9%) taxes, totaling 15.3% on the first $176,100 of net self-employment income (2025 threshold). As an employee, your employer pays half and you pay half. As a freelancer, you pay both halves. However, you can deduct the employer-equivalent portion (7.65%) from your adjusted gross income when filing taxes. You also pay regular federal and state income taxes on top of self-employment tax.",
   },
   {
     question: "Should I charge hourly or per project?",

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "TSP Calculator — Thrift Savings Plan Growth Projector | CalcEngine",
     description:
       "Project your Thrift Savings Plan balance at retirement. Compare TSP fund returns, see employer match impact, and estimate monthly retirement income from your TSP.",
-    url: "https://calcengine.io/calculators/tsp-calculator",
+    url: "https://calcengine.org/calculators/tsp-calculator",
   },
   twitter: {
     card: "summary_large_image",

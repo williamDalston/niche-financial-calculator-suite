@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Retirement Savings Calculator | CalcEngine",
     description:
       "Calculate how much you need to save for retirement. See your projected savings growth, total contributions, and inflation-adjusted value over time.",
-    url: "https://calcengine.io/calculators/retirement-calculator",
+    url: "https://calcengine.org/calculators/retirement-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -95,7 +95,7 @@ const faqs = [
   {
     question: "Can I catch up if I started saving late?",
     answer:
-      "Yes, but you will need to save more aggressively. Workers 50 and older can make catch-up contributions to 401(k) plans ($7,500 extra in 2024) and IRAs ($1,000 extra). Consider maximizing these limits, reducing expenses, working a few extra years, and exploring other savings vehicles. Even starting at 45, consistent savings of $1,500/month at 7% can grow to about $730,000 by age 65.",
+      "Yes, but you will need to save more aggressively. Workers 50 and older can make catch-up contributions to 401(k) plans ($7,500 extra in 2025) and IRAs ($1,000 extra). Consider maximizing these limits, reducing expenses, working a few extra years, and exploring other savings vehicles. Even starting at 45, consistent savings of $1,500/month at 7% can grow to about $730,000 by age 65.",
   },
 ];
 
@@ -139,7 +139,7 @@ const editorialContent = `
 <p>As you approach retirement, gradually shifting toward more conservative investments protects your nest egg from a major market downturn right when you need the money. This process, called a "glide path," is automatically managed by target-date funds, which are popular 401(k) options.</p>
 
 <h3>Common Retirement Planning Mistakes</h3>
-<p>The biggest mistake is not starting early enough. Every year of delay costs you significantly due to lost compounding. Other common errors include: not contributing enough to get the full employer 401(k) match (leaving free money on the table), being too conservative with investments when young, not accounting for healthcare costs in retirement ($315,000 estimated for a 65-year-old couple in 2024), and underestimating how long retirement will last.</p>
+<p>The biggest mistake is not starting early enough. Every year of delay costs you significantly due to lost compounding. Other common errors include: not contributing enough to get the full employer 401(k) match (leaving free money on the table), being too conservative with investments when young, not accounting for healthcare costs in retirement ($315,000 estimated for a 65-year-old couple in 2025), and underestimating how long retirement will last.</p>
 `;
 
 export default function RetirementCalculatorPage() {

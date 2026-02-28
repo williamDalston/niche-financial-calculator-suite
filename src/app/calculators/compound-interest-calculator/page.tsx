@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Compound Interest Calculator | CalcEngine",
     description:
       "Calculate compound interest with regular contributions. See how your money grows with daily, monthly, quarterly, or annual compounding over time.",
-    url: "https://calcengine.io/calculators/compound-interest-calculator",
+    url: "https://calcengine.org/calculators/compound-interest-calculator",
   },
   twitter: {
     card: "summary_large_image",

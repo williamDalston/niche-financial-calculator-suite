@@ -181,11 +181,11 @@ export function ShareResults({
 
   /* Shared button classes */
   const btnClass =
-    "flex items-center gap-2 rounded-lg border border-[#1E293B] bg-[#1E293B] px-3.5 py-2 text-xs font-medium text-[#94A3B8] transition-colors hover:bg-[#22C55E]/10 hover:text-[#22C55E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50";
+    "flex items-center gap-2 rounded-lg border border-border bg-border px-3.5 py-2 text-xs font-medium text-text-muted transition-colors hover:bg-accent-primary/10 hover:text-accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50";
 
   return (
     <div
-      className={`flex flex-wrap items-center gap-2 rounded-lg border border-[#1E293B] bg-[#162032] p-3 ${className ?? ""}`}
+      className={`flex flex-wrap items-center gap-2 rounded-lg border border-border bg-bg-surface p-3 ${className ?? ""}`}
       role="toolbar"
       aria-label="Share calculator results"
     >

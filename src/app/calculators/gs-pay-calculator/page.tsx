@@ -8,18 +8,18 @@ const GsPayCalculatorWidget = dynamic(() => import("./calculator").then((m) => m
 });
 
 export const metadata: Metadata = {
-  title: "GS Pay Calculator (2024 Pay Tables) | CalcEngine",
+  title: "GS Pay Calculator (2025 Pay Tables) | CalcEngine",
   description:
     "Calculate your federal GS pay with locality adjustments. See base pay, locality pay, biweekly, monthly, and hourly rates for all GS grades 1-15 and steps 1-10.",
   openGraph: {
-    title: "GS Pay Calculator (2024 Pay Tables) | CalcEngine",
+    title: "GS Pay Calculator (2025 Pay Tables) | CalcEngine",
     description:
       "Calculate your federal GS pay with locality adjustments. See base pay, locality pay, biweekly, monthly, and hourly rates for all GS grades 1-15 and steps 1-10.",
-    url: "https://calcengine.io/calculators/gs-pay-calculator",
+    url: "https://calcengine.org/calculators/gs-pay-calculator",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GS Pay Calculator (2024 Pay Tables) | CalcEngine",
+    title: "GS Pay Calculator (2025 Pay Tables) | CalcEngine",
     description:
       "Calculate your federal GS pay with locality adjustments. See base pay, locality pay, biweekly, monthly, and hourly rates for all GS grades 1-15 and steps 1-10.",
   },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 const howItWorks = `
-<p>The General Schedule (GS) pay system covers the majority of white-collar federal civilian employees in the United States. This calculator uses the official 2024 GS base pay table published by the U.S. Office of Personnel Management (OPM) to compute your total compensation, including locality pay adjustments for the top 20 metropolitan areas.</p>
+<p>The General Schedule (GS) pay system covers the majority of white-collar federal civilian employees in the United States. This calculator uses the official 2025 GS base pay table published by the U.S. Office of Personnel Management (OPM) to compute your total compensation, including locality pay adjustments for the top 20 metropolitan areas.</p>
 
 <h3>Understanding the GS Pay Structure</h3>
 <p>The GS pay scale is organized into 15 grades (GS-1 through GS-15), each with 10 within-grade steps. Your grade is determined by the complexity, responsibility, and qualifications required for your position. Your step reflects your tenure and performance within that grade. New employees typically start at Step 1, with step increases occurring on a set schedule: Steps 1-3 increase annually, Steps 4-6 increase every two years, and Steps 7-9 increase every three years.</p>
@@ -37,7 +37,7 @@ const howItWorks = `
 <p>The base pay table sets the nationwide floor for each grade and step combination. However, because the cost of living varies dramatically across the country, the federal government applies locality pay adjustments to ensure competitive compensation in higher-cost areas.</p>
 
 <h3>How Locality Pay Works</h3>
-<p>Locality pay is an additional percentage applied on top of your base pay, determined by your duty station's geographic area. The Federal Salary Council annually recommends locality pay rates based on Bureau of Labor Statistics survey data comparing federal and private-sector pay in each area. For 2024, locality rates range from 17.06% for the "Rest of US" (areas not covered by a specific locality) up to 46.91% in the San Francisco Bay Area.</p>
+<p>Locality pay is an additional percentage applied on top of your base pay, determined by your duty station's geographic area. The Federal Salary Council annually recommends locality pay rates based on Bureau of Labor Statistics survey data comparing federal and private-sector pay in each area. For 2025, locality rates range from 17.06% for the "Rest of US" (areas not covered by a specific locality) up to 46.91% in the San Francisco Bay Area.</p>
 
 <p>Your total annual pay is calculated as: <strong>Base Pay x (1 + Locality Rate)</strong>. For example, a GS-12, Step 1 employee in Washington, DC earns a base pay of $74,441 plus a 33.94% locality adjustment of $25,263, for a total of $99,704 per year.</p>
 
@@ -86,7 +86,7 @@ const faqs = [
   {
     question: "What if my duty station is not in a specific locality area?",
     answer:
-      "If your duty station is not within one of the designated locality pay areas, you fall under the 'Rest of United States' (RUS) locality pay rate. For 2024, this rate is 17.06%. The RUS rate applies to federal employees in smaller cities, rural areas, and any location not covered by a specific locality designation.",
+      "If your duty station is not within one of the designated locality pay areas, you fall under the 'Rest of United States' (RUS) locality pay rate. For 2025, this rate is 17.06%. The RUS rate applies to federal employees in smaller cities, rural areas, and any location not covered by a specific locality designation.",
   },
   {
     question: "Are federal employees eligible for overtime pay?",
@@ -144,7 +144,7 @@ export default function GsPayCalculatorPage() {
   return (
     <CalculatorLayout
       title="GS Pay Calculator"
-      description="Calculate your federal GS pay with locality adjustments for 2024. See base pay, locality pay, biweekly, monthly, and hourly rates for all grades and steps."
+      description="Calculate your federal GS pay with locality adjustments for 2025. See base pay, locality pay, biweekly, monthly, and hourly rates for all grades and steps."
       slug="gs-pay-calculator"
       category={{ name: "Government Pay", slug: "government-pay" }}
       ctaText="Browse open GS positions near you"

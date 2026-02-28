@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   BarChart,
   Bar,
@@ -93,37 +94,41 @@ const STATES = [
 ];
 
 export function WageGapCalculatorWidget() {
-  const [salary, setSalary] = useState(55000);
-  const [gender, setGender] = useState("women");
-  const [occupation, setOccupation] = useState(0);
-  const [experience, setExperience] = useState("6-10");
-  const [education, setEducation] = useState("bachelors");
-  const [stateRegion, setStateRegion] = useState("National");
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      salary: 55000,
+      gender: "women",
+      occupation: 0,
+      experience: "6-10",
+      education: "bachelors",
+      stateRegion: "National",
+    },
+  });
 
   const results = useMemo(() => {
-    const occ = wageGapData.occupations[occupation];
+    const occ = wageGapData.occupations[state.occupation];
     const edMult =
       wageGapData.education_multipliers[
-        education as keyof typeof wageGapData.education_multipliers
+        state.education as keyof typeof wageGapData.education_multipliers
       ] || 1;
     const expMult =
       wageGapData.experience_multipliers[
-        experience as keyof typeof wageGapData.experience_multipliers
+        state.experience as keyof typeof wageGapData.experience_multipliers
       ] || 1;
     const stateAdj =
       wageGapData.state_adjustments[
-        stateRegion as keyof typeof wageGapData.state_adjustments
+        state.stateRegion as keyof typeof wageGapData.state_adjustments
       ] || 1;
 
     // Compute adjusted medians for this occupation/education/experience/state
     const baseMen = occ.men * edMult * expMult * stateAdj;
     const baseWomen = occ.women * edMult * expMult * stateAdj;
 
-    const yourMedian = gender === "women" ? baseWomen : baseMen;
-    const otherMedian = gender === "women" ? baseMen : baseWomen;
+    const yourMedian = state.gender === "women" ? baseWomen : baseMen;
+    const otherMedian = state.gender === "women" ? baseMen : baseWomen;
 
     // Gap calculation
-    const gapAmount = gender === "women" ? baseMen - baseWomen : baseWomen - baseMen;
+    const gapAmount = state.gender === "women" ? baseMen - baseWomen : baseWomen - baseMen;
     const gapPercent =
       otherMedian > 0
         ? ((otherMedian - yourMedian) / otherMedian) * 100
@@ -168,27 +173,27 @@ export function WageGapCalculatorWidget() {
       otherMedian: Math.round(otherMedian),
       gapAmount: Math.round(Math.abs(gapAmount)),
       gapPercent: Math.abs(gapPercent),
-      isUnderpaid: gender === "women" ? baseWomen < baseMen : baseMen < baseWomen,
+      isUnderpaid: state.gender === "women" ? baseWomen < baseMen : baseMen < baseWomen,
       unadjustedGapPercent,
       careerCost,
       careerData,
       occupationName: occ.category,
     };
-  }, [salary, gender, occupation, experience, education, stateRegion]);
+  }, [state.salary, state.gender, state.occupation, state.experience, state.education, state.stateRegion]);
 
   const barData = [
     {
       name: "Women",
-      salary: gender === "women" ? results.yourMedian : results.otherMedian,
+      salary: state.gender === "women" ? results.yourMedian : results.otherMedian,
     },
     {
       name: "Men",
-      salary: gender === "men" ? results.yourMedian : results.otherMedian,
+      salary: state.gender === "men" ? results.yourMedian : results.otherMedian,
     },
   ];
 
   const shareResultsData: Record<string, string> = {
-    "Your Salary": formatCurrency(salary),
+    "Your Salary": formatCurrency(state.salary),
     "Your Median": formatCurrency(results.yourMedian),
     "Other Gender Median": formatCurrency(results.otherMedian),
     "Gap Percentage": `${results.gapPercent.toFixed(1)}%`,
@@ -202,22 +207,22 @@ export function WageGapCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
           {/* Salary */}
           <div>
             <CurrencyInput
               label="Your Annual Salary"
-              value={salary}
-              onChange={setSalary}
+              value={state.salary}
+              onChange={(v) => setState('salary', v)}
               min={0}
               max={500000}
               step={1000}
             />
             <CustomSlider
-              value={salary}
-              onChange={setSalary}
+              value={state.salary}
+              onChange={(v) => setState('salary', v)}
               min={20000}
               max={500000}
               step={1000}
@@ -233,13 +238,15 @@ export function WageGapCalculatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Your Gender
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="Your Gender">
               {GENDERS.map((g) => (
                 <button
                   key={g.value}
-                  onClick={() => setGender(g.value)}
+                  role="radio"
+                  aria-checked={state.gender === g.value}
+                  onClick={() => setState('gender', g.value)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    gender === g.value
+                    state.gender === g.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -252,12 +259,13 @@ export function WageGapCalculatorWidget() {
 
           {/* Occupation */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-occupation" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Occupation / Industry
             </label>
             <select
-              value={occupation}
-              onChange={(e) => setOccupation(Number(e.target.value))}
+              id="wg-occupation"
+              value={state.occupation}
+              onChange={(e) => setState('occupation', Number(e.target.value))}
               className={selectClass}
             >
               {wageGapData.occupations.map((occ, idx) => (
@@ -270,12 +278,13 @@ export function WageGapCalculatorWidget() {
 
           {/* Experience */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-experience" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Years of Experience
             </label>
             <select
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
+              id="wg-experience"
+              value={state.experience}
+              onChange={(e) => setState('experience', e.target.value)}
               className={selectClass}
             >
               {EXPERIENCE_RANGES.map((exp) => (
@@ -288,12 +297,13 @@ export function WageGapCalculatorWidget() {
 
           {/* Education */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-education" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Education Level
             </label>
             <select
-              value={education}
-              onChange={(e) => setEducation(e.target.value)}
+              id="wg-education"
+              value={state.education}
+              onChange={(e) => setState('education', e.target.value)}
               className={selectClass}
             >
               {EDUCATION_LEVELS.map((ed) => (
@@ -306,12 +316,13 @@ export function WageGapCalculatorWidget() {
 
           {/* State / Region */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-state" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               State / Region
             </label>
             <select
-              value={stateRegion}
-              onChange={(e) => setStateRegion(e.target.value)}
+              id="wg-state"
+              value={state.stateRegion}
+              onChange={(e) => setState('stateRegion', e.target.value)}
               className={selectClass}
             >
               {STATES.map((s) => (
@@ -334,11 +345,11 @@ export function WageGapCalculatorWidget() {
               value={results.yourMedian}
               format="currency"
               decimals={0}
-              className="font-mono text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
               {results.occupationName} &middot;{" "}
-              {gender === "women" ? "Women" : "Men"}
+              {state.gender === "women" ? "Women" : "Men"}
             </p>
           </div>
 
@@ -365,13 +376,13 @@ export function WageGapCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Your Salary"
               highlight
               value={
                 <AnimatedNumber
-                  value={salary}
+                  value={state.salary}
                   format="compact"
                   decimals={1}
                   className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
@@ -442,6 +453,7 @@ export function WageGapCalculatorWidget() {
           <ShareResults
             title="Wage Gap Analysis"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* Adjusted vs Unadjusted Context */}
@@ -468,7 +480,7 @@ export function WageGapCalculatorWidget() {
             <p className="mb-3 text-sm font-medium text-[#EF4444]">
               Lifetime Cost of the Gap (with 3% annual growth)
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               {results.careerCost.map((item) => (
                 <div key={item.years} className="text-center">
                   <p className="text-xs text-[#94A3B8]">{item.years} Years</p>
@@ -566,16 +578,16 @@ export function WageGapCalculatorWidget() {
               formatter={(value, name) => [
                 formatCurrency(value as number),
                 name === "yourEarnings"
-                  ? `${gender === "women" ? "Women" : "Men"}'s Earnings`
-                  : `${gender === "women" ? "Men" : "Women"}'s Earnings`,
+                  ? `${state.gender === "women" ? "Women" : "Men"}'s Earnings`
+                  : `${state.gender === "women" ? "Men" : "Women"}'s Earnings`,
               ]}
             />
             <Legend
               wrapperStyle={{ color: COLORS.textMuted, fontSize: 12 }}
               formatter={(value) =>
                 value === "yourEarnings"
-                  ? `${gender === "women" ? "Women" : "Men"}'s Cumulative Earnings`
-                  : `${gender === "women" ? "Men" : "Women"}'s Cumulative Earnings`
+                  ? `${state.gender === "women" ? "Women" : "Men"}'s Cumulative Earnings`
+                  : `${state.gender === "women" ? "Men" : "Women"}'s Cumulative Earnings`
               }
             />
             <Line

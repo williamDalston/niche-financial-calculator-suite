@@ -2,7 +2,7 @@
 
 A comprehensive suite of free, privacy-first financial calculators built with Next.js 16, React 19, and Tailwind CSS 4.
 
-**Live Site:** [calcengine.io](https://calcengine.io)
+**Live Site:** [calcengine.org](https://calcengine.org)
 
 ## Features
 
@@ -59,7 +59,7 @@ Edit `.env.local` with your values:
 
 ```bash
 # Site URL (used for metadata and canonical URLs)
-NEXT_PUBLIC_SITE_URL=https://calcengine.io
+NEXT_PUBLIC_SITE_URL=https://calcengine.org
 
 # Google AdSense Publisher ID (leave blank to disable ads)
 NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=

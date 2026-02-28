@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Rent vs Buy Calculator | CalcEngine",
     description:
       "Should you rent or buy a home? Compare the total cost of renting vs buying over time, including equity, investments, and breakeven analysis. Free calculator with charts.",
-    url: "https://calcengine.io/calculators/rent-vs-buy-calculator",
+    url: "https://calcengine.org/calculators/rent-vs-buy-calculator",
   },
   twitter: {
     card: "summary_large_image",

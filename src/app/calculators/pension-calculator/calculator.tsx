@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   LineChart,
   Line,
@@ -52,27 +53,31 @@ type SurvivorOption = "none" | "50" | "75" | "100";
 /* ------------------------------------------------------------------ */
 
 export function PensionCalculatorWidget() {
-  const [currentAge, setCurrentAge] = useState(45);
-  const [retirementAge, setRetirementAge] = useState(62);
-  const [yearsOfService, setYearsOfService] = useState(25);
-  const [finalSalary, setFinalSalary] = useState(85000);
-  const [salaryBasis, setSalaryBasis] = useState<SalaryBasis>("high3");
-  const [pensionMultiplier, setPensionMultiplier] = useState(2);
-  const [colaRate, setColaRate] = useState(2);
-  const [survivorOption, setSurvivorOption] = useState<SurvivorOption>("none");
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentAge: 45,
+      retirementAge: 62,
+      yearsOfService: 25,
+      finalSalary: 85000,
+      salaryBasis: "high3" as string,
+      pensionMultiplier: 2,
+      colaRate: 2,
+      survivorOption: "none" as string,
+    },
+  });
   const [showLumpSum, setShowLumpSum] = useState(false);
 
   const results = useMemo(() => {
     // Salary basis adjustment (high-3 and high-5 are typically slightly lower)
-    let effectiveSalary = finalSalary;
-    if (salaryBasis === "high3") {
-      effectiveSalary = finalSalary * 0.97; // Approximate: average of highest 3 years
-    } else if (salaryBasis === "high5") {
-      effectiveSalary = finalSalary * 0.94; // Approximate: average of highest 5 years
+    let effectiveSalary = state.finalSalary;
+    if (state.salaryBasis === "high3") {
+      effectiveSalary = state.finalSalary * 0.97; // Approximate: average of highest 3 years
+    } else if (state.salaryBasis === "high5") {
+      effectiveSalary = state.finalSalary * 0.94; // Approximate: average of highest 5 years
     }
 
     // Basic pension calculation
-    const annualPension = effectiveSalary * (pensionMultiplier / 100) * yearsOfService;
+    const annualPension = effectiveSalary * (state.pensionMultiplier / 100) * state.yearsOfService;
     const monthlyPension = annualPension / 12;
     const replacementRate = effectiveSalary > 0 ? (annualPension / effectiveSalary) * 100 : 0;
 
@@ -83,13 +88,13 @@ export function PensionCalculatorWidget() {
       "75": 0.85,   // ~15% reduction
       "100": 0.80,  // ~20% reduction
     };
-    const survivorFactor = survivorReductions[survivorOption];
+    const survivorFactor = survivorReductions[state.survivorOption as SurvivorOption];
     const adjustedMonthlyPension = monthlyPension * survivorFactor;
     const adjustedAnnualPension = annualPension * survivorFactor;
 
-    const survivorMonthlyBenefit = survivorOption === "none"
+    const survivorMonthlyBenefit = state.survivorOption === "none"
       ? 0
-      : adjustedMonthlyPension * (parseInt(survivorOption) / 100);
+      : adjustedMonthlyPension * (parseInt(state.survivorOption) / 100);
 
     // COLA projections
     const colaProjections: {
@@ -102,9 +107,9 @@ export function PensionCalculatorWidget() {
     let currentPension = adjustedAnnualPension;
 
     for (let year = 0; year < 30; year++) {
-      const age = retirementAge + year;
+      const age = state.retirementAge + year;
       if (year > 0) {
-        currentPension *= (1 + colaRate / 100);
+        currentPension *= (1 + state.colaRate / 100);
       }
       cumulativeIncome += currentPension;
       colaProjections.push({
@@ -125,7 +130,7 @@ export function PensionCalculatorWidget() {
     let lumpSum = 0;
     let pensionForLumpSum = adjustedAnnualPension;
     for (let year = 1; year <= 30; year++) {
-      if (year > 1) pensionForLumpSum *= (1 + colaRate / 100);
+      if (year > 1) pensionForLumpSum *= (1 + state.colaRate / 100);
       lumpSum += pensionForLumpSum / Math.pow(1 + discountRate, year);
     }
 
@@ -149,14 +154,14 @@ export function PensionCalculatorWidget() {
       lumpSum,
       survivorComparisonData,
     };
-  }, [finalSalary, salaryBasis, pensionMultiplier, yearsOfService, colaRate, survivorOption, retirementAge]);
+  }, [state.finalSalary, state.salaryBasis, state.pensionMultiplier, state.yearsOfService, state.colaRate, state.survivorOption, state.retirementAge]);
 
   const shareResultsData: Record<string, string> = {
     "Monthly Pension": formatCurrencyExact(results.monthlyPension),
     "Annual Pension": formatCurrency(results.annualPension),
     "Replacement Rate": `${results.replacementRate.toFixed(1)}%`,
     "10yr COLA Value": formatCurrency(results.at10),
-    ...(survivorOption !== "none"
+    ...(state.survivorOption !== "none"
       ? { "Survivor Benefit": formatCurrencyExact(results.survivorMonthlyBenefit) + "/mo" }
       : {}),
     "Lump Sum Equivalent": formatCurrency(results.lumpSum),
@@ -164,14 +169,14 @@ export function PensionCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Current Age */}
           <CustomSlider
             label="Current Age"
-            value={currentAge}
-            onChange={setCurrentAge}
+            value={state.currentAge}
+            onChange={(v) => setState('currentAge', v)}
             min={18}
             max={80}
             step={1}
@@ -181,8 +186,8 @@ export function PensionCalculatorWidget() {
           {/* Retirement Age */}
           <CustomSlider
             label="Retirement Age"
-            value={retirementAge}
-            onChange={setRetirementAge}
+            value={state.retirementAge}
+            onChange={(v) => setState('retirementAge', v)}
             min={50}
             max={70}
             step={1}
@@ -192,8 +197,8 @@ export function PensionCalculatorWidget() {
           {/* Years of Service */}
           <CustomSlider
             label="Years of Service"
-            value={yearsOfService}
-            onChange={setYearsOfService}
+            value={state.yearsOfService}
+            onChange={(v) => setState('yearsOfService', v)}
             min={0}
             max={40}
             step={1}
@@ -204,14 +209,14 @@ export function PensionCalculatorWidget() {
           <div>
             <CurrencyInput
               label="Final Average Salary"
-              value={finalSalary}
-              onChange={setFinalSalary}
+              value={state.finalSalary}
+              onChange={(v) => setState('finalSalary', v)}
               min={0}
               step={1000}
             />
             <CustomSlider
-              value={finalSalary}
-              onChange={setFinalSalary}
+              value={state.finalSalary}
+              onChange={(v) => setState('finalSalary', v)}
               min={30000}
               max={250000}
               step={1000}
@@ -223,7 +228,7 @@ export function PensionCalculatorWidget() {
           {/* Salary Basis */}
           <div>
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">Salary Basis</label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="Salary Basis">
               {([
                 { value: "final", label: "Final Salary" },
                 { value: "high3", label: "High-3" },
@@ -231,9 +236,11 @@ export function PensionCalculatorWidget() {
               ] as const).map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setSalaryBasis(option.value)}
+                  role="radio"
+                  aria-checked={state.salaryBasis === option.value}
+                  onClick={() => setState('salaryBasis', option.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    salaryBasis === option.value
+                    state.salaryBasis === option.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -247,8 +254,8 @@ export function PensionCalculatorWidget() {
           {/* Pension Multiplier */}
           <PercentageInput
             label="Pension Multiplier (% per year of service)"
-            value={pensionMultiplier}
-            onChange={setPensionMultiplier}
+            value={state.pensionMultiplier}
+            onChange={(v) => setState('pensionMultiplier', v)}
             min={0.5}
             max={4}
             step={0.1}
@@ -257,8 +264,8 @@ export function PensionCalculatorWidget() {
           {/* COLA Rate */}
           <PercentageInput
             label="COLA Rate (% annual increase)"
-            value={colaRate}
-            onChange={setColaRate}
+            value={state.colaRate}
+            onChange={(v) => setState('colaRate', v)}
             min={0}
             max={5}
             step={0.25}
@@ -267,7 +274,7 @@ export function PensionCalculatorWidget() {
           {/* Survivor Benefit */}
           <div>
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">Survivor Benefit Option</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Survivor Benefit Option">
               {([
                 { value: "none", label: "None" },
                 { value: "50", label: "50%" },
@@ -276,9 +283,11 @@ export function PensionCalculatorWidget() {
               ] as const).map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setSurvivorOption(option.value)}
+                  role="radio"
+                  aria-checked={state.survivorOption === option.value}
+                  onClick={() => setState('survivorOption', option.value)}
                   className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
-                    survivorOption === option.value
+                    state.survivorOption === option.value
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -314,7 +323,7 @@ export function PensionCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <StatCard
               label="Monthly Pension Benefit"
               highlight
@@ -360,7 +369,7 @@ export function PensionCalculatorWidget() {
                 />
               }
             />
-            {survivorOption !== "none" && (
+            {state.survivorOption !== "none" && (
               <StatCard
                 label="Survivor Monthly Benefit"
                 value={
@@ -392,12 +401,13 @@ export function PensionCalculatorWidget() {
           <ShareResults
             title="Pension Calculation Results"
             results={shareResultsData}
+            getShareUrl={getShareUrl}
           />
 
           {/* COLA Milestones */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
             <p className="mb-3 text-sm font-medium text-[#94A3B8]">COLA-Adjusted Annual Income</p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               <div>
                 <p className="text-xs text-[#94A3B8]">Year 5</p>
                 <p className="font-mono text-sm font-bold text-[#F1F5F9]">{formatCurrency(results.at5)}</p>

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "401(k) Calculator | CalcEngine",
     description:
       "Calculate your 401(k) balance at retirement with employer matching, investment growth, and salary increases. Free 401k calculator with projected monthly retirement income.",
-    url: "https://calcengine.io/calculators/401k-calculator",
+    url: "https://calcengine.org/calculators/401k-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -47,7 +47,7 @@ const howItWorks = `
 <p>This calculator accounts for annual salary growth, which means your dollar contributions increase each year even if your contribution percentage stays the same. The default 3% salary growth rate approximates the historical average for U.S. workers. In practice, salary growth varies significantly by career stage, with faster growth in early career years and slower growth later. You can adjust this rate to match your personal situation.</p>
 
 <h3>Important Limitations</h3>
-<p>This calculator assumes consistent contributions and returns over the entire projection period. In reality, investment returns fluctuate year to year, and there may be periods where you change jobs, adjust contributions, or take hardship withdrawals. The calculator does not enforce annual IRS contribution limits ($23,000 in 2024, $30,500 for age 50+), which may cap your actual contributions. It also does not account for taxes on withdrawals in retirement or the impact of inflation on purchasing power. For comprehensive retirement planning, consider consulting with a certified financial planner.</p>
+<p>This calculator assumes consistent contributions and returns over the entire projection period. In reality, investment returns fluctuate year to year, and there may be periods where you change jobs, adjust contributions, or take hardship withdrawals. The calculator does not enforce annual IRS contribution limits ($23,500 in 2025, $31,000 for age 50+), which may cap your actual contributions. It also does not account for taxes on withdrawals in retirement or the impact of inflation on purchasing power. For comprehensive retirement planning, consider consulting with a certified financial planner.</p>
 `;
 
 const formula = `Monthly Growth:
@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "How much should I contribute to my 401(k)?",
     answer:
-      "At minimum, contribute enough to capture your full employer match, as this is essentially a 50-100% instant return on your money. Beyond the match, financial advisors generally recommend saving 10-15% of your gross income for retirement, including the employer match. If you started saving later in your career, you may need to save more. The 2024 IRS contribution limit is $23,000, or $30,500 if you are age 50 or older (catch-up contributions).",
+      "At minimum, contribute enough to capture your full employer match, as this is essentially a 50-100% instant return on your money. Beyond the match, financial advisors generally recommend saving 10-15% of your gross income for retirement, including the employer match. If you started saving later in your career, you may need to save more. The 2025 IRS contribution limit is $23,500, or $31,000 if you are age 50 or older (catch-up contributions).",
   },
   {
     question: "What is an employer match and how does it work?",
@@ -129,7 +129,7 @@ const editorialContent = `
 <p>Time is your greatest asset when it comes to investing. A 25-year-old who contributes $500/month with a 7% return will have approximately $1.4 million by age 65. Waiting until age 35 to start the same contributions yields only about $610,000, less than half the amount, despite only a 10-year difference. In your early career, financial advisors generally recommend a more aggressive allocation (80-90% stocks) since you have decades to recover from market downturns. At minimum, always contribute enough to capture your full employer match from day one.</p>
 
 <h3>In Your 40s and 50s: Maximize and Catch Up</h3>
-<p>Your peak earning years are the time to maximize contributions. If you are behind on retirement savings, the IRS allows catch-up contributions of an additional $7,500 per year starting at age 50 (for a total of $30,500 in 2024). This is also the time to reassess your asset allocation, gradually shifting toward a more balanced mix of stocks and bonds. Consider increasing your contribution percentage by 1% each year or directing all raises toward your 401(k) until you reach the maximum.</p>
+<p>Your peak earning years are the time to maximize contributions. If you are behind on retirement savings, the IRS allows catch-up contributions of an additional $7,500 per year starting at age 50 (for a total of $31,000 in 2025). This is also the time to reassess your asset allocation, gradually shifting toward a more balanced mix of stocks and bonds. Consider increasing your contribution percentage by 1% each year or directing all raises toward your 401(k) until you reach the maximum.</p>
 
 <h3>Common 401(k) Mistakes to Avoid</h3>
 <p>The most costly mistake is not participating at all, or not contributing enough to capture the full employer match. Other common errors include: cashing out when changing jobs (triggering taxes and penalties that can consume 30-40% of the balance), keeping too much in your company's stock (lack of diversification), choosing overly conservative investments too early (missing decades of growth), and taking 401(k) loans that reduce your invested balance during critical growth years. Automating your contributions and periodically rebalancing your portfolio can help you avoid emotional investing decisions.</p>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   ResponsiveContainer,
   Tooltip,
@@ -35,9 +36,7 @@ const COLORS = {
   textMuted: "#94A3B8",
 };
 
-type InputMode = "aime" | "income";
-
-// 2024 bend points
+// 2025 bend points
 const BEND_POINT_1 = 1174;
 const BEND_POINT_2 = 7078;
 
@@ -100,27 +99,31 @@ function getBenefitAtAge(pia: number, claimAge: number, fra: number): number {
 }
 
 export function SocialSecurityEstimatorWidget() {
-  const [currentAge, setCurrentAge] = useState(40);
-  const [birthYear, setBirthYear] = useState(1985);
-  const [inputMode, setInputMode] = useState<InputMode>("income");
-  const [aime, setAime] = useState(5000);
-  const [annualIncome, setAnnualIncome] = useState(75000);
-  const [plannedRetirementAge, setPlannedRetirementAge] = useState(67);
-  const [yearsWorked, setYearsWorked] = useState(20);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentAge: 40,
+      birthYear: 1985,
+      inputMode: "income" as string,
+      aime: 5000,
+      annualIncome: 75000,
+      plannedRetirementAge: 67,
+      yearsWorked: 20,
+    },
+  });
 
   const results = useMemo(() => {
-    const fra = getFRA(birthYear);
+    const fra = getFRA(state.birthYear);
     const fraDisplay = Math.floor(fra) + (fra % 1 > 0 ? ` and ${Math.round((fra % 1) * 12)} months` : "");
 
     // Calculate AIME from income (simplified)
     let effectiveAime: number;
-    if (inputMode === "aime") {
-      effectiveAime = aime;
+    if (state.inputMode === "aime") {
+      effectiveAime = state.aime;
     } else {
       // Simplified: AIME = average of highest 35 years of indexed earnings / 12
       // For simplicity, use current annual income scaled by years worked vs 35
-      const effectiveYears = Math.min(yearsWorked, 35);
-      const totalIndexedEarnings = annualIncome * effectiveYears;
+      const effectiveYears = Math.min(state.yearsWorked, 35);
+      const totalIndexedEarnings = state.annualIncome * effectiveYears;
       effectiveAime = totalIndexedEarnings / (35 * 12);
     }
 
@@ -130,7 +133,7 @@ export function SocialSecurityEstimatorWidget() {
     const benefitAt62 = getBenefitAtAge(pia, 62, fra);
     const benefitAtFRA = pia; // By definition, benefit at FRA = PIA
     const benefitAt70 = getBenefitAtAge(pia, 70, fra);
-    const benefitAtPlanned = getBenefitAtAge(pia, plannedRetirementAge, fra);
+    const benefitAtPlanned = getBenefitAtAge(pia, state.plannedRetirementAge, fra);
 
     // Cumulative benefits comparison (from claim age to age 90)
     const maxAge = 90;
@@ -180,7 +183,7 @@ export function SocialSecurityEstimatorWidget() {
       crossover62vsFRA,
       crossover62vs70,
     };
-  }, [currentAge, birthYear, inputMode, aime, annualIncome, plannedRetirementAge, yearsWorked]);
+  }, [state.currentAge, state.birthYear, state.inputMode, state.aime, state.annualIncome, state.plannedRetirementAge, state.yearsWorked]);
 
   const comparisonBarData = [
     { name: "Age 62", benefit: Math.round(results.benefitAt62), label: "Early" },
@@ -201,14 +204,14 @@ export function SocialSecurityEstimatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Current Age */}
           <CustomSlider
-            label={`Current Age: ${currentAge}`}
-            value={currentAge}
-            onChange={setCurrentAge}
+            label={`Current Age: ${state.currentAge}`}
+            value={state.currentAge}
+            onChange={(v) => setState('currentAge', v)}
             min={18}
             max={80}
             step={1}
@@ -218,13 +221,14 @@ export function SocialSecurityEstimatorWidget() {
 
           {/* Birth Year */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="ss-birth-year" className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Birth Year
             </label>
             <input
+              id="ss-birth-year"
               type="number"
-              value={birthYear}
-              onChange={(e) => setBirthYear(Number(e.target.value))}
+              value={state.birthYear}
+              onChange={(e) => setState('birthYear', Number(e.target.value))}
               className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
               min={1940}
               max={2005}
@@ -236,13 +240,15 @@ export function SocialSecurityEstimatorWidget() {
             <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
               Earnings Input Method
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="radiogroup" aria-label="Earnings Input Method">
               {(["income", "aime"] as const).map((mode) => (
                 <button
                   key={mode}
-                  onClick={() => setInputMode(mode)}
+                  role="radio"
+                  aria-checked={state.inputMode === mode}
+                  onClick={() => setState('inputMode', mode)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
-                    inputMode === mode
+                    state.inputMode === mode
                       ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
                       : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
                   }`}
@@ -254,20 +260,20 @@ export function SocialSecurityEstimatorWidget() {
           </div>
 
           {/* Income or AIME */}
-          {inputMode === "income" ? (
+          {state.inputMode === "income" ? (
             <>
               <div>
                 <CurrencyInput
                   label="Current Annual Income"
-                  value={annualIncome}
-                  onChange={setAnnualIncome}
+                  value={state.annualIncome}
+                  onChange={(v) => setState('annualIncome', v)}
                   min={0}
                   max={250000}
                   step={1000}
                 />
                 <CustomSlider
-                  value={annualIncome}
-                  onChange={setAnnualIncome}
+                  value={state.annualIncome}
+                  onChange={(v) => setState('annualIncome', v)}
                   min={0}
                   max={200000}
                   step={1000}
@@ -277,9 +283,9 @@ export function SocialSecurityEstimatorWidget() {
                 />
               </div>
               <CustomSlider
-                label={`Years of Work History: ${yearsWorked}`}
-                value={yearsWorked}
-                onChange={setYearsWorked}
+                label={`Years of Work History: ${state.yearsWorked}`}
+                value={state.yearsWorked}
+                onChange={(v) => setState('yearsWorked', v)}
                 min={0}
                 max={45}
                 step={1}
@@ -291,15 +297,15 @@ export function SocialSecurityEstimatorWidget() {
             <div>
               <CurrencyInput
                 label="Average Indexed Monthly Earnings (AIME)"
-                value={aime}
-                onChange={setAime}
+                value={state.aime}
+                onChange={(v) => setState('aime', v)}
                 min={0}
                 max={15000}
                 step={100}
               />
               <CustomSlider
-                value={aime}
-                onChange={setAime}
+                value={state.aime}
+                onChange={(v) => setState('aime', v)}
                 min={0}
                 max={12000}
                 step={50}
@@ -312,9 +318,9 @@ export function SocialSecurityEstimatorWidget() {
 
           {/* Planned Claiming Age */}
           <CustomSlider
-            label={`Planned Claiming Age: ${plannedRetirementAge}`}
-            value={plannedRetirementAge}
-            onChange={setPlannedRetirementAge}
+            label={`Planned Claiming Age: ${state.plannedRetirementAge}`}
+            value={state.plannedRetirementAge}
+            onChange={(v) => setState('plannedRetirementAge', v)}
             min={62}
             max={70}
             step={1}
@@ -332,13 +338,13 @@ export function SocialSecurityEstimatorWidget() {
           {/* Primary Result: Monthly Benefit at Planned Age */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
             <p className="mb-2 text-sm text-[#94A3B8]">
-              Estimated Monthly Benefit at Age {plannedRetirementAge}
+              Estimated Monthly Benefit at Age {state.plannedRetirementAge}
             </p>
             <AnimatedNumber
               value={results.benefitAtPlanned}
               format="currency"
               decimals={2}
-              className="font-mono text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
           </div>
 
@@ -367,15 +373,16 @@ export function SocialSecurityEstimatorWidget() {
           <ShareResults
             title="Social Security Estimator Results"
             results={shareResults}
+            getShareUrl={getShareUrl}
           />
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Monthly Benefit"
               value={formatCurrencyExact(results.benefitAtPlanned)}
               highlight
-              subvalue={`At age ${plannedRetirementAge}`}
+              subvalue={`At age ${state.plannedRetirementAge}`}
             />
             <StatCard
               label="Annual Benefit"

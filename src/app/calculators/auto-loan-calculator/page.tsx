@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Auto Loan Calculator | CalcEngine",
     description:
       "Calculate your monthly car payment with down payment, trade-in, and sales tax. See total interest, total cost, and an amortization chart for your auto loan.",
-    url: "https://calcengine.io/calculators/auto-loan-calculator",
+    url: "https://calcengine.org/calculators/auto-loan-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -69,7 +69,7 @@ const faqs = [
   {
     question: "What is a good interest rate for an auto loan?",
     answer:
-      "Auto loan rates vary based on credit score, loan term, and whether the vehicle is new or used. As of 2024, average rates for a new car loan range from about 5% for excellent credit (750+) to 12-14% for poor credit (below 600). Used car rates run about 1-2% higher. Credit union rates are often 0.5-1.5% lower than bank rates. To get the best rate, check your credit score before shopping, get pre-approved from multiple lenders, and aim for the shortest term you can afford.",
+      "Auto loan rates vary based on credit score, loan term, and whether the vehicle is new or used. As of 2025, average rates for a new car loan range from about 5% for excellent credit (750+) to 12-14% for poor credit (below 600). Used car rates run about 1-2% higher. Credit union rates are often 0.5-1.5% lower than bank rates. To get the best rate, check your credit score before shopping, get pre-approved from multiple lenders, and aim for the shortest term you can afford.",
   },
   {
     question: "How much should I put down on a car?",

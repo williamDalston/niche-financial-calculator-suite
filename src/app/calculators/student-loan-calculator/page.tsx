@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Student Loan Calculator | CalcEngine",
     description:
       "Calculate your student loan monthly payment, total interest, and payoff timeline. Compare repayment plans and see how extra payments can save you thousands.",
-    url: "https://calcengine.io/calculators/student-loan-calculator",
+    url: "https://calcengine.org/calculators/student-loan-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -120,7 +120,7 @@ const editorialContent = `
 <p>Student loan debt has become one of the defining financial challenges of our time. With the average graduate carrying roughly $30,000-$40,000 in student debt, understanding your repayment options and developing a strategy can save you years of payments and thousands of dollars in interest.</p>
 
 <h3>The Real Impact of Interest Rates</h3>
-<p>Interest rates on student loans vary widely. Federal undergraduate loan rates for the 2024-2025 academic year are around 6.53%, while graduate loans and PLUS loans carry higher rates. Private loan rates range from about 4% to 16% depending on creditworthiness. On a $35,000 loan, the difference between a 5% and 7% rate over 10 years is approximately $4,000 in additional interest. Over 25 years on an extended plan, that difference grows to over $15,000.</p>
+<p>Interest rates on student loans vary widely. Federal undergraduate loan rates for the 2025-2026 academic year are approximately 6.53%, while graduate loans and PLUS loans carry higher rates. Private loan rates range from about 4% to 16% depending on creditworthiness. On a $35,000 loan, the difference between a 5% and 7% rate over 10 years is approximately $4,000 in additional interest. Over 25 years on an extended plan, that difference grows to over $15,000.</p>
 
 <h3>Strategies That Actually Work</h3>
 <p>The most effective debt reduction strategies combine behavioral changes with mathematical optimization. The avalanche method (paying extra toward the highest-rate loan first) minimizes total interest. The snowball method (paying off the smallest balance first) provides psychological wins that keep you motivated. Both are far better than making only minimum payments.</p>

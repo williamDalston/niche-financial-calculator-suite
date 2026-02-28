@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   PieChart,
   Pie,
@@ -78,35 +79,39 @@ const IconCar = (
 /* ------------------------------------------------------------------ */
 
 export function AutoLoanCalculatorWidget() {
-  const [vehiclePrice, setVehiclePrice] = useState(35000);
-  const [downPayment, setDownPayment] = useState(5000);
-  const [tradeInValue, setTradeInValue] = useState(0);
-  const [salesTaxRate, setSalesTaxRate] = useState(7.0);
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState(60);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      vehiclePrice: 35000,
+      downPayment: 5000,
+      tradeInValue: 0,
+      salesTaxRate: 7.0,
+      interestRate: 6.5,
+      loanTerm: 60,
+    },
+  });
 
   const results = useMemo(() => {
-    const netPrice = vehiclePrice - downPayment - tradeInValue;
-    if (netPrice <= 0 || loanTerm <= 0) return null;
+    const netPrice = state.vehiclePrice - state.downPayment - state.tradeInValue;
+    if (netPrice <= 0 || state.loanTerm <= 0) return null;
 
-    const salesTax = netPrice * (salesTaxRate / 100);
+    const salesTax = netPrice * (state.salesTaxRate / 100);
     const loanAmount = netPrice + salesTax;
-    const monthlyRate = interestRate / 100 / 12;
+    const monthlyRate = state.interestRate / 100 / 12;
 
-    const M = calcMonthlyPayment(loanAmount, monthlyRate, loanTerm);
-    const totalCost = M * loanTerm;
+    const M = calcMonthlyPayment(loanAmount, monthlyRate, state.loanTerm);
+    const totalCost = M * state.loanTerm;
     const totalInterest = totalCost - loanAmount;
 
     // Amortization schedule
     const schedule: { month: number; balance: number }[] = [];
     let balance = loanAmount;
-    const step = loanTerm > 60 ? 3 : loanTerm > 36 ? 2 : 1;
+    const step = state.loanTerm > 60 ? 3 : state.loanTerm > 36 ? 2 : 1;
 
-    for (let m = 0; m <= loanTerm; m++) {
-      if (m % step === 0 || m === loanTerm) {
+    for (let m = 0; m <= state.loanTerm; m++) {
+      if (m % step === 0 || m === state.loanTerm) {
         schedule.push({ month: m, balance: Math.max(0, Math.round(balance)) });
       }
-      if (m < loanTerm) {
+      if (m < state.loanTerm) {
         const interestPayment = balance * monthlyRate;
         const principalPayment = M - interestPayment;
         balance -= principalPayment;
@@ -129,18 +134,18 @@ export function AutoLoanCalculatorWidget() {
       pieData,
       schedule,
     };
-  }, [vehiclePrice, downPayment, tradeInValue, salesTaxRate, interestRate, loanTerm]);
+  }, [state.vehiclePrice, state.downPayment, state.tradeInValue, state.salesTaxRate, state.interestRate, state.loanTerm]);
 
   const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B"];
 
   return (
     <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
       {/* Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
         <CurrencyInput
           label="Vehicle Price"
-          value={vehiclePrice}
-          onChange={setVehiclePrice}
+          value={state.vehiclePrice}
+          onChange={(v) => setState('vehiclePrice', v)}
           min={0}
           max={500000}
           step={500}
@@ -148,26 +153,26 @@ export function AutoLoanCalculatorWidget() {
 
         <CurrencyInput
           label="Down Payment"
-          value={downPayment}
-          onChange={setDownPayment}
+          value={state.downPayment}
+          onChange={(v) => setState('downPayment', v)}
           min={0}
-          max={vehiclePrice}
+          max={state.vehiclePrice}
           step={500}
         />
 
         <CurrencyInput
           label="Trade-In Value"
-          value={tradeInValue}
-          onChange={setTradeInValue}
+          value={state.tradeInValue}
+          onChange={(v) => setState('tradeInValue', v)}
           min={0}
-          max={vehiclePrice}
+          max={state.vehiclePrice}
           step={500}
         />
 
         <PercentageInput
           label="Sales Tax Rate"
-          value={salesTaxRate}
-          onChange={setSalesTaxRate}
+          value={state.salesTaxRate}
+          onChange={(v) => setState('salesTaxRate', v)}
           min={0}
           max={20}
           step={0.1}
@@ -176,17 +181,17 @@ export function AutoLoanCalculatorWidget() {
         <div>
           <PercentageInput
             label="Interest Rate (APR)"
-            value={interestRate}
-            onChange={setInterestRate}
+            value={state.interestRate}
+            onChange={(v) => setState('interestRate', v)}
             min={0}
             max={30}
             step={0.1}
           />
           <CustomSlider
-            value={interestRate}
-            onChange={setInterestRate}
+            value={state.interestRate}
+            onChange={(v) => setState('interestRate', v)}
             min={0}
-            max={20}
+            max={30}
             step={0.1}
             formatValue={(v) => `${v.toFixed(1)}%`}
             showMinMax
@@ -198,13 +203,13 @@ export function AutoLoanCalculatorWidget() {
           <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
             Loan Term
           </label>
-          <div className="flex gap-1 rounded-lg bg-[#0B1120] p-1 border border-[#1E293B]">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1 rounded-lg bg-[#0B1120] p-1 border border-[#1E293B]">
             {termOptions.map((t) => (
               <button
                 key={t}
-                onClick={() => setLoanTerm(t)}
-                className={`flex-1 rounded-md px-2 py-2.5 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 ${
-                  loanTerm === t
+                onClick={() => setState('loanTerm', t)}
+                className={`rounded-md px-2 py-2.5 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 min-h-[44px] sm:min-h-0 ${
+                  state.loanTerm === t
                     ? "bg-[#162032] text-[#22C55E] shadow-sm"
                     : "text-[#94A3B8] hover:text-[#F1F5F9]"
                 }`}
@@ -214,7 +219,7 @@ export function AutoLoanCalculatorWidget() {
             ))}
           </div>
           <p className="mt-1.5 text-xs text-[#94A3B8] text-center">
-            {loanTerm} months ({(loanTerm / 12).toFixed(loanTerm % 12 === 0 ? 0 : 1)} years)
+            {state.loanTerm} months ({(state.loanTerm / 12).toFixed(state.loanTerm % 12 === 0 ? 0 : 1)} years)
           </p>
         </div>
       </div>
@@ -229,21 +234,21 @@ export function AutoLoanCalculatorWidget() {
               value={results.monthlyPayment}
               format="currency"
               decimals={2}
-              className="font-mono text-4xl md:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="text-xs text-[#94A3B8] mt-2">
-              for {loanTerm} months at {interestRate}% APR
+              for {state.loanTerm} months at {state.interestRate}% APR
             </p>
           </div>
 
           {/* StatCard grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6">
             <StatCard
               label="Monthly Payment"
               value={fmt(results.monthlyPayment)}
               icon={IconCalendar}
               highlight
-              subvalue={`${loanTerm} monthly payments`}
+              subvalue={`${state.loanTerm} monthly payments`}
             />
             <StatCard
               label="Loan Amount"
@@ -255,7 +260,7 @@ export function AutoLoanCalculatorWidget() {
               label="Total Interest"
               value={fmtShort(Math.round(results.totalInterest))}
               icon={IconTrendingUp}
-              subvalue={`at ${interestRate}% APR`}
+              subvalue={`at ${state.interestRate}% APR`}
             />
             <StatCard
               label="Total Cost"
@@ -267,7 +272,7 @@ export function AutoLoanCalculatorWidget() {
               label="Sales Tax"
               value={fmtShort(Math.round(results.salesTax))}
               icon={IconPercent}
-              subvalue={`${salesTaxRate}% tax rate`}
+              subvalue={`${state.salesTaxRate}% tax rate`}
             />
           </div>
 
@@ -275,16 +280,17 @@ export function AutoLoanCalculatorWidget() {
           <ShareResults
             title="Auto Loan Calculator — CalcEngine.io"
             results={{
-              "Vehicle Price": fmtShort(vehiclePrice),
-              "Down Payment": fmtShort(downPayment),
+              "Vehicle Price": fmtShort(state.vehiclePrice),
+              "Down Payment": fmtShort(state.downPayment),
               "Loan Amount": fmt(results.loanAmount),
               "Monthly Payment": fmt(results.monthlyPayment),
               "Total Interest": fmt(results.totalInterest),
               "Total Cost": fmt(results.totalCost),
               "Sales Tax": fmt(results.salesTax),
-              "Loan Term": `${loanTerm} months`,
-              "Interest Rate": `${interestRate}%`,
+              "Loan Term": `${state.loanTerm} months`,
+              "Interest Rate": `${state.interestRate}%`,
             }}
+            getShareUrl={getShareUrl}
             className="mb-8"
           />
 

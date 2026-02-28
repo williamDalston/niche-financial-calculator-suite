@@ -20,30 +20,33 @@ interface StatCardProps {
 function TrendArrow({ direction }: { direction: "up" | "down" }) {
   const isUp = direction === "up";
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={isUp ? "text-[#22C55E]" : "text-[#EF4444]"}
-      aria-hidden="true"
-    >
-      {isUp ? (
-        <>
-          <line x1="12" y1="19" x2="12" y2="5" />
-          <polyline points="5 12 12 5 19 12" />
-        </>
-      ) : (
-        <>
-          <line x1="12" y1="5" x2="12" y2="19" />
-          <polyline points="19 12 12 19 5 12" />
-        </>
-      )}
-    </svg>
+    <>
+      <span className="sr-only">{isUp ? "Trending up" : "Trending down"}</span>
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={isUp ? "text-accent-primary" : "text-[#EF4444]"}
+        aria-hidden="true"
+      >
+        {isUp ? (
+          <>
+            <line x1="12" y1="19" x2="12" y2="5" />
+            <polyline points="5 12 12 5 19 12" />
+          </>
+        ) : (
+          <>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <polyline points="19 12 12 19 5 12" />
+          </>
+        )}
+      </svg>
+    </>
   );
 }
 
@@ -61,31 +64,31 @@ export function StatCard({
   return (
     <div
       className={[
-        "rounded-lg border bg-[#0B1120] p-4 transition-colors",
+        "rounded-lg border bg-bg-primary p-4 transition-colors",
         highlight
-          ? "border-l-[3px] border-l-[#22C55E] border-t-[#1E293B] border-r-[#1E293B] border-b-[#1E293B]"
-          : "border-[#1E293B]",
+          ? "border-l-[3px] border-l-accent-primary border-t-border border-r-border border-b-border"
+          : "border-border",
         className ?? "",
       ].join(" ")}
     >
       {/* Top row: label + optional icon */}
-      <div className="mb-1 flex items-center justify-between">
-        <p className="text-xs font-medium text-[#94A3B8]">{label}</p>
+      <div className="mb-1 flex items-center justify-between gap-1">
+        <p className="text-xs font-medium text-text-muted truncate">{label}</p>
         {icon && (
-          <span className="text-[#94A3B8]" aria-hidden="true">
+          <span className="text-text-muted" aria-hidden="true">
             {icon}
           </span>
         )}
       </div>
 
       {/* Value row */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         <p
           className={[
-            "font-mono font-bold",
+            "font-mono font-bold truncate",
             highlight
-              ? "text-2xl text-[#22C55E]"
-              : "text-lg text-[#F1F5F9]",
+              ? "text-xl sm:text-2xl text-accent-primary"
+              : "text-base sm:text-lg text-text-primary",
           ].join(" ")}
         >
           {value}
@@ -97,7 +100,7 @@ export function StatCard({
 
       {/* Optional sub-value */}
       {subvalue && (
-        <p className="mt-0.5 text-xs text-[#94A3B8]">{subvalue}</p>
+        <p className="mt-0.5 text-xs text-text-muted">{subvalue}</p>
       )}
     </div>
   );

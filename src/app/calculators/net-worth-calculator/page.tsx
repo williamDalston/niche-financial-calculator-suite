@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Net Worth Calculator | CalcEngine",
     description:
       "Calculate your net worth by adding up all your assets and subtracting your liabilities. See your asset allocation, debt-to-asset ratio, and financial snapshot.",
-    url: "https://calcengine.io/calculators/net-worth-calculator",
+    url: "https://calcengine.org/calculators/net-worth-calculator",
   },
   twitter: {
     card: "summary_large_image",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import {
   getCalculatorsForCategoryPage,
   type CalculatorInfo,
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
   title: "Mortgage & Housing Calculators | CalcEngine",
   description:
     "Free mortgage and housing calculators to help you estimate monthly payments, determine home affordability, compare renting vs buying, and plan auto financing. Make smarter real estate decisions with CalcEngine.",
+  openGraph: {
+    title: "Mortgage & Housing Calculators | CalcEngine",
+    description:
+      "Free mortgage and housing calculators for monthly payments, home affordability, rent vs buy, and auto loans.",
+    url: "https://calcengine.org/category/mortgage-and-housing",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mortgage & Housing Calculators | CalcEngine",
+    description:
+      "Free mortgage and housing calculators to help you estimate monthly payments, determine home affordability, compare renting vs buying, and plan auto financing. Make smarter real estate decisions with CalcEngine.",
+  },
   alternates: {
     canonical: "/category/mortgage-and-housing",
   },
@@ -92,6 +105,9 @@ export default function MortgageAndHousingPage() {
         ))}
       </div>
 
+      {/* Ad unit */}
+      <AdUnit className="mt-12" />
+
       {/* JSON-LD BreadcrumbList */}
       <script
         type="application/ld+json"
@@ -104,13 +120,13 @@ export default function MortgageAndHousingPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://calcengine.io/",
+                item: "https://calcengine.org/",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: CATEGORY_NAME,
-                item: `https://calcengine.io/category/${CATEGORY_SLUG}`,
+                item: `https://calcengine.org/category/${CATEGORY_SLUG}`,
               },
             ],
           }),
@@ -125,13 +141,13 @@ export default function MortgageAndHousingPage() {
             name: "Mortgage & Housing Calculators",
             description:
               "Free mortgage and housing calculators to help you estimate monthly payments, determine home affordability, compare renting vs buying, and plan auto financing. Make smarter real estate decisions with CalcEngine.",
-            url: "https://calcengine.io/category/mortgage-and-housing",
+            url: "https://calcengine.org/category/mortgage-and-housing",
             numberOfItems: 4,
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Mortgage Calculator", url: "https://calcengine.io/calculators/mortgage-calculator" },
-              { "@type": "ListItem", position: 2, name: "Home Affordability Calculator", url: "https://calcengine.io/calculators/home-affordability-calculator" },
-              { "@type": "ListItem", position: 3, name: "Rent vs Buy Calculator", url: "https://calcengine.io/calculators/rent-vs-buy-calculator" },
-              { "@type": "ListItem", position: 4, name: "Auto Loan Calculator", url: "https://calcengine.io/calculators/auto-loan-calculator" },
+              { "@type": "ListItem", position: 1, name: "Mortgage Calculator", url: "https://calcengine.org/calculators/mortgage-calculator" },
+              { "@type": "ListItem", position: 2, name: "Home Affordability Calculator", url: "https://calcengine.org/calculators/home-affordability-calculator" },
+              { "@type": "ListItem", position: 3, name: "Rent vs Buy Calculator", url: "https://calcengine.org/calculators/rent-vs-buy-calculator" },
+              { "@type": "ListItem", position: 4, name: "Auto Loan Calculator", url: "https://calcengine.org/calculators/auto-loan-calculator" },
             ],
           }),
         }}

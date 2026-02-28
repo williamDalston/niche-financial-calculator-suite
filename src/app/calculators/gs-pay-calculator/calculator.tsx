@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -15,6 +15,7 @@ import gsPayData from "@/data/gs-pay-tables.json";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrencyExact as fmt, formatCurrency as fmtShort } from "@/lib/formatters";
 
 /* ------------------------------------------------------------------ */
@@ -76,13 +77,20 @@ const IconTrendingUp = (
 /* ------------------------------------------------------------------ */
 
 export function GsPayCalculatorWidget() {
-  const [grade, setGrade] = useState<GradeKey>("GS-12");
-  const [step, setStep] = useState(1);
-  const [localityIndex, setLocalityIndex] = useState(0);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      grade: "GS-12" as string,
+      step: 1,
+      localityIndex: 0,
+    },
+  });
+
+  const grade = state.grade as GradeKey;
+  const step = state.step;
 
   const results = useMemo(() => {
     const basePay = gsPayData.basePayTable[grade][step - 1];
-    const locality = gsPayData.localityAreas[localityIndex];
+    const locality = gsPayData.localityAreas[state.localityIndex];
     const localityRate = locality.rate / 100;
     const localityAdjustment = basePay * localityRate;
     const totalAnnualPay = basePay + localityAdjustment;
@@ -120,19 +128,20 @@ export function GsPayCalculatorWidget() {
       stepChartData,
       breakdownData,
     };
-  }, [grade, step, localityIndex]);
+  }, [grade, step, state.localityIndex]);
 
   return (
     <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
       {/* Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-grade" className="mb-2 block text-sm font-medium text-[#94A3B8]">
             GS Grade
           </label>
           <select
+            id="gs-grade"
             value={grade}
-            onChange={(e) => setGrade(e.target.value as GradeKey)}
+            onChange={(e) => setState('grade', e.target.value)}
             className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
           >
             {grades.map((g) => (
@@ -144,12 +153,13 @@ export function GsPayCalculatorWidget() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-step" className="mb-2 block text-sm font-medium text-[#94A3B8]">
             Step
           </label>
           <select
+            id="gs-step"
             value={step}
-            onChange={(e) => setStep(Number(e.target.value))}
+            onChange={(e) => setState('step', Number(e.target.value))}
             className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
           >
             {steps.map((s) => (
@@ -161,12 +171,13 @@ export function GsPayCalculatorWidget() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-locality" className="mb-2 block text-sm font-medium text-[#94A3B8]">
             Locality Pay Area
           </label>
           <select
-            value={localityIndex}
-            onChange={(e) => setLocalityIndex(Number(e.target.value))}
+            id="gs-locality"
+            value={state.localityIndex}
+            onChange={(e) => setState('localityIndex', Number(e.target.value))}
             className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
           >
             {gsPayData.localityAreas.map((area, i) => (
@@ -185,7 +196,7 @@ export function GsPayCalculatorWidget() {
           value={results.totalAnnualPay}
           format="currency"
           decimals={0}
-          className="font-mono text-4xl md:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+          className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
         />
         <p className="text-xs text-[#94A3B8] mt-2">
           {grade} Step {step} &mdash; {results.localityName}
@@ -193,7 +204,7 @@ export function GsPayCalculatorWidget() {
       </div>
 
       {/* StatCard grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-6">
         <StatCard
           label="Total Annual Pay"
           value={fmt(results.totalAnnualPay)}
@@ -244,6 +255,7 @@ export function GsPayCalculatorWidget() {
           "Biweekly Pay": fmt(results.biweeklyPay),
           "Hourly Rate": fmt(results.hourlyRate),
         }}
+        getShareUrl={getShareUrl}
         className="mb-8"
       />
 

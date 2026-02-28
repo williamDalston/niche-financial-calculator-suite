@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -19,6 +19,7 @@ import { CustomSlider } from "@/components/ui/custom-slider";
 import { PercentageInput } from "@/components/ui/percentage-input";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 
 const COLORS = {
@@ -34,44 +35,50 @@ const COLORS = {
 };
 
 export function FersRetirementCalculatorWidget() {
-  const [currentAge, setCurrentAge] = useState(45);
-  const [retirementAge, setRetirementAge] = useState(62);
-  const [yearsOfService, setYearsOfService] = useState(20);
-  const [high3Salary, setHigh3Salary] = useState(95000);
-  const [tspBalance, setTspBalance] = useState(150000);
-  const [tspMonthlyContribution, setTspMonthlyContribution] = useState(800);
-  const [expectedTspReturn, setExpectedTspReturn] = useState(7);
-  const [fersSupplementEligible, setFersSupplementEligible] = useState(true);
-  const [socialSecurityEstimate, setSocialSecurityEstimate] = useState(2200);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentAge: 45,
+      retirementAge: 62,
+      yearsOfService: 20,
+      high3Salary: 95000,
+      tspBalance: 150000,
+      tspMonthlyContribution: 800,
+      expectedTspReturn: 7,
+      fersSupplementEligible: "true" as string,
+      socialSecurityEstimate: 2200,
+    },
+  });
+
+  const fersSupplementEligible = state.fersSupplementEligible === "true";
 
   const results = useMemo(() => {
-    const yearsToRetirement = Math.max(retirementAge - currentAge, 0);
-    const totalYearsOfService = yearsOfService + yearsToRetirement;
+    const yearsToRetirement = Math.max(state.retirementAge - state.currentAge, 0);
+    const totalYearsOfService = state.yearsOfService + yearsToRetirement;
 
     // FERS Basic Annuity calculation
-    const multiplier = retirementAge >= 62 && totalYearsOfService >= 20 ? 0.011 : 0.01;
-    const annualAnnuity = multiplier * totalYearsOfService * high3Salary;
+    const multiplier = state.retirementAge >= 62 && totalYearsOfService >= 20 ? 0.011 : 0.01;
+    const annualAnnuity = multiplier * totalYearsOfService * state.high3Salary;
     const monthlyAnnuity = annualAnnuity / 12;
 
     // FERS Supplement
-    const monthlySupplementEstimate = fersSupplementEligible && retirementAge < 62
-      ? (totalYearsOfService / 40) * socialSecurityEstimate
+    const monthlySupplementEstimate = fersSupplementEligible && state.retirementAge < 62
+      ? (totalYearsOfService / 40) * state.socialSecurityEstimate
       : 0;
 
     // TSP projected balance at retirement
-    const monthlyReturn = expectedTspReturn / 100 / 12;
+    const monthlyReturn = state.expectedTspReturn / 100 / 12;
     const months = yearsToRetirement * 12;
-    let projectedTsp = tspBalance;
+    let projectedTsp = state.tspBalance;
     const tspGrowthData: { year: number; balance: number }[] = [
-      { year: currentAge, balance: Math.round(tspBalance) },
+      { year: state.currentAge, balance: Math.round(state.tspBalance) },
     ];
 
     for (let y = 1; y <= yearsToRetirement; y++) {
       for (let m = 0; m < 12; m++) {
-        projectedTsp = projectedTsp * (1 + monthlyReturn) + tspMonthlyContribution;
+        projectedTsp = projectedTsp * (1 + monthlyReturn) + state.tspMonthlyContribution;
       }
       tspGrowthData.push({
-        year: currentAge + y,
+        year: state.currentAge + y,
         balance: Math.round(projectedTsp),
       });
     }
@@ -80,7 +87,7 @@ export function FersRetirementCalculatorWidget() {
     const monthlyTspIncome = (projectedTsp * 0.04) / 12;
 
     // Social Security
-    const monthlySocialSecurity = retirementAge >= 62 ? socialSecurityEstimate : 0;
+    const monthlySocialSecurity = state.retirementAge >= 62 ? state.socialSecurityEstimate : 0;
 
     // Total monthly retirement income
     const totalMonthlyIncome = monthlyAnnuity + monthlySupplementEstimate + monthlyTspIncome + monthlySocialSecurity;
@@ -89,10 +96,10 @@ export function FersRetirementCalculatorWidget() {
     const totalAnnualIncome = totalMonthlyIncome * 12;
 
     // Replacement rate
-    const replacementRate = high3Salary > 0 ? (totalAnnualIncome / high3Salary) * 100 : 0;
+    const replacementRate = state.high3Salary > 0 ? (totalAnnualIncome / state.high3Salary) * 100 : 0;
 
     // Total employee contributions to TSP
-    const totalContributions = tspBalance + (tspMonthlyContribution * months);
+    const totalContributions = state.tspBalance + (state.tspMonthlyContribution * months);
     const investmentGrowth = projectedTsp - totalContributions;
 
     // Income sources for stacked bar
@@ -124,8 +131,8 @@ export function FersRetirementCalculatorWidget() {
       investmentGrowth,
     };
   }, [
-    currentAge, retirementAge, yearsOfService, high3Salary, tspBalance,
-    tspMonthlyContribution, expectedTspReturn, fersSupplementEligible, socialSecurityEstimate,
+    state.currentAge, state.retirementAge, state.yearsOfService, state.high3Salary, state.tspBalance,
+    state.tspMonthlyContribution, state.expectedTspReturn, fersSupplementEligible, state.socialSecurityEstimate,
   ]);
 
   // Build stacked bar data for income sources
@@ -150,14 +157,14 @@ export function FersRetirementCalculatorWidget() {
 
   return (
     <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Ages */}
           <CustomSlider
             label="Current Age"
-            value={currentAge}
-            onChange={setCurrentAge}
+            value={state.currentAge}
+            onChange={(v) => setState('currentAge', v)}
             min={18}
             max={80}
             step={1}
@@ -166,8 +173,8 @@ export function FersRetirementCalculatorWidget() {
 
           <CustomSlider
             label="Planned Retirement Age"
-            value={retirementAge}
-            onChange={setRetirementAge}
+            value={state.retirementAge}
+            onChange={(v) => setState('retirementAge', v)}
             min={50}
             max={80}
             step={1}
@@ -177,8 +184,8 @@ export function FersRetirementCalculatorWidget() {
           {/* Years of Service */}
           <CustomSlider
             label="Current Years of Federal Service"
-            value={yearsOfService}
-            onChange={setYearsOfService}
+            value={state.yearsOfService}
+            onChange={(v) => setState('yearsOfService', v)}
             min={0}
             max={40}
             step={1}
@@ -188,14 +195,14 @@ export function FersRetirementCalculatorWidget() {
           {/* High-3 Average Salary */}
           <CurrencyInput
             label="High-3 Average Salary"
-            value={high3Salary}
-            onChange={setHigh3Salary}
+            value={state.high3Salary}
+            onChange={(v) => setState('high3Salary', v)}
             min={0}
             step={1000}
           />
           <CustomSlider
-            value={high3Salary}
-            onChange={setHigh3Salary}
+            value={state.high3Salary}
+            onChange={(v) => setState('high3Salary', v)}
             min={30000}
             max={200000}
             step={1000}
@@ -203,18 +210,18 @@ export function FersRetirementCalculatorWidget() {
           />
 
           {/* TSP Inputs */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <CurrencyInput
               label="Current TSP Balance"
-              value={tspBalance}
-              onChange={setTspBalance}
+              value={state.tspBalance}
+              onChange={(v) => setState('tspBalance', v)}
               min={0}
               step={5000}
             />
             <CurrencyInput
               label="TSP Monthly Contribution"
-              value={tspMonthlyContribution}
-              onChange={setTspMonthlyContribution}
+              value={state.tspMonthlyContribution}
+              onChange={(v) => setState('tspMonthlyContribution', v)}
               min={0}
               step={50}
             />
@@ -223,8 +230,8 @@ export function FersRetirementCalculatorWidget() {
           {/* Expected Return */}
           <PercentageInput
             label="Expected TSP Return"
-            value={expectedTspReturn}
-            onChange={setExpectedTspReturn}
+            value={state.expectedTspReturn}
+            onChange={(v) => setState('expectedTspReturn', v)}
             min={0}
             max={15}
             step={0.5}
@@ -237,7 +244,7 @@ export function FersRetirementCalculatorWidget() {
             </label>
             <div className="flex gap-2">
               <button
-                onClick={() => setFersSupplementEligible(true)}
+                onClick={() => setState('fersSupplementEligible', "true")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   fersSupplementEligible
                     ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
@@ -247,7 +254,7 @@ export function FersRetirementCalculatorWidget() {
                 Yes
               </button>
               <button
-                onClick={() => setFersSupplementEligible(false)}
+                onClick={() => setState('fersSupplementEligible', "false")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   !fersSupplementEligible
                     ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
@@ -262,8 +269,8 @@ export function FersRetirementCalculatorWidget() {
           {/* Social Security Estimate */}
           <CurrencyInput
             label="Estimated Social Security ($/month at 62)"
-            value={socialSecurityEstimate}
-            onChange={setSocialSecurityEstimate}
+            value={state.socialSecurityEstimate}
+            onChange={(v) => setState('socialSecurityEstimate', v)}
             min={0}
             step={50}
           />
@@ -281,7 +288,7 @@ export function FersRetirementCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Total Monthly Income"
               value={<AnimatedNumber value={results.totalMonthlyIncome} format="currency" decimals={2} className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
@@ -321,7 +328,7 @@ export function FersRetirementCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="FERS Retirement Calculator Results" results={shareResultsData} />
+          <ShareResults title="FERS Retirement Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Annual Summary */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">

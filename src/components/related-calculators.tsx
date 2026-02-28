@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { trackRelatedClick } from "@/lib/track-event";
 
 export interface RelatedCalculator {
   title: string;
@@ -9,6 +12,7 @@ export interface RelatedCalculator {
 
 interface RelatedCalculatorsProps {
   calculators: RelatedCalculator[];
+  fromSlug?: string;
 }
 
 /**
@@ -17,24 +21,25 @@ interface RelatedCalculatorsProps {
  * Each card shows an emoji icon, title, short description, and links to the
  * calculator page.
  */
-export function RelatedCalculators({ calculators }: RelatedCalculatorsProps) {
+export function RelatedCalculators({ calculators, fromSlug }: RelatedCalculatorsProps) {
   if (calculators.length === 0) return null;
 
   return (
     <section className="mt-16" aria-labelledby="related-heading">
       <h2
         id="related-heading"
-        className="mb-6 text-2xl font-semibold text-[#F1F5F9]"
+        className="mb-6 font-display text-2xl font-bold text-text-primary"
       >
         Related Calculators
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {calculators.map((calc) => (
           <Link
             key={calc.slug}
-            href={`/${calc.slug}`}
-            className="group flex flex-col rounded-lg border border-[#1E293B] bg-[#162032] p-5 transition-all duration-200 hover:border-[#3B82F6]/40 hover:bg-[#162032]/80 hover:shadow-lg hover:shadow-[#3B82F6]/5"
+            href={`/calculators/${calc.slug}`}
+            onClick={() => fromSlug && trackRelatedClick(fromSlug, calc.slug)}
+            className="group flex flex-col rounded-lg border border-border bg-bg-surface p-5 transition-all duration-200 hover:border-accent-secondary/40 hover:bg-bg-surface/80 hover:shadow-lg hover:shadow-accent-secondary/5 focus-visible:border-accent-secondary/40 focus-visible:ring-2 focus-visible:ring-accent-secondary/20"
           >
             <span
               className="mb-3 text-3xl"
@@ -44,11 +49,11 @@ export function RelatedCalculators({ calculators }: RelatedCalculatorsProps) {
               {calc.icon}
             </span>
 
-            <h3 className="mb-1.5 text-base font-semibold text-[#F1F5F9] group-hover:text-[#3B82F6] transition-colors">
+            <h3 className="mb-1.5 text-base font-semibold text-text-primary group-hover:text-accent-secondary transition-colors">
               {calc.title}
             </h3>
 
-            <p className="text-sm leading-relaxed text-[#94A3B8]">
+            <p className="text-sm leading-relaxed text-text-muted">
               {calc.description}
             </p>
           </Link>

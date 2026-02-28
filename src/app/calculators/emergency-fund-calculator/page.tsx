@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Emergency Fund Calculator | CalcEngine",
     description:
       "Calculate how much you need in your emergency fund based on your monthly expenses and risk tolerance. Track your progress and see how long it will take to reach your goal.",
-    url: "https://calcengine.io/calculators/emergency-fund-calculator",
+    url: "https://calcengine.org/calculators/emergency-fund-calculator",
   },
   twitter: {
     card: "summary_large_image",

@@ -101,7 +101,7 @@ export function CustomSlider({
       {label && (
         <label
           htmlFor={generatedId}
-          className="mb-2 block text-sm font-medium text-[#94A3B8]"
+          className="mb-2 block text-sm font-medium text-text-muted"
         >
           {label}
         </label>
@@ -117,13 +117,13 @@ export function CustomSlider({
         {/* Floating tooltip */}
         {showFloatingTooltip && (
           <div
-            className="pointer-events-none absolute -top-0.5 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#22C55E] px-2.5 py-1 text-xs font-semibold text-[#0B1120] shadow-lg"
+            className="pointer-events-none absolute -top-0.5 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-accent-primary px-2.5 py-1 text-xs font-semibold text-bg-primary shadow-lg"
             style={{ left: `${percent}%` }}
             role="tooltip"
           >
             {formatted}
             {/* Arrow */}
-            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#22C55E]" />
+            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-accent-primary" />
           </div>
         )}
 
@@ -137,11 +137,11 @@ export function CustomSlider({
           role="presentation"
         >
           {/* Track background */}
-          <div className="absolute left-0 right-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-[#1E293B]" />
+          <div className="absolute left-0 right-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-border" />
 
           {/* Filled portion */}
           <div
-            className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-[#22C55E] transition-[width] duration-75"
+            className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-accent-primary transition-[width] duration-75"
             style={{ width: `${percent}%` }}
           />
 
@@ -152,7 +152,7 @@ export function CustomSlider({
           >
             <div
               className={[
-                "h-5 w-5 rounded-full border-2 border-white bg-[#22C55E]",
+                "h-5 w-5 rounded-full border-2 border-white bg-accent-primary",
                 "shadow-[0_0_6px_rgba(34,197,94,0.4)]",
                 "transition-[transform,box-shadow] duration-150",
                 isHovering || isDragging
@@ -185,7 +185,7 @@ export function CustomSlider({
 
       {/* Min / Max labels */}
       {showMinMax && (
-        <div className="mt-1.5 flex justify-between text-xs text-[#94A3B8]">
+        <div className="mt-1.5 flex justify-between text-xs text-text-muted">
           <span>{formatValue ? formatValue(min) : String(min)}</span>
           <span>{formatValue ? formatValue(max) : String(max)}</span>
         </div>

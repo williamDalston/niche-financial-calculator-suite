@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import {
   getCalculatorsByCategory,
   type CalculatorInfo,
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
   title: "Retirement & Investing Calculators | CalcEngine",
   description:
     "Free retirement and investing calculators for compound interest, 401(k) projections, Social Security estimates, pension benefits, net worth tracking, emergency funds, and inflation analysis. Plan your financial future with CalcEngine.",
+  openGraph: {
+    title: "Retirement & Investing Calculators | CalcEngine",
+    description:
+      "Free retirement and investing calculators for compound interest, 401(k), Social Security, pensions, and more.",
+    url: "https://calcengine.org/category/retirement-and-investing",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Retirement & Investing Calculators | CalcEngine",
+    description:
+      "Free retirement and investing calculators for compound interest, 401(k) projections, Social Security estimates, pension benefits, net worth tracking, emergency funds, and inflation analysis. Plan your financial future with CalcEngine.",
+  },
   alternates: {
     canonical: "/category/retirement-and-investing",
   },
@@ -90,6 +103,9 @@ export default function RetirementAndInvestingPage() {
         ))}
       </div>
 
+      {/* Ad unit */}
+      <AdUnit className="mt-12" />
+
       {/* JSON-LD BreadcrumbList */}
       <script
         type="application/ld+json"
@@ -102,13 +118,13 @@ export default function RetirementAndInvestingPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://calcengine.io/",
+                item: "https://calcengine.org/",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: CATEGORY_NAME,
-                item: `https://calcengine.io/category/${CATEGORY_SLUG}`,
+                item: `https://calcengine.org/category/${CATEGORY_SLUG}`,
               },
             ],
           }),
@@ -123,17 +139,17 @@ export default function RetirementAndInvestingPage() {
             name: "Retirement & Investing Calculators",
             description:
               "Free retirement and investing calculators for compound interest, 401(k) projections, Social Security estimates, pension benefits, net worth tracking, emergency funds, and inflation analysis. Plan your financial future with CalcEngine.",
-            url: "https://calcengine.io/category/retirement-and-investing",
+            url: "https://calcengine.org/category/retirement-and-investing",
             numberOfItems: 8,
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Retirement Calculator", url: "https://calcengine.io/calculators/retirement-calculator" },
-              { "@type": "ListItem", position: 2, name: "Compound Interest Calculator", url: "https://calcengine.io/calculators/compound-interest-calculator" },
-              { "@type": "ListItem", position: 3, name: "401(k) Calculator", url: "https://calcengine.io/calculators/401k-calculator" },
-              { "@type": "ListItem", position: 4, name: "Social Security Estimator", url: "https://calcengine.io/calculators/social-security-estimator" },
-              { "@type": "ListItem", position: 5, name: "Pension Calculator", url: "https://calcengine.io/calculators/pension-calculator" },
-              { "@type": "ListItem", position: 6, name: "Net Worth Calculator", url: "https://calcengine.io/calculators/net-worth-calculator" },
-              { "@type": "ListItem", position: 7, name: "Emergency Fund Calculator", url: "https://calcengine.io/calculators/emergency-fund-calculator" },
-              { "@type": "ListItem", position: 8, name: "Inflation Calculator", url: "https://calcengine.io/calculators/inflation-calculator" },
+              { "@type": "ListItem", position: 1, name: "Retirement Calculator", url: "https://calcengine.org/calculators/retirement-calculator" },
+              { "@type": "ListItem", position: 2, name: "Compound Interest Calculator", url: "https://calcengine.org/calculators/compound-interest-calculator" },
+              { "@type": "ListItem", position: 3, name: "401(k) Calculator", url: "https://calcengine.org/calculators/401k-calculator" },
+              { "@type": "ListItem", position: 4, name: "Social Security Estimator", url: "https://calcengine.org/calculators/social-security-estimator" },
+              { "@type": "ListItem", position: 5, name: "Pension Calculator", url: "https://calcengine.org/calculators/pension-calculator" },
+              { "@type": "ListItem", position: 6, name: "Net Worth Calculator", url: "https://calcengine.org/calculators/net-worth-calculator" },
+              { "@type": "ListItem", position: 7, name: "Emergency Fund Calculator", url: "https://calcengine.org/calculators/emergency-fund-calculator" },
+              { "@type": "ListItem", position: 8, name: "Inflation Calculator", url: "https://calcengine.org/calculators/inflation-calculator" },
             ],
           }),
         }}

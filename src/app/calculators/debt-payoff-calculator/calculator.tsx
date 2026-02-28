@@ -332,7 +332,7 @@ export function DebtPayoffCalculatorWidget() {
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Settings */}
         <div className="space-y-6">
           {/* Extra Monthly Payment */}
@@ -439,7 +439,7 @@ export function DebtPayoffCalculatorWidget() {
           </div>
 
           {/* StatCard Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Debt-Free Date"
               value={results.selected.payoffDate || "--"}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { AdUnit } from "@/components/ad-unit";
 import {
   getCalculatorsByCategory,
   type CalculatorInfo,
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
   title: "Debt & Loan Calculators | CalcEngine",
   description:
     "Free debt and loan calculators for auto loans, student loans, personal loans, and debt payoff strategies. Understand your borrowing costs and create a plan to become debt-free with CalcEngine.",
+  openGraph: {
+    title: "Debt & Loan Calculators | CalcEngine",
+    description:
+      "Free debt and loan calculators for auto loans, student loans, personal loans, and debt payoff strategies.",
+    url: "https://calcengine.org/category/debt-and-loans",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Debt & Loan Calculators | CalcEngine",
+    description:
+      "Free debt and loan calculators for auto loans, student loans, personal loans, and debt payoff strategies. Understand your borrowing costs and create a plan to become debt-free with CalcEngine.",
+  },
   alternates: {
     canonical: "/category/debt-and-loans",
   },
@@ -90,6 +103,9 @@ export default function DebtAndLoansPage() {
         ))}
       </div>
 
+      {/* Ad unit */}
+      <AdUnit className="mt-12" />
+
       {/* JSON-LD BreadcrumbList */}
       <script
         type="application/ld+json"
@@ -102,13 +118,13 @@ export default function DebtAndLoansPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://calcengine.io/",
+                item: "https://calcengine.org/",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: CATEGORY_NAME,
-                item: `https://calcengine.io/category/${CATEGORY_SLUG}`,
+                item: `https://calcengine.org/category/${CATEGORY_SLUG}`,
               },
             ],
           }),
@@ -123,13 +139,13 @@ export default function DebtAndLoansPage() {
             name: "Debt & Loans Calculators",
             description:
               "Free debt and loan calculators for auto loans, student loans, personal loans, and debt payoff strategies. Understand your borrowing costs and create a plan to become debt-free with CalcEngine.",
-            url: "https://calcengine.io/category/debt-and-loans",
+            url: "https://calcengine.org/category/debt-and-loans",
             numberOfItems: 4,
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Auto Loan Calculator", url: "https://calcengine.io/calculators/auto-loan-calculator" },
-              { "@type": "ListItem", position: 2, name: "Loan Payment Calculator", url: "https://calcengine.io/calculators/loan-calculator" },
-              { "@type": "ListItem", position: 3, name: "Student Loan Calculator", url: "https://calcengine.io/calculators/student-loan-calculator" },
-              { "@type": "ListItem", position: 4, name: "Debt Payoff Calculator", url: "https://calcengine.io/calculators/debt-payoff-calculator" },
+              { "@type": "ListItem", position: 1, name: "Auto Loan Calculator", url: "https://calcengine.org/calculators/auto-loan-calculator" },
+              { "@type": "ListItem", position: 2, name: "Loan Payment Calculator", url: "https://calcengine.org/calculators/loan-calculator" },
+              { "@type": "ListItem", position: 3, name: "Student Loan Calculator", url: "https://calcengine.org/calculators/student-loan-calculator" },
+              { "@type": "ListItem", position: 4, name: "Debt Payoff Calculator", url: "https://calcengine.org/calculators/debt-payoff-calculator" },
             ],
           }),
         }}

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Salary to Hourly Converter | CalcEngine",
     description:
       "Convert your annual salary to an hourly rate, daily, weekly, biweekly, and monthly pay. Free salary converter with real-time results.",
-    url: "https://calcengine.io/calculators/salary-to-hourly",
+    url: "https://calcengine.org/calculators/salary-to-hourly",
   },
   twitter: {
     card: "summary_large_image",

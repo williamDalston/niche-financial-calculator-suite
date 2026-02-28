@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Self-Employment Tax Calculator | CalcEngine",
     description:
       "Calculate your self-employment tax, federal income tax, and estimated quarterly payments. Free SE tax calculator for freelancers, contractors, and small business owners.",
-    url: "https://calcengine.io/calculators/self-employment-tax-calculator",
+    url: "https://calcengine.org/calculators/self-employment-tax-calculator",
   },
   twitter: {
     card: "summary_large_image",
@@ -35,7 +35,7 @@ const howItWorks = `
 <p>Self-employment tax is the self-employed person's equivalent of the FICA payroll taxes that W-2 employees and their employers split. When you work for an employer, you pay 7.65% (6.2% Social Security + 1.45% Medicare) and your employer pays the matching 7.65%. When you are self-employed, you pay both halves — a total of 15.3% — because you are both the employee and the employer. This is assessed on top of your regular federal and state income taxes.</p>
 
 <h3>How SE Tax Is Calculated</h3>
-<p>The calculation begins with your gross self-employment income minus business expenses, giving you your net self-employment income. The IRS then applies SE tax to 92.35% of your net SE income (this 7.65% reduction mirrors the employer-side deduction that W-2 employees get). The Social Security portion (12.4%) applies only up to the annual wage base of $168,600 in 2024, and if you also have W-2 wages, those count toward the cap first. The Medicare portion (2.9%) applies to all SE income with no cap. If your total income exceeds $200,000 ($250,000 for married filing jointly), an additional 0.9% Medicare surtax applies to the excess.</p>
+<p>The calculation begins with your gross self-employment income minus business expenses, giving you your net self-employment income. The IRS then applies SE tax to 92.35% of your net SE income (this 7.65% reduction mirrors the employer-side deduction that W-2 employees get). The Social Security portion (12.4%) applies only up to the annual wage base of $176,100 in 2025, and if you also have W-2 wages, those count toward the cap first. The Medicare portion (2.9%) applies to all SE income with no cap. If your total income exceeds $200,000 ($250,000 for married filing jointly), an additional 0.9% Medicare surtax applies to the excess.</p>
 
 <h3>The SE Tax Deduction</h3>
 <p>One important benefit: you can deduct half of your self-employment tax when calculating your adjusted gross income (AGI) for federal income tax purposes. This deduction reduces your taxable income, which in turn reduces your income tax. The calculator applies this deduction automatically when computing your federal income tax liability.</p>
@@ -54,7 +54,7 @@ const formula = `Net SE Income = Gross Income - Business Expenses
 
 SE Tax Base = Net SE Income x 92.35%
 
-Social Security Tax = min(SE Tax Base, $168,600 - W2 Wages) x 12.4%
+Social Security Tax = min(SE Tax Base, $176,100 - W2 Wages) x 12.4%
 Medicare Tax = SE Tax Base x 2.9%
 Additional Medicare = max(Total Income - $200k, 0) x 0.9%
 
@@ -139,7 +139,7 @@ const editorialContent = `
 <p>One of the most discussed tax strategies for self-employed individuals earning over $50,000-$60,000 in net profit is electing S-Corporation status. As an S-Corp, you pay yourself a reasonable salary (subject to payroll taxes) and take remaining profits as distributions (not subject to SE tax). For example, if your business nets $150,000 and your reasonable salary is $80,000, you save SE tax on the $70,000 in distributions — potentially $10,000 or more per year. However, S-Corp status adds administrative complexity and costs (payroll processing, additional tax filings), so it is not beneficial for everyone.</p>
 
 <h3>Retirement Savings Advantages</h3>
-<p>Self-employed individuals actually have access to more generous retirement account options than most W-2 employees. A Solo 401(k) allows contributions of up to $23,000 as an employee (2024 limit) plus up to 25% of net self-employment earnings as an employer contribution, for a combined maximum of $69,000 per year. A SEP-IRA allows contributions of up to 25% of net self-employment earnings. These contributions reduce your taxable income, providing immediate tax savings while building long-term retirement wealth.</p>
+<p>Self-employed individuals actually have access to more generous retirement account options than most W-2 employees. A Solo 401(k) allows contributions of up to $23,500 as an employee (2025 limit) plus up to 25% of net self-employment earnings as an employer contribution, for a combined maximum of $69,000 per year. A SEP-IRA allows contributions of up to 25% of net self-employment earnings. These contributions reduce your taxable income, providing immediate tax savings while building long-term retirement wealth.</p>
 `;
 
 export default function SelfEmploymentTaxCalculatorPage() {

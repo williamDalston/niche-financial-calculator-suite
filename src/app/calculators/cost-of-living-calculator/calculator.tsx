@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useCalculatorState } from "@/hooks/use-calculator-state";
 import {
   BarChart,
   Bar,
@@ -63,23 +64,26 @@ const IconPercent = (
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const defaultCurrentCityIndex = cities.findIndex((c) => c.name.includes("Chicago")) ?? 0;
+const defaultTargetCityIndex = cities.findIndex((c) => c.name.includes("New York")) ?? 1;
+
 export function CostOfLivingCalculatorWidget() {
-  const [currentCityIndex, setCurrentCityIndex] = useState(
-    cities.findIndex((c) => c.name.includes("Chicago")) ?? 0
-  );
-  const [targetCityIndex, setTargetCityIndex] = useState(
-    cities.findIndex((c) => c.name.includes("New York")) ?? 1
-  );
-  const [salary, setSalary] = useState(75000);
+  const [state, setState, getShareUrl] = useCalculatorState({
+    defaults: {
+      currentCityIndex: defaultCurrentCityIndex,
+      targetCityIndex: defaultTargetCityIndex,
+      salary: 75000,
+    },
+  });
 
   const results = useMemo(() => {
-    const current = cities[currentCityIndex];
-    const target = cities[targetCityIndex];
+    const current = cities[state.currentCityIndex];
+    const target = cities[state.targetCityIndex];
 
-    if (!current || !target || salary <= 0) return null;
+    if (!current || !target || state.salary <= 0) return null;
 
-    const equivalentSalary = salary * (target.overall / current.overall);
-    const difference = equivalentSalary - salary;
+    const equivalentSalary = state.salary * (target.overall / current.overall);
+    const difference = equivalentSalary - state.salary;
     const percentDifference = ((target.overall - current.overall) / current.overall) * 100;
 
     // Category breakdown
@@ -113,19 +117,19 @@ export function CostOfLivingCalculatorWidget() {
       categoryBreakdown,
       chartData,
     };
-  }, [currentCityIndex, targetCityIndex, salary]);
+  }, [state.currentCityIndex, state.targetCityIndex, state.salary]);
 
   return (
     <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
       {/* Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div>
           <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
             Current City
           </label>
           <select
-            value={currentCityIndex}
-            onChange={(e) => setCurrentCityIndex(Number(e.target.value))}
+            value={state.currentCityIndex}
+            onChange={(e) => setState('currentCityIndex', Number(e.target.value))}
             className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
           >
             {cities.map((city, i) => (
@@ -141,8 +145,8 @@ export function CostOfLivingCalculatorWidget() {
             Target City
           </label>
           <select
-            value={targetCityIndex}
-            onChange={(e) => setTargetCityIndex(Number(e.target.value))}
+            value={state.targetCityIndex}
+            onChange={(e) => setState('targetCityIndex', Number(e.target.value))}
             className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
           >
             {cities.map((city, i) => (
@@ -156,8 +160,8 @@ export function CostOfLivingCalculatorWidget() {
         <div>
           <CurrencyInput
             label="Current Annual Salary"
-            value={salary}
-            onChange={setSalary}
+            value={state.salary}
+            onChange={(v) => setState('salary', v)}
             min={0}
             max={10000000}
             step={1000}
@@ -169,8 +173,8 @@ export function CostOfLivingCalculatorWidget() {
       <div className="mb-8">
         <CustomSlider
           label="Adjust Salary"
-          value={salary}
-          onChange={setSalary}
+          value={state.salary}
+          onChange={(v) => setState('salary', v)}
           min={20000}
           max={500000}
           step={1000}
@@ -190,7 +194,7 @@ export function CostOfLivingCalculatorWidget() {
               value={results.equivalentSalary}
               format="currency"
               decimals={0}
-              className="font-mono text-4xl md:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
             />
             <p className="text-xs text-[#94A3B8] mt-2">
               to maintain the same standard of living
@@ -227,11 +231,12 @@ export function CostOfLivingCalculatorWidget() {
             results={{
               "Current City": results.currentCity,
               "Target City": results.targetCity,
-              "Current Salary": fmt(salary),
+              "Current Salary": fmt(state.salary),
               "Equivalent Salary": fmt(results.equivalentSalary),
               Difference: `${results.difference >= 0 ? "+" : ""}${fmt(results.difference)}`,
               "COL Difference": pct(results.percentDifference),
             }}
+            getShareUrl={getShareUrl}
             className="mb-8"
           />
 
