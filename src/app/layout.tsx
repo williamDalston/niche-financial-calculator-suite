@@ -6,7 +6,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CookieConsent } from "@/components/cookie-consent";
-import { AdSenseScript } from "@/components/adsense-script";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -118,6 +117,12 @@ export default function RootLayout({
             gtag('config', 'G-XRRR3GVE2V');
           `}
         </Script>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2214618538122354"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
         <script
@@ -131,7 +136,6 @@ export default function RootLayout({
         <main id="main-content" className="min-h-[calc(100vh-160px)]">{children}</main>
         <Footer />
         <CookieConsent />
-        <AdSenseScript />
         <VercelAnalytics />
         <SpeedInsights />
       </body>
