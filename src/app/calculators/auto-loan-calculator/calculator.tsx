@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   PieChart,
   Pie,
@@ -79,6 +80,7 @@ const IconCar = (
 /* ------------------------------------------------------------------ */
 
 export function AutoLoanCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       vehiclePrice: 35000,
@@ -136,7 +138,7 @@ export function AutoLoanCalculatorWidget() {
     };
   }, [state.vehiclePrice, state.downPayment, state.tradeInValue, state.salesTaxRate, state.interestRate, state.loanTerm]);
 
-  const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B"];
+  const PIE_COLORS = [COLORS.blue, COLORS.green, COLORS.amber];
 
   return (
     <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
@@ -323,10 +325,10 @@ export function AutoLoanCalculatorWidget() {
                   <Tooltip
                     formatter={(value) => fmt(value as number)}
                     contentStyle={{
-                      backgroundColor: "#0B1120",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                   />
                 </PieChart>
@@ -340,38 +342,38 @@ export function AutoLoanCalculatorWidget() {
               </h3>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={results.schedule}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                   <XAxis
                     dataKey="month"
-                    stroke="#94A3B8"
-                    tick={{ fill: "#94A3B8", fontSize: 12 }}
+                    stroke={COLORS.textMuted}
+                    tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                     label={{
                       value: "Month",
                       position: "insideBottom",
                       offset: -5,
-                      fill: "#94A3B8",
+                      fill: COLORS.textMuted,
                     }}
                   />
                   <YAxis
-                    stroke="#94A3B8"
-                    tick={{ fill: "#94A3B8", fontSize: 12 }}
+                    stroke={COLORS.textMuted}
+                    tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                     tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
                   />
                   <Tooltip
                     formatter={(value) => fmt(value as number)}
                     contentStyle={{
-                      backgroundColor: "#0B1120",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                     labelFormatter={(label) => `Month ${label}`}
                   />
-                  <Legend wrapperStyle={{ color: "#94A3B8" }} />
+                  <Legend wrapperStyle={{ color: COLORS.textMuted }} />
                   <Line
                     type="monotone"
                     dataKey="balance"
-                    stroke="#22C55E"
+                    stroke={COLORS.green}
                     name="Remaining Balance"
                     dot={false}
                     strokeWidth={2}

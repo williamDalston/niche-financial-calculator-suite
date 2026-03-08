@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   BarChart,
   Bar,
@@ -68,6 +69,7 @@ const defaultCurrentCityIndex = cities.findIndex((c) => c.name.includes("Chicago
 const defaultTargetCityIndex = cities.findIndex((c) => c.name.includes("New York")) ?? 1;
 
 export function CostOfLivingCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentCityIndex: defaultCurrentCityIndex,
@@ -325,40 +327,40 @@ export function CostOfLivingCalculatorWidget() {
             </h3>
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={results.chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                 <XAxis
                   dataKey="category"
-                  stroke="#94A3B8"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  stroke={COLORS.textMuted}
+                  tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                 />
                 <YAxis
-                  stroke="#94A3B8"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  stroke={COLORS.textMuted}
+                  tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                   label={{
                     value: "Index (100 = avg)",
                     angle: -90,
                     position: "insideLeft",
-                    fill: "#94A3B8",
+                    fill: COLORS.textMuted,
                     style: { fontSize: 11 },
                   }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0B1120",
-                    border: "1px solid #1E293B",
+                    backgroundColor: COLORS.surface,
+                    border: `1px solid ${COLORS.border}`,
                     borderRadius: "8px",
-                    color: "#F1F5F9",
+                    color: COLORS.textPrimary,
                   }}
                 />
-                <Legend wrapperStyle={{ color: "#94A3B8" }} />
+                <Legend wrapperStyle={{ color: COLORS.textMuted }} />
                 <Bar
                   dataKey={results.currentCity}
-                  fill="#3B82F6"
+                  fill={COLORS.blue}
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey={results.targetCity}
-                  fill="#22C55E"
+                  fill={COLORS.green}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

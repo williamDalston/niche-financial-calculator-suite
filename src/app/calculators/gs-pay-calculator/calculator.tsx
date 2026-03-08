@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   BarChart,
   Bar,
@@ -77,6 +78,7 @@ const IconTrendingUp = (
 /* ------------------------------------------------------------------ */
 
 export function GsPayCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       grade: "GS-12" as string,
@@ -268,15 +270,15 @@ export function GsPayCalculatorWidget() {
           </h3>
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={results.stepChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
               <XAxis
                 dataKey="step"
-                stroke="#94A3B8"
-                tick={{ fill: "#94A3B8", fontSize: 12 }}
+                stroke={COLORS.textMuted}
+                tick={{ fill: COLORS.textMuted, fontSize: 12 }}
               />
               <YAxis
-                stroke="#94A3B8"
-                tick={{ fill: "#94A3B8", fontSize: 12 }}
+                stroke={COLORS.textMuted}
+                tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                 tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
               />
               <Tooltip
@@ -289,14 +291,14 @@ export function GsPayCalculatorWidget() {
                     : "Total Pay",
                 ]}
                 contentStyle={{
-                  backgroundColor: "#0B1120",
-                  border: "1px solid #1E293B",
+                  backgroundColor: COLORS.surface,
+                  border: `1px solid ${COLORS.border}`,
                   borderRadius: "8px",
-                  color: "#F1F5F9",
+                  color: COLORS.textPrimary,
                 }}
               />
               <Legend
-                wrapperStyle={{ color: "#94A3B8" }}
+                wrapperStyle={{ color: COLORS.textMuted }}
                 formatter={(value) =>
                   value === "basePay"
                     ? "Base Pay"
@@ -308,13 +310,13 @@ export function GsPayCalculatorWidget() {
               <Bar
                 dataKey="basePay"
                 stackId="pay"
-                fill="#3B82F6"
+                fill={COLORS.blue}
                 radius={[0, 0, 0, 0]}
               />
               <Bar
                 dataKey="localityPay"
                 stackId="pay"
-                fill="#22C55E"
+                fill={COLORS.green}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>

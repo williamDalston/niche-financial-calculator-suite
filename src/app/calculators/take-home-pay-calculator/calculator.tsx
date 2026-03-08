@@ -41,11 +41,15 @@ const SINGLE_BRACKETS: TaxBracket[] = [
   { min: 626350, max: Infinity, rate: 0.37 },
 ];
 
-const MARRIED_BRACKETS: TaxBracket[] = SINGLE_BRACKETS.map((b) => ({
-  min: b.min * 2,
-  max: b.max === Infinity ? Infinity : b.max * 2,
-  rate: b.rate,
-}));
+const MARRIED_BRACKETS: TaxBracket[] = [
+  { min: 0, max: 23850, rate: 0.10 },
+  { min: 23850, max: 96950, rate: 0.12 },
+  { min: 96950, max: 206700, rate: 0.22 },
+  { min: 206700, max: 394600, rate: 0.24 },
+  { min: 394600, max: 501050, rate: 0.32 },
+  { min: 501050, max: 751600, rate: 0.35 },
+  { min: 751600, max: Infinity, rate: 0.37 },
+];
 
 const HOH_BRACKETS: TaxBracket[] = [
   { min: 0, max: 17000, rate: 0.10 },
@@ -522,16 +526,16 @@ export function TakeHomePayWidget() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#162032",
-                    border: "1px solid #1E293B",
+                    backgroundColor: COLORS.surface,
+                    border: `1px solid ${COLORS.border}`,
                     borderRadius: "8px",
-                    color: "#F1F5F9",
+                    color: COLORS.textPrimary,
                   }}
                   formatter={(value) => formatCurrencyExact(value as number)}
                 />
                 <Legend
-                  wrapperStyle={{ fontSize: 11, color: "#94A3B8" }}
-                  formatter={(value) => <span style={{ color: "#94A3B8" }}>{value}</span>}
+                  wrapperStyle={{ fontSize: 11, color: COLORS.textMuted }}
+                  formatter={(value) => <span style={{ color: COLORS.textMuted }}>{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>

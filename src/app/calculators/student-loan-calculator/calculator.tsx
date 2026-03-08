@@ -88,7 +88,8 @@ function buildAmortization(
 function buildGraduatedAmortization(
   balance: number,
   annualRate: number,
-  termYears: number
+  termYears: number,
+  extraPayment: number = 0
 ): AmortRow[] {
   const monthlyRate = annualRate / 100 / 12;
   const totalMonths = termYears * 12;
@@ -102,7 +103,7 @@ function buildGraduatedAmortization(
   for (let m = 1; m <= totalMonths && remaining > 0.01; m++) {
     const period = Math.floor((m - 1) / 24);
     const scale = 0.6 + (0.8 * period) / Math.max(periods - 1, 1);
-    const scheduledPayment = standardPayment * scale;
+    const scheduledPayment = standardPayment * scale + extraPayment;
     const interestCharge = remaining * monthlyRate;
     const payment = Math.min(Math.max(scheduledPayment, interestCharge), remaining + interestCharge);
     const principalPaid = payment - interestCharge;
@@ -189,7 +190,7 @@ export function StudentLoanCalculatorWidget() {
 
     let amortization: AmortRow[];
     if (state.repaymentPlan === "graduated") {
-      amortization = buildGraduatedAmortization(state.loanBalance, state.interestRate, termYears);
+      amortization = buildGraduatedAmortization(state.loanBalance, state.interestRate, termYears, state.extraPayment);
     } else {
       amortization = buildAmortization(state.loanBalance, state.interestRate, monthlyPayment, state.extraPayment, termYears * 12);
     }

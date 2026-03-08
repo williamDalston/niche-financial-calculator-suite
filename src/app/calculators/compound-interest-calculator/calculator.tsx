@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   AreaChart,
   Area,
@@ -30,6 +31,7 @@ const COMPOUNDING_OPTIONS: Record<string, { label: string; n: number }> = {
 };
 
 export function CompoundInterestWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: { principal: 10000, monthlyContribution: 200, interestRate: 7, compoundingFrequency: "monthly" as string, timePeriod: 20 }, slug: "compound-interest-calculator",
   });
@@ -322,29 +324,29 @@ export function CompoundInterestWidget() {
                       <stop offset="95%" stopColor="#22C55E" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                   <XAxis
                     dataKey="year"
-                    stroke="#94A3B8"
+                    stroke={COLORS.textMuted}
                     tick={{ fontSize: 11 }}
                     label={{
                       value: "Year",
                       position: "insideBottom",
                       offset: -5,
-                      fill: "#94A3B8",
+                      fill: COLORS.textMuted,
                     }}
                   />
                   <YAxis
-                    stroke="#94A3B8"
+                    stroke={COLORS.textMuted}
                     tick={{ fontSize: 11 }}
                     tickFormatter={formatCompact}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#162032",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                     formatter={(value, name) => [
                       formatCurrency(value as number),
@@ -352,12 +354,12 @@ export function CompoundInterestWidget() {
                     ]}
                     labelFormatter={(label) => `Year ${label}`}
                   />
-                  <Legend wrapperStyle={{ fontSize: 11, color: "#94A3B8" }} />
+                  <Legend wrapperStyle={{ fontSize: 11, color: COLORS.textMuted }} />
                   <Area
                     type="monotone"
                     dataKey="contributions"
                     stackId="1"
-                    stroke="#3B82F6"
+                    stroke={COLORS.blue}
                     fill="url(#gradContrib)"
                     strokeWidth={2}
                     name="Total Contributions"
@@ -366,7 +368,7 @@ export function CompoundInterestWidget() {
                     type="monotone"
                     dataKey="interest"
                     stackId="1"
-                    stroke="#22C55E"
+                    stroke={COLORS.green}
                     fill="url(#gradInterest)"
                     strokeWidth={2}
                     name="Interest Earned"

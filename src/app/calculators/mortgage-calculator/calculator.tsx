@@ -68,7 +68,7 @@ function Slider({
             style={{
               borderLeft: "4px solid transparent",
               borderRight: "4px solid transparent",
-              borderTop: "4px solid #1E293B",
+              borderTop: "4px solid var(--color-border)",
             }}
           />
         </div>
@@ -491,7 +491,7 @@ export function MortgageCalculatorWidget() {
     const monthlyRate = interestRate / 100 / 12;
     const numPayments = loanTerm * 12;
 
-    if (principal <= 0 || interestRate <= 0) {
+    if (principal <= 0) {
       return {
         monthlyPayment: 0,
         totalInterest: 0,
@@ -515,9 +515,13 @@ export function MortgageCalculatorWidget() {
       };
     }
 
-    const factor = Math.pow(1 + monthlyRate, numPayments);
-    const monthlyPayment =
-      principal * ((monthlyRate * factor) / (factor - 1));
+    let monthlyPayment: number;
+    if (monthlyRate === 0) {
+      monthlyPayment = principal / numPayments;
+    } else {
+      const factor = Math.pow(1 + monthlyRate, numPayments);
+      monthlyPayment = principal * ((monthlyRate * factor) / (factor - 1));
+    }
     const totalCost = monthlyPayment * numPayments;
     const totalInterest = totalCost - principal;
 

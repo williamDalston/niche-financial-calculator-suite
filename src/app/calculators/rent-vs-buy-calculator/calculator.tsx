@@ -138,7 +138,7 @@ export function RentVsBuyCalculatorWidget() {
       });
 
       // Check breakeven: buyer's net wealth > renter's net wealth
-      const buyerNetWealth = homeEquity - buyCumulative;
+      const buyerNetWealth = homeEquity - (buyCumulative - downPayment);
       const renterNetWealth = renterPortfolio - rentCumulative;
       if (breakevenYear === -1 && buyerNetWealth > renterNetWealth) {
         breakevenYear = year;
@@ -152,7 +152,7 @@ export function RentVsBuyCalculatorWidget() {
     const renterFinalPortfolio = finalYear?.renterPortfolio ?? 0;
 
     // Net wealth comparison
-    const buyerNetWealth = homeEquityBuilt - totalBuyCost;
+    const buyerNetWealth = homeEquityBuilt - (totalBuyCost - downPayment);
     const renterNetWealth = renterFinalPortfolio - totalRentCost;
     const netDifference = buyerNetWealth - renterNetWealth;
 

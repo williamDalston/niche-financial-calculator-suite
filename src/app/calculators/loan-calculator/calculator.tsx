@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   PieChart,
   Pie,
@@ -36,6 +37,7 @@ function calcMonthlyPayment(principal: number, monthlyRate: number, totalMonths:
 /* ------------------------------------------------------------------ */
 
 export function LoanCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       loanAmount: 25000,
@@ -139,7 +141,7 @@ export function LoanCalculatorWidget() {
     };
   }, [state.loanAmount, state.interestRate, state.termValue, state.termUnit, state.extraPayment]);
 
-  const PIE_COLORS = ["#3B82F6", "#22C55E"];
+  const PIE_COLORS = [COLORS.blue, COLORS.green];
 
   const shareResultsData: Record<string, string> = results
     ? {
@@ -362,10 +364,10 @@ export function LoanCalculatorWidget() {
                   <Tooltip
                     formatter={(value) => fmt(value as number)}
                     contentStyle={{
-                      backgroundColor: "#0B1120",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                   />
                 </PieChart>
@@ -379,33 +381,33 @@ export function LoanCalculatorWidget() {
               </h3>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={results.balanceData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                   <XAxis
                     dataKey="month"
-                    stroke="#94A3B8"
-                    tick={{ fill: "#94A3B8", fontSize: 12 }}
-                    label={{ value: "Month", position: "insideBottom", offset: -5, fill: "#94A3B8" }}
+                    stroke={COLORS.textMuted}
+                    tick={{ fill: COLORS.textMuted, fontSize: 12 }}
+                    label={{ value: "Month", position: "insideBottom", offset: -5, fill: COLORS.textMuted }}
                   />
                   <YAxis
-                    stroke="#94A3B8"
-                    tick={{ fill: "#94A3B8", fontSize: 12 }}
+                    stroke={COLORS.textMuted}
+                    tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                     tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
                   />
                   <Tooltip
                     formatter={(value) => fmt(value as number)}
                     contentStyle={{
-                      backgroundColor: "#0B1120",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                     labelFormatter={(label) => `Month ${label}`}
                   />
-                  <Legend wrapperStyle={{ color: "#94A3B8" }} />
+                  <Legend wrapperStyle={{ color: COLORS.textMuted }} />
                   <Line
                     type="monotone"
                     dataKey="standard"
-                    stroke="#3B82F6"
+                    stroke={COLORS.blue}
                     name="Standard"
                     dot={false}
                     strokeWidth={2}
@@ -414,7 +416,7 @@ export function LoanCalculatorWidget() {
                     <Line
                       type="monotone"
                       dataKey="withExtra"
-                      stroke="#22C55E"
+                      stroke={COLORS.green}
                       name="With Extra Payments"
                       dot={false}
                       strokeWidth={2}

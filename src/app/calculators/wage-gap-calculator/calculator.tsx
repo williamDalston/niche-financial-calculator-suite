@@ -120,11 +120,20 @@ export function WageGapCalculatorWidget() {
     const baseMen = occ.men * edMult * expMult * stateAdj;
     const baseWomen = occ.women * edMult * expMult * stateAdj;
 
-    const yourMedian = state.gender === "women" ? baseWomen : baseMen;
-    const otherMedian = state.gender === "women" ? baseMen : baseWomen;
+    // Use the user's actual salary and compute the equivalent salary for the other gender
+    // based on the ratio between the two gender medians
+    const yourSalary = state.salary;
+    const yourBaseMedian = state.gender === "women" ? baseWomen : baseMen;
+    const otherBaseMedian = state.gender === "women" ? baseMen : baseWomen;
+    const otherSalary = yourBaseMedian > 0
+      ? yourSalary * (otherBaseMedian / yourBaseMedian)
+      : yourSalary;
+
+    const yourMedian = yourSalary;
+    const otherMedian = Math.round(otherSalary);
 
     // Gap calculation
-    const gapAmount = state.gender === "women" ? baseMen - baseWomen : baseWomen - baseMen;
+    const gapAmount = otherMedian - yourMedian;
     const gapPercent =
       otherMedian > 0
         ? ((otherMedian - yourMedian) / otherMedian) * 100

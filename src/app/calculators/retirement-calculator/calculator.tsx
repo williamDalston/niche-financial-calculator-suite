@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   AreaChart,
   Area,
@@ -23,6 +24,7 @@ import {
 import { formatCurrency, formatCompact } from "@/lib/formatters";
 
 export function RetirementCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: { currentAge: 30, retirementAge: 65, currentSavings: 50000, monthlyContribution: 500, annualReturn: 7, inflationRate: 3 }, slug: "retirement-calculator",
   });
@@ -299,24 +301,24 @@ export function RetirementCalculatorWidget() {
                       <stop offset="95%" stopColor="#22C55E" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                   <XAxis
                     dataKey="age"
-                    stroke="#94A3B8"
+                    stroke={COLORS.textMuted}
                     tick={{ fontSize: 11 }}
-                    label={{ value: "Age", position: "insideBottom", offset: -5, fill: "#94A3B8" }}
+                    label={{ value: "Age", position: "insideBottom", offset: -5, fill: COLORS.textMuted }}
                   />
                   <YAxis
-                    stroke="#94A3B8"
+                    stroke={COLORS.textMuted}
                     tick={{ fontSize: 11 }}
                     tickFormatter={formatCompact}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#162032",
-                      border: "1px solid #1E293B",
+                      backgroundColor: COLORS.surface,
+                      border: `1px solid ${COLORS.border}`,
                       borderRadius: "8px",
-                      color: "#F1F5F9",
+                      color: COLORS.textPrimary,
                     }}
                     formatter={(value, name) => [
                       formatCurrency(value as number),
@@ -325,13 +327,13 @@ export function RetirementCalculatorWidget() {
                     labelFormatter={(label) => `Age ${label}`}
                   />
                   <Legend
-                    wrapperStyle={{ fontSize: 11, color: "#94A3B8" }}
+                    wrapperStyle={{ fontSize: 11, color: COLORS.textMuted }}
                   />
                   <Area
                     type="monotone"
                     dataKey="contributions"
                     stackId="1"
-                    stroke="#3B82F6"
+                    stroke={COLORS.blue}
                     fill="url(#gradContributions)"
                     strokeWidth={2}
                     name="Total Contributions"
@@ -340,7 +342,7 @@ export function RetirementCalculatorWidget() {
                     type="monotone"
                     dataKey="growth"
                     stackId="1"
-                    stroke="#22C55E"
+                    stroke={COLORS.green}
                     fill="url(#gradGrowth)"
                     strokeWidth={2}
                     name="Investment Growth"

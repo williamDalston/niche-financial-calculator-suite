@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 import {
   LineChart,
   Line,
@@ -73,6 +74,7 @@ const IconTrendingDown = (
 /* ------------------------------------------------------------------ */
 
 export function InflationCalculatorWidget() {
+  const COLORS = useChartColors();
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       amount: 1000,
@@ -307,15 +309,15 @@ export function InflationCalculatorWidget() {
             </h3>
             <ResponsiveContainer width="100%" height={320}>
               <LineChart data={results.chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
                 <XAxis
                   dataKey="year"
-                  stroke="#94A3B8"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  stroke={COLORS.textMuted}
+                  tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                 />
                 <YAxis
-                  stroke="#94A3B8"
-                  tick={{ fill: "#94A3B8", fontSize: 12 }}
+                  stroke={COLORS.textMuted}
+                  tick={{ fill: COLORS.textMuted, fontSize: 12 }}
                   tickFormatter={(v) =>
                     v >= 1000
                       ? `$${(v / 1000).toFixed(1)}k`
@@ -326,16 +328,16 @@ export function InflationCalculatorWidget() {
                   formatter={(value) => [fmt(value as number), "Value"]}
                   labelFormatter={(label) => `Year ${label}`}
                   contentStyle={{
-                    backgroundColor: "#0B1120",
-                    border: "1px solid #1E293B",
+                    backgroundColor: COLORS.surface,
+                    border: `1px solid ${COLORS.border}`,
                     borderRadius: "8px",
-                    color: "#F1F5F9",
+                    color: COLORS.textPrimary,
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#22C55E"
+                  stroke={COLORS.green}
                   dot={false}
                   strokeWidth={2}
                 />
