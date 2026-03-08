@@ -22,20 +22,7 @@ import {
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  warning: "#F59E0B",
-  danger: "#F97316",
-  purple: "#A855F7",
-  cyan: "#06B6D4",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const FILING_STATUSES = [
   { label: "Single", value: "single" },
@@ -138,6 +125,15 @@ function computeFederalTax(taxableIncome: number, status: string): number {
 }
 
 export function SelfEmploymentTaxCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    warning: "#F59E0B",
+    danger: "#F97316",
+    purple: "#A855F7",
+    cyan: "#06B6D4",
+  };
   const [calcState, setCalcState, getShareUrl] = useCalculatorState({
     defaults: {
       grossIncome: 120000,
@@ -252,10 +248,10 @@ export function SelfEmploymentTaxCalculatorWidget() {
   };
 
   const selectClass =
-    "h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none";
+    "h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none";
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -294,7 +290,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
 
           {/* Filing Status */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Filing Status
             </label>
             <div className="flex flex-col gap-2 sm:flex-row" role="radiogroup" aria-label="Filing Status">
@@ -306,8 +302,8 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   onClick={() => setCalcState('filingStatus', status.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     calcState.filingStatus === status.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {status.label}
@@ -338,7 +334,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
 
           {/* State */}
           <div>
-            <label htmlFor="se-state" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="se-state" className="mb-2 block text-sm font-medium text-text-muted">
               State
             </label>
             <select
@@ -359,49 +355,49 @@ export function SelfEmploymentTaxCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Total Tax Liability */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#F97316] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">Total Tax Liability</p>
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-danger bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">Total Tax Liability</p>
             <AnimatedNumber
               value={results.totalTax}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#F97316] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-danger inline-block transition-transform duration-150"
             />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               Effective tax rate: {results.effectiveRate.toFixed(1)}%
             </p>
           </div>
 
           {/* SE Tax */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Self-Employment Tax</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Self-Employment Tax</p>
             <AnimatedNumber
               value={results.totalSETax}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#F59E0B] inline-block"
+              className="font-mono text-2xl font-bold text-accent-warning inline-block"
             />
           </div>
 
           {/* Federal Tax */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Federal Income Tax</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Federal Income Tax</p>
             <AnimatedNumber
               value={results.federalTax}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#3B82F6] inline-block"
+              className="font-mono text-2xl font-bold text-accent-secondary inline-block"
             />
           </div>
 
           {/* Quarterly Payment */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Estimated Quarterly Payment</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Estimated Quarterly Payment</p>
             <AnimatedNumber
               value={results.quarterlyPayment}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+              className="font-mono text-2xl font-bold text-accent-primary inline-block"
             />
           </div>
 
@@ -415,7 +411,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.totalTax}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -427,7 +423,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.totalSETax}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                  className="font-mono text-lg font-bold text-accent-warning inline-block"
                 />
               }
             />
@@ -438,7 +434,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.federalTax}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
             />
@@ -449,7 +445,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.stateTax}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#A855F7] inline-block"
+                  className="font-mono text-lg font-bold text-accent-purple inline-block"
                 />
               }
             />
@@ -460,7 +456,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.effectiveRate}
                   format="percent"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -471,7 +467,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                   value={results.quarterlyPayment}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-lg font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -486,40 +482,40 @@ export function SelfEmploymentTaxCalculatorWidget() {
           />
 
           {/* SE Tax Details */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">
               Self-Employment Tax Breakdown
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-[#94A3B8]">Social Security (12.4%)</span>
-                <span className="font-mono text-[#F1F5F9]">{formatCurrency(results.ssTax)}</span>
+                <span className="text-text-muted">Social Security (12.4%)</span>
+                <span className="font-mono text-text-primary">{formatCurrency(results.ssTax)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#94A3B8]">Medicare (2.9%)</span>
-                <span className="font-mono text-[#F1F5F9]">{formatCurrency(results.medicareTax)}</span>
+                <span className="text-text-muted">Medicare (2.9%)</span>
+                <span className="font-mono text-text-primary">{formatCurrency(results.medicareTax)}</span>
               </div>
               {results.additionalMedicare > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-[#94A3B8]">Additional Medicare (0.9%)</span>
-                  <span className="font-mono text-[#F1F5F9]">{formatCurrency(results.additionalMedicare)}</span>
+                  <span className="text-text-muted">Additional Medicare (0.9%)</span>
+                  <span className="font-mono text-text-primary">{formatCurrency(results.additionalMedicare)}</span>
                 </div>
               )}
-              <div className="flex justify-between border-t border-[#1E293B] pt-2 font-medium">
-                <span className="text-[#94A3B8]">Total SE Tax</span>
-                <span className="font-mono text-[#F59E0B]">{formatCurrency(results.totalSETax)}</span>
+              <div className="flex justify-between border-t border-border pt-2 font-medium">
+                <span className="text-text-muted">Total SE Tax</span>
+                <span className="font-mono text-accent-warning">{formatCurrency(results.totalSETax)}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-[#94A3B8]">SE Tax Deduction (50%)</span>
-                <span className="font-mono text-[#22C55E]">-{formatCurrency(results.seDeduction)}</span>
+                <span className="text-text-muted">SE Tax Deduction (50%)</span>
+                <span className="font-mono text-accent-primary">-{formatCurrency(results.seDeduction)}</span>
               </div>
             </div>
           </div>
 
           {/* Income Allocation Pie Chart */}
           {results.netSEIncome + calcState.otherIncome > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">
                 Income Allocation
               </p>
               <ResponsiveContainer width="100%" height={200}>
@@ -556,7 +552,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
                       className="h-3 w-3 rounded-sm"
                       style={{ backgroundColor: PIE_COLORS[idx % PIE_COLORS.length] }}
                     />
-                    <span className="text-[#94A3B8]">{item.name}</span>
+                    <span className="text-text-muted">{item.name}</span>
                   </div>
                 ))}
               </div>
@@ -566,8 +562,8 @@ export function SelfEmploymentTaxCalculatorWidget() {
       </div>
 
       {/* Quarterly Payment Schedule */}
-      <div className="mt-8 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-        <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+      <div className="mt-8 rounded-lg border border-border bg-bg-primary p-4">
+        <p className="mb-3 text-sm font-medium text-text-muted">
           Quarterly Estimated Payment Schedule
         </p>
         <ResponsiveContainer width="100%" height={220}>

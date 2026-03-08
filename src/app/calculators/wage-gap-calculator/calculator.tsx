@@ -24,19 +24,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  warning: "#F59E0B",
-  danger: "#F97316",
-  purple: "#A855F7",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const GENDERS = [
   { label: "Woman", value: "women" },
@@ -94,6 +82,14 @@ const STATES = [
 ];
 
 export function WageGapCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    warning: "#F59E0B",
+    danger: "#F97316",
+    purple: "#A855F7",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       salary: 55000,
@@ -203,10 +199,10 @@ export function WageGapCalculatorWidget() {
   };
 
   const selectClass =
-    "h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none";
+    "h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none";
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -235,7 +231,7 @@ export function WageGapCalculatorWidget() {
 
           {/* Gender */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Your Gender
             </label>
             <div className="flex gap-2" role="radiogroup" aria-label="Your Gender">
@@ -247,8 +243,8 @@ export function WageGapCalculatorWidget() {
                   onClick={() => setState('gender', g.value)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     state.gender === g.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {g.label}
@@ -259,7 +255,7 @@ export function WageGapCalculatorWidget() {
 
           {/* Occupation */}
           <div>
-            <label htmlFor="wg-occupation" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-occupation" className="mb-2 block text-sm font-medium text-text-muted">
               Occupation / Industry
             </label>
             <select
@@ -278,7 +274,7 @@ export function WageGapCalculatorWidget() {
 
           {/* Experience */}
           <div>
-            <label htmlFor="wg-experience" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-experience" className="mb-2 block text-sm font-medium text-text-muted">
               Years of Experience
             </label>
             <select
@@ -297,7 +293,7 @@ export function WageGapCalculatorWidget() {
 
           {/* Education */}
           <div>
-            <label htmlFor="wg-education" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-education" className="mb-2 block text-sm font-medium text-text-muted">
               Education Level
             </label>
             <select
@@ -316,7 +312,7 @@ export function WageGapCalculatorWidget() {
 
           {/* State / Region */}
           <div>
-            <label htmlFor="wg-state" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="wg-state" className="mb-2 block text-sm font-medium text-text-muted">
               State / Region
             </label>
             <select
@@ -337,41 +333,41 @@ export function WageGapCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Gap Amount */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#F59E0B] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-warning bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">
               Estimated Median for Your Demographic
             </p>
             <AnimatedNumber
               value={results.yourMedian}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               {results.occupationName} &middot;{" "}
               {state.gender === "women" ? "Women" : "Men"}
             </p>
           </div>
 
           {/* Gap Amount */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Annual Gap Amount</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Annual Gap Amount</p>
             <AnimatedNumber
               value={results.gapAmount}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#F59E0B] inline-block"
+              className="font-mono text-2xl font-bold text-accent-warning inline-block"
             />
           </div>
 
           {/* Career Cost */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Career Cost (30yr)</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Career Cost (30yr)</p>
             <AnimatedNumber
               value={results.careerCost[2]?.cost || 0}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#F97316] inline-block"
+              className="font-mono text-2xl font-bold text-accent-danger inline-block"
             />
           </div>
 
@@ -385,7 +381,7 @@ export function WageGapCalculatorWidget() {
                   value={state.salary}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -397,7 +393,7 @@ export function WageGapCalculatorWidget() {
                   value={results.yourMedian}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
             />
@@ -408,7 +404,7 @@ export function WageGapCalculatorWidget() {
                   value={results.otherMedian}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#A855F7] inline-block"
+                  className="font-mono text-lg font-bold text-accent-purple inline-block"
                 />
               }
             />
@@ -419,7 +415,7 @@ export function WageGapCalculatorWidget() {
                   value={results.gapPercent}
                   format="percent"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                  className="font-mono text-lg font-bold text-accent-warning inline-block"
                 />
               }
             />
@@ -430,7 +426,7 @@ export function WageGapCalculatorWidget() {
                   value={results.careerCost[0]?.cost || 0}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -441,7 +437,7 @@ export function WageGapCalculatorWidget() {
                   value={results.careerCost[2]?.cost || 0}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F97316] inline-block"
+                  className="font-mono text-lg font-bold text-accent-danger inline-block"
                 />
               }
               trend="down"
@@ -457,18 +453,18 @@ export function WageGapCalculatorWidget() {
           />
 
           {/* Adjusted vs Unadjusted Context */}
-          <div className="rounded-lg border border-[#3B82F6]/30 bg-[#3B82F6]/5 p-4">
-            <p className="mb-2 text-sm font-medium text-[#3B82F6]">
+          <div className="rounded-lg border border-accent-secondary/30 bg-accent-secondary/5 p-4">
+            <p className="mb-2 text-sm font-medium text-accent-secondary">
               Adjusted vs. Unadjusted Gap
             </p>
-            <p className="text-sm text-[#94A3B8]">
-              The <strong className="text-[#F1F5F9]">unadjusted</strong> (raw) national wage
+            <p className="text-sm text-text-muted">
+              The <strong className="text-text-primary">unadjusted</strong> (raw) national wage
               gap is approximately{" "}
-              <strong className="text-[#F1F5F9]">
+              <strong className="text-text-primary">
                 {results.unadjustedGapPercent.toFixed(1)}%
               </strong>{" "}
               — women earn about 83 cents for every dollar men earn across all
-              occupations. The <strong className="text-[#F1F5F9]">adjusted</strong> gap shown
+              occupations. The <strong className="text-text-primary">adjusted</strong> gap shown
               above accounts for your specific occupation, education,
               experience, and location, which typically narrows the gap but does
               not eliminate it entirely.
@@ -476,15 +472,15 @@ export function WageGapCalculatorWidget() {
           </div>
 
           {/* Career Cost Breakdown */}
-          <div className="rounded-lg border border-[#F97316]/30 bg-[#F97316]/5 p-4">
-            <p className="mb-3 text-sm font-medium text-[#F97316]">
+          <div className="rounded-lg border border-accent-danger/30 bg-accent-danger/5 p-4">
+            <p className="mb-3 text-sm font-medium text-accent-danger">
               Lifetime Cost of the Gap (with 3% annual growth)
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               {results.careerCost.map((item) => (
                 <div key={item.years} className="text-center">
-                  <p className="text-xs text-[#94A3B8]">{item.years} Years</p>
-                  <p className="font-mono text-base font-bold text-[#F1F5F9]">
+                  <p className="text-xs text-text-muted">{item.years} Years</p>
+                  <p className="font-mono text-base font-bold text-text-primary">
                     {formatCurrency(item.cost)}
                   </p>
                 </div>
@@ -493,8 +489,8 @@ export function WageGapCalculatorWidget() {
           </div>
 
           {/* Bar Chart - Median Comparison */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">
               Median Salary Comparison
             </p>
             <ResponsiveContainer width="100%" height={180}>
@@ -541,8 +537,8 @@ export function WageGapCalculatorWidget() {
       </div>
 
       {/* Career Earnings Gap Over Time */}
-      <div className="mt-8 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-        <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+      <div className="mt-8 rounded-lg border border-border bg-bg-primary p-4">
+        <p className="mb-3 text-sm font-medium text-text-muted">
           Cumulative Career Earnings Gap Over Time
         </p>
         <ResponsiveContainer width="100%" height={300}>

@@ -22,17 +22,7 @@ import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
-
-const COLORS = {
-  contributions: "#3B82F6",
-  match: "#22C55E",
-  growth: "#F59E0B",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const FUND_COLORS: Record<string, string> = {
   G: "#94A3B8",
@@ -62,6 +52,12 @@ const TSP_FUNDS: FundOption[] = [
 type ContributionType = "traditional" | "roth" | "mixed";
 
 export function TspCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    contributions: "#3B82F6",
+    match: "#22C55E",
+    growth: "#F59E0B",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentAge: 35,
@@ -177,7 +173,7 @@ export function TspCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -227,7 +223,7 @@ export function TspCalculatorWidget() {
             min={0}
             step={50}
           />
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-text-muted">
             {formatCurrency(state.payPeriodContribution * 26)}/year (26 pay periods)
           </p>
 
@@ -249,13 +245,13 @@ export function TspCalculatorWidget() {
             max={10}
             step={0.5}
           />
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-text-muted">
             FERS auto 1% + up to 4% match = 5% max. Match = {formatCurrency(state.annualSalary * state.employerMatchPct / 100)}/year
           </p>
 
           {/* Fund Selection */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Investment Fund
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -265,8 +261,8 @@ export function TspCalculatorWidget() {
                   onClick={() => setState('selectedFund', fund.name)}
                   className={`rounded-lg border px-3 py-3 text-xs font-medium transition-colors ${
                     state.selectedFund === fund.name
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   <span className="block text-sm font-bold">{fund.name}</span>
@@ -278,7 +274,7 @@ export function TspCalculatorWidget() {
 
           {/* Contribution Type */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Contribution Type
             </label>
             <div className="flex gap-2">
@@ -288,8 +284,8 @@ export function TspCalculatorWidget() {
                   onClick={() => setState('contributionType', type)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium capitalize transition-colors ${
                     state.contributionType === type
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {type}
@@ -302,8 +298,8 @@ export function TspCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Projected Balance */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Projected Balance at Retirement</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Projected Balance at Retirement</p>
             <AnimatedNumber value={results.projectedBalance} format="currency" />
           </div>
 
@@ -311,24 +307,24 @@ export function TspCalculatorWidget() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Projected Balance"
-              value={<AnimatedNumber value={results.projectedBalance} format="currency" className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
+              value={<AnimatedNumber value={results.projectedBalance} format="currency" className="font-mono text-2xl font-bold text-accent-primary inline-block" />}
               highlight
             />
             <StatCard
               label="Monthly Income (4% Rule)"
-              value={<AnimatedNumber value={results.monthlyIncome} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyIncome} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Employee Contributions"
-              value={<AnimatedNumber value={results.totalEmployeeContributions} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.totalEmployeeContributions} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Employer Match"
-              value={<AnimatedNumber value={results.totalEmployerMatch} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.totalEmployerMatch} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Investment Growth"
-              value={<AnimatedNumber value={Math.max(results.investmentGrowth, 0)} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={Math.max(results.investmentGrowth, 0)} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
               trend="up"
             />
           </div>
@@ -337,15 +333,15 @@ export function TspCalculatorWidget() {
           <ShareResults slug="tsp-calculator" title="TSP Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Tax Note */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="text-sm text-[#94A3B8]">
-              <span className="font-medium text-[#F1F5F9]">Tax Note:</span> {results.traditionalTaxNote}
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="text-sm text-text-muted">
+              <span className="font-medium text-text-primary">Tax Note:</span> {results.traditionalTaxNote}
             </p>
           </div>
 
           {/* Growth Area Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">TSP Growth Over Time</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">TSP Growth Over Time</p>
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={results.growthData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -403,8 +399,8 @@ export function TspCalculatorWidget() {
 
           {/* Balance Composition Pie Chart */}
           {compositionData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Balance Composition</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Balance Composition</p>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -439,7 +435,7 @@ export function TspCalculatorWidget() {
                       className="h-3 w-3 rounded-sm"
                       style={{ backgroundColor: COMPOSITION_COLORS[index] }}
                     />
-                    <span className="text-[#94A3B8]">
+                    <span className="text-text-muted">
                       {entry.name} ({results.projectedBalance > 0 ? Math.round((entry.value / results.projectedBalance) * 100) : 0}%)
                     </span>
                   </div>

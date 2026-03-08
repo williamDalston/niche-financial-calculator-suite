@@ -23,18 +23,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  tertiary: "#F59E0B",
-  quaternary: "#F97316",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 // 2025 bend points
 const BEND_POINT_1 = 1174;
@@ -99,6 +88,13 @@ function getBenefitAtAge(pia: number, claimAge: number, fra: number): number {
 }
 
 export function SocialSecurityEstimatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    tertiary: "#F59E0B",
+    quaternary: "#F97316",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentAge: 40,
@@ -203,7 +199,7 @@ export function SocialSecurityEstimatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -221,7 +217,7 @@ export function SocialSecurityEstimatorWidget() {
 
           {/* Birth Year */}
           <div>
-            <label htmlFor="ss-birth-year" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="ss-birth-year" className="mb-2 block text-sm font-medium text-text-muted">
               Birth Year
             </label>
             <input
@@ -229,7 +225,7 @@ export function SocialSecurityEstimatorWidget() {
               type="number"
               value={state.birthYear}
               onChange={(e) => setState('birthYear', Number(e.target.value))}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
               min={1940}
               max={2005}
             />
@@ -237,7 +233,7 @@ export function SocialSecurityEstimatorWidget() {
 
           {/* Input Mode */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Earnings Input Method
             </label>
             <div className="flex gap-2" role="radiogroup" aria-label="Earnings Input Method">
@@ -249,8 +245,8 @@ export function SocialSecurityEstimatorWidget() {
                   onClick={() => setState('inputMode', mode)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     state.inputMode === mode
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {mode === "income" ? "Annual Income" : "AIME (Advanced)"}
@@ -336,35 +332,35 @@ export function SocialSecurityEstimatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Monthly Benefit at Planned Age */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">
               Estimated Monthly Benefit at Age {state.plannedRetirementAge}
             </p>
             <AnimatedNumber
               value={results.benefitAtPlanned}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
           {/* Secondary AnimatedNumber metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-border bg-bg-primary p-4">
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Annual Benefit</p>
+              <p className="text-xs text-text-muted mb-1">Annual Benefit</p>
               <AnimatedNumber
                 value={results.benefitAtPlanned * 12}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">PIA</p>
+              <p className="text-xs text-text-muted mb-1">PIA</p>
               <AnimatedNumber
                 value={results.pia}
                 format="currency"
                 decimals={2}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
           </div>
@@ -411,8 +407,8 @@ export function SocialSecurityEstimatorWidget() {
           </div>
 
           {/* Bar Chart - Monthly Benefit Comparison */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Monthly Benefit by Claiming Age</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Monthly Benefit by Claiming Age</p>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={comparisonBarData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -441,8 +437,8 @@ export function SocialSecurityEstimatorWidget() {
           </div>
 
           {/* Line Chart - Cumulative Benefits */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Cumulative Lifetime Benefits</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Cumulative Lifetime Benefits</p>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={results.cumulativeData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -477,7 +473,7 @@ export function SocialSecurityEstimatorWidget() {
               </LineChart>
             </ResponsiveContainer>
             {(results.crossover62vsFRA || results.crossover62vs70) && (
-              <div className="mt-2 space-y-1 text-xs text-[#94A3B8]">
+              <div className="mt-2 space-y-1 text-xs text-text-muted">
                 {results.crossover62vsFRA && (
                   <p>FRA claiming overtakes age 62 claiming at age {results.crossover62vsFRA}</p>
                 )}

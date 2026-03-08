@@ -21,27 +21,23 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  overtime: "#F59E0B",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
 export function HourlyToSalaryCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    overtime: "#F59E0B",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       hourlyRate: 25,
@@ -116,7 +112,7 @@ export function HourlyToSalaryCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -153,7 +149,7 @@ export function HourlyToSalaryCalculatorWidget() {
 
           {/* Weeks Per Year */}
           <div>
-            <label htmlFor="weeks-per-year" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="weeks-per-year" className="mb-2 block text-sm font-medium text-text-muted">
               Weeks Per Year
             </label>
             <input
@@ -161,7 +157,7 @@ export function HourlyToSalaryCalculatorWidget() {
               type="number"
               value={state.weeksPerYear}
               onChange={(e) => setState('weeksPerYear', Number(e.target.value))}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
               min={1}
               max={52}
               step={1}
@@ -181,7 +177,7 @@ export function HourlyToSalaryCalculatorWidget() {
 
           {/* Overtime Rate */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Overtime Rate Multiplier
             </label>
             <div className="flex gap-2" role="radiogroup" aria-label="Overtime Rate Multiplier">
@@ -193,8 +189,8 @@ export function HourlyToSalaryCalculatorWidget() {
                   onClick={() => setState('overtimeMultiplier', mult)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     state.overtimeMultiplier === mult
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {mult}x ({formatCurrencyExact(state.hourlyRate * mult)}/hr)
@@ -215,7 +211,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalAnnual}
                   format="currency"
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               subvalue={
@@ -231,7 +227,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalMonthly}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -241,7 +237,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalBiweekly}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -251,7 +247,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalWeekly}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -261,7 +257,7 @@ export function HourlyToSalaryCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalDaily}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -272,7 +268,7 @@ export function HourlyToSalaryCalculatorWidget() {
                   <AnimatedNumber
                     value={results.overtimeAnnual}
                     format="currency"
-                    className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                    className="font-mono text-lg font-bold text-accent-warning inline-block"
                   />
                 }
                 trend="up"
@@ -288,8 +284,8 @@ export function HourlyToSalaryCalculatorWidget() {
           />
 
           {/* Bar Chart: Pay by Period */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Pay by Period</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Pay by Period</p>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={payPeriodData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -323,8 +319,8 @@ export function HourlyToSalaryCalculatorWidget() {
 
           {/* Comparison: With vs Without Overtime */}
           {state.overtimeHours > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Annual: With vs Without Overtime</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Annual: With vs Without Overtime</p>
               <ResponsiveContainer width="100%" height={120}>
                 <BarChart data={comparisonData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

@@ -31,7 +31,7 @@ function TrendArrow({ direction }: { direction: "up" | "down" }) {
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={isUp ? "text-accent-primary" : "text-[#EF4444]"}
+        className={isUp ? "text-accent-primary" : "text-[#F97316]"}
         aria-hidden="true"
       >
         {isUp ? (

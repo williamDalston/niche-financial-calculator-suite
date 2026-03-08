@@ -120,17 +120,17 @@ export function CostOfLivingCalculatorWidget() {
   }, [state.currentCityIndex, state.targetCityIndex, state.salary]);
 
   return (
-    <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
+    <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label className="mb-2 block text-sm font-medium text-text-muted">
             Current City
           </label>
           <select
             value={state.currentCityIndex}
             onChange={(e) => setState('currentCityIndex', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {cities.map((city, i) => (
               <option key={`current-${city.name}`} value={i}>
@@ -141,13 +141,13 @@ export function CostOfLivingCalculatorWidget() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label className="mb-2 block text-sm font-medium text-text-muted">
             Target City
           </label>
           <select
             value={state.targetCityIndex}
             onChange={(e) => setState('targetCityIndex', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {cities.map((city, i) => (
               <option key={`target-${city.name}`} value={i}>
@@ -186,17 +186,17 @@ export function CostOfLivingCalculatorWidget() {
       {results && (
         <>
           {/* Hero result */}
-          <div className="mb-6 rounded-xl border border-[#1E293B] bg-[#0B1120] p-6 text-center">
-            <p className="text-sm font-medium text-[#94A3B8] mb-2">
+          <div className="mb-6 rounded-xl border border-border bg-bg-primary p-6 text-center">
+            <p className="text-sm font-medium text-text-muted mb-2">
               Equivalent Salary in {results.targetCity}
             </p>
             <AnimatedNumber
               value={results.equivalentSalary}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="text-xs text-[#94A3B8] mt-2">
+            <p className="text-xs text-text-muted mt-2">
               to maintain the same standard of living
             </p>
           </div>
@@ -242,23 +242,23 @@ export function CostOfLivingCalculatorWidget() {
 
           {/* Category breakdown */}
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               Category Breakdown
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#1E293B]">
-                    <th className="text-left py-2 px-3 text-[#94A3B8] font-medium">
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 px-3 text-text-muted font-medium">
                       Category
                     </th>
-                    <th className="text-right py-2 px-3 text-[#94A3B8] font-medium">
+                    <th className="text-right py-2 px-3 text-text-muted font-medium">
                       {results.currentCity}
                     </th>
-                    <th className="text-right py-2 px-3 text-[#94A3B8] font-medium">
+                    <th className="text-right py-2 px-3 text-text-muted font-medium">
                       {results.targetCity}
                     </th>
-                    <th className="text-right py-2 px-3 text-[#94A3B8] font-medium">
+                    <th className="text-right py-2 px-3 text-text-muted font-medium">
                       Difference
                     </th>
                   </tr>
@@ -267,47 +267,47 @@ export function CostOfLivingCalculatorWidget() {
                   {results.categoryBreakdown.map((cat) => (
                     <tr
                       key={cat.category}
-                      className="border-b border-[#1E293B]/50"
+                      className="border-b border-border/50"
                     >
-                      <td className="py-2 px-3 text-[#F1F5F9]">
+                      <td className="py-2 px-3 text-text-primary">
                         {cat.category}
                       </td>
-                      <td className="py-2 px-3 text-right font-mono text-[#F1F5F9]">
+                      <td className="py-2 px-3 text-right font-mono text-text-primary">
                         {cat.currentIndex}
                       </td>
-                      <td className="py-2 px-3 text-right font-mono text-[#F1F5F9]">
+                      <td className="py-2 px-3 text-right font-mono text-text-primary">
                         {cat.targetIndex}
                       </td>
                       <td
                         className={`py-2 px-3 text-right font-mono font-medium ${
                           cat.difference > 0
-                            ? "text-[#F97316]"
+                            ? "text-accent-danger"
                             : cat.difference < 0
-                            ? "text-[#22C55E]"
-                            : "text-[#94A3B8]"
+                            ? "text-accent-primary"
+                            : "text-text-muted"
                         }`}
                       >
                         {pct(cat.difference)}
                       </td>
                     </tr>
                   ))}
-                  <tr className="border-t border-[#1E293B]">
-                    <td className="py-2 px-3 text-[#F1F5F9] font-semibold">
+                  <tr className="border-t border-border">
+                    <td className="py-2 px-3 text-text-primary font-semibold">
                       Overall
                     </td>
-                    <td className="py-2 px-3 text-right font-mono font-semibold text-[#F1F5F9]">
+                    <td className="py-2 px-3 text-right font-mono font-semibold text-text-primary">
                       {results.currentOverall}
                     </td>
-                    <td className="py-2 px-3 text-right font-mono font-semibold text-[#F1F5F9]">
+                    <td className="py-2 px-3 text-right font-mono font-semibold text-text-primary">
                       {results.targetOverall}
                     </td>
                     <td
                       className={`py-2 px-3 text-right font-mono font-bold ${
                         results.percentDifference > 0
-                          ? "text-[#F97316]"
+                          ? "text-accent-danger"
                           : results.percentDifference < 0
-                          ? "text-[#22C55E]"
-                          : "text-[#94A3B8]"
+                          ? "text-accent-primary"
+                          : "text-text-muted"
                       }`}
                     >
                       {pct(results.percentDifference)}
@@ -320,7 +320,7 @@ export function CostOfLivingCalculatorWidget() {
 
           {/* Chart */}
           <div>
-            <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               Category Comparison
             </h3>
             <ResponsiveContainer width="100%" height={320}>

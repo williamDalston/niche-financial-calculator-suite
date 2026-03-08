@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://niche-financial-calculator-suite.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://calcengine.org";
 
 /* ─── Content dates ─── */
 
@@ -138,6 +138,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/terms`,
+      lastModified: SITE_LAUNCH,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BASE_URL}/editorial-policy`,
       lastModified: SITE_LAUNCH,
       changeFrequency: "yearly",
       priority: 0.3,

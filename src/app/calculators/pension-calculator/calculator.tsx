@@ -24,22 +24,11 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
-
-const COLORS = {
-  pension: "#22C55E",
-  cola: "#3B82F6",
-  survivor: "#F59E0B",
-  lumpSum: "#A855F7",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -53,6 +42,13 @@ type SurvivorOption = "none" | "50" | "75" | "100";
 /* ------------------------------------------------------------------ */
 
 export function PensionCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    pension: "#22C55E",
+    cola: "#3B82F6",
+    survivor: "#F59E0B",
+    lumpSum: "#A855F7",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentAge: 45,
@@ -168,7 +164,7 @@ export function PensionCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -227,7 +223,7 @@ export function PensionCalculatorWidget() {
 
           {/* Salary Basis */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">Salary Basis</label>
+            <label className="mb-2 block text-sm font-medium text-text-muted">Salary Basis</label>
             <div className="flex gap-2" role="radiogroup" aria-label="Salary Basis">
               {([
                 { value: "final", label: "Final Salary" },
@@ -241,8 +237,8 @@ export function PensionCalculatorWidget() {
                   onClick={() => setState('salaryBasis', option.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     state.salaryBasis === option.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {option.label}
@@ -273,7 +269,7 @@ export function PensionCalculatorWidget() {
 
           {/* Survivor Benefit */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">Survivor Benefit Option</label>
+            <label className="mb-2 block text-sm font-medium text-text-muted">Survivor Benefit Option</label>
             <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Survivor Benefit Option">
               {([
                 { value: "none", label: "None" },
@@ -288,8 +284,8 @@ export function PensionCalculatorWidget() {
                   onClick={() => setState('survivorOption', option.value)}
                   className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     state.survivorOption === option.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {option.label}
@@ -302,7 +298,7 @@ export function PensionCalculatorWidget() {
           <div>
             <button
               onClick={() => setShowLumpSum(!showLumpSum)}
-              className="flex items-center gap-2 text-sm font-medium text-[#3B82F6] hover:text-[#22C55E] transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-accent-secondary hover:text-accent-primary transition-colors"
             >
               <svg
                 className={`h-4 w-4 transition-transform ${showLumpSum ? "rotate-180" : ""}`}
@@ -332,7 +328,7 @@ export function PensionCalculatorWidget() {
                   value={results.monthlyPension}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -343,7 +339,7 @@ export function PensionCalculatorWidget() {
                 <AnimatedNumber
                   value={results.annualPension}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -355,7 +351,7 @@ export function PensionCalculatorWidget() {
                   format="number"
                   decimals={1}
                   suffix="%"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -365,7 +361,7 @@ export function PensionCalculatorWidget() {
                 <AnimatedNumber
                   value={results.at10}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -377,7 +373,7 @@ export function PensionCalculatorWidget() {
                     value={results.survivorMonthlyBenefit}
                     format="currency"
                     decimals={2}
-                    className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                    className="font-mono text-lg font-bold text-accent-warning inline-block"
                   />
                 }
               />
@@ -389,7 +385,7 @@ export function PensionCalculatorWidget() {
                   <AnimatedNumber
                     value={results.lumpSum}
                     format="currency"
-                    className="font-mono text-lg font-bold text-[#A855F7] inline-block"
+                    className="font-mono text-lg font-bold text-accent-purple inline-block"
                   />
                 }
                 subvalue="at 5% discount rate over 30 years"
@@ -405,27 +401,27 @@ export function PensionCalculatorWidget() {
           />
 
           {/* COLA Milestones */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">COLA-Adjusted Annual Income</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">COLA-Adjusted Annual Income</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               <div>
-                <p className="text-xs text-[#94A3B8]">Year 5</p>
-                <p className="font-mono text-sm font-bold text-[#F1F5F9]">{formatCurrency(results.at5)}</p>
+                <p className="text-xs text-text-muted">Year 5</p>
+                <p className="font-mono text-sm font-bold text-text-primary">{formatCurrency(results.at5)}</p>
               </div>
               <div>
-                <p className="text-xs text-[#94A3B8]">Year 10</p>
-                <p className="font-mono text-sm font-bold text-[#F1F5F9]">{formatCurrency(results.at10)}</p>
+                <p className="text-xs text-text-muted">Year 10</p>
+                <p className="font-mono text-sm font-bold text-text-primary">{formatCurrency(results.at10)}</p>
               </div>
               <div>
-                <p className="text-xs text-[#94A3B8]">Year 20</p>
-                <p className="font-mono text-sm font-bold text-[#F1F5F9]">{formatCurrency(results.at20)}</p>
+                <p className="text-xs text-text-muted">Year 20</p>
+                <p className="font-mono text-sm font-bold text-text-primary">{formatCurrency(results.at20)}</p>
               </div>
             </div>
           </div>
 
           {/* Line Chart: COLA Projections */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Pension Income Over 30 Years (with COLA)</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Pension Income Over 30 Years (with COLA)</p>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={results.colaProjections}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -460,8 +456,8 @@ export function PensionCalculatorWidget() {
           </div>
 
           {/* Bar Chart: Survivor Options */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Survivor Benefit Options Comparison</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Survivor Benefit Options Comparison</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={results.survivorComparisonData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

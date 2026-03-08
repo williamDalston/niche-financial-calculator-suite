@@ -18,21 +18,11 @@ import {
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { CurrencyInput } from "@/components/ui/currency-input";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens                                                      */
 /* ------------------------------------------------------------------ */
-
-const COLORS = {
-  principal: "#3B82F6",
-  interest: "#22C55E",
-  warning: "#F59E0B",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
 
 const LOAN_TERMS = [15, 20, 30] as const;
 
@@ -69,7 +59,7 @@ function Slider({
       {/* Tooltip above thumb */}
       {showTooltip && isDragging && tooltipContent && (
         <div
-          className="absolute -top-9 z-10 rounded-md bg-[#162032] border border-[#1E293B] px-2 py-1 text-xs font-mono text-[#F1F5F9] whitespace-nowrap pointer-events-none transition-opacity duration-150"
+          className="absolute -top-9 z-10 rounded-md bg-bg-surface border border-border px-2 py-1 text-xs font-mono text-text-primary whitespace-nowrap pointer-events-none transition-opacity duration-150"
           style={{ left: `${pct}%`, transform: "translateX(-50%)" }}
         >
           {tooltipContent}
@@ -85,9 +75,9 @@ function Slider({
       )}
 
       {/* Track */}
-      <div className="relative h-2 rounded-full bg-[#1E293B]">
+      <div className="relative h-2 rounded-full bg-border">
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#22C55E] to-[#4ADE80] transition-all duration-75"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent-primary to-accent-primary-light transition-all duration-75"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -112,7 +102,7 @@ function Slider({
 
       {/* Custom thumb */}
       <div
-        className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-[#22C55E] bg-[#0B1120] shadow-lg shadow-[#22C55E]/20 transition-transform duration-100 pointer-events-none"
+        className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-accent-primary bg-bg-primary shadow-lg shadow-accent-primary/20 transition-transform duration-100 pointer-events-none"
         style={{
           left: `${pct}%`,
           transform: `translate(-50%, -50%) scale(${isDragging ? 1.2 : 1})`,
@@ -121,7 +111,7 @@ function Slider({
 
       {/* Min/Max labels */}
       {formatLabel && (
-        <div className="flex justify-between mt-2 text-xs text-[#94A3B8]">
+        <div className="flex justify-between mt-2 text-xs text-text-muted">
           <span>{formatLabel(min)}</span>
           <span>{formatLabel(max)}</span>
         </div>
@@ -148,16 +138,16 @@ function StatCard({
   icon,
   children,
   subtext,
-  colorClass = "text-[#F1F5F9]",
+  colorClass = "text-text-primary",
   className = "",
 }: StatCardProps) {
   return (
     <div
-      className={`rounded-xl border border-[#1E293B] bg-[#0B1120] p-4 hover-lift ${className}`}
+      className={`rounded-xl border border-border bg-bg-primary p-4 hover-lift ${className}`}
     >
       <div className="flex items-center gap-2 mb-2">
-        <span className="text-[#94A3B8]">{icon}</span>
-        <p className="text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+        <span className="text-text-muted">{icon}</span>
+        <p className="text-xs font-medium text-text-muted uppercase tracking-wider">
           {label}
         </p>
       </div>
@@ -165,7 +155,7 @@ function StatCard({
         {children}
       </div>
       {subtext && (
-        <p className="mt-1 text-xs text-[#94A3B8]">{subtext}</p>
+        <p className="mt-1 text-xs text-text-muted">{subtext}</p>
       )}
     </div>
   );
@@ -184,11 +174,11 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <span className="text-[#3B82F6]">{icon}</span>
-      <h3 className="font-display text-sm font-semibold text-[#94A3B8] uppercase tracking-wider">
+      <span className="text-accent-secondary">{icon}</span>
+      <h3 className="font-display text-sm font-semibold text-text-muted uppercase tracking-wider">
         {label}
       </h3>
-      <div className="flex-1 h-px bg-[#1E293B]" />
+      <div className="flex-1 h-px bg-border" />
     </div>
   );
 }
@@ -241,15 +231,15 @@ function ChartTabs({
   ];
 
   return (
-    <div className="flex gap-1 rounded-lg bg-[#0B1120] p-1 border border-[#1E293B]">
+    <div className="flex gap-1 rounded-lg bg-bg-primary p-1 border border-border">
       {tabs.map((tab) => (
         <button
           key={tab.key}
           onClick={() => onChange(tab.key)}
-          className={`flex items-center gap-1.5 flex-1 justify-center rounded-md px-3 py-2 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 ${
+          className={`flex items-center gap-1.5 flex-1 justify-center rounded-md px-3 py-2 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50 ${
             active === tab.key
-              ? "bg-[#162032] text-[#22C55E] shadow-sm"
-              : "text-[#94A3B8] hover:text-[#F1F5F9]"
+              ? "bg-bg-surface text-accent-primary shadow-sm"
+              : "text-text-muted hover:text-text-primary"
           }`}
         >
           {tab.icon}
@@ -307,13 +297,13 @@ function ShareBar({ resultText, getShareUrl }: { resultText: string; getShareUrl
   }, []);
 
   const btnClass =
-    "flex items-center gap-1.5 rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-2 text-xs font-medium text-[#94A3B8] transition-all duration-200 hover:border-[#3B82F6]/50 hover:text-[#F1F5F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50";
+    "flex items-center gap-1.5 rounded-lg border border-border bg-bg-primary px-3 py-2 text-xs font-medium text-text-muted transition-all duration-200 hover:border-accent-secondary/50 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50";
 
   return (
     <div className="flex flex-wrap gap-2 no-print" data-no-print>
       <button onClick={handleCopy} className={btnClass}>
         {copied ? (
-          <svg className="w-3.5 h-3.5 text-[#22C55E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-3.5 h-3.5 text-accent-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="20,6 9,17 4,12" />
           </svg>
         ) : (
@@ -413,9 +403,9 @@ function CustomTooltip({
 }) {
   if (!active || !payload || payload.length === 0) return null;
   return (
-    <div className="rounded-lg border border-[#1E293B] bg-[#162032] px-3 py-2 shadow-xl">
+    <div className="rounded-lg border border-border bg-bg-surface px-3 py-2 shadow-xl">
       {label !== undefined && (
-        <p className="text-xs text-[#94A3B8] mb-1 font-medium">
+        <p className="text-xs text-text-muted mb-1 font-medium">
           {typeof label === "number" ? `Year ${label}` : label}
         </p>
       )}
@@ -425,8 +415,8 @@ function CustomTooltip({
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: entry.color }}
           />
-          <span className="text-[#94A3B8]">{entry.name}:</span>
-          <span className="font-mono font-medium text-[#F1F5F9]">
+          <span className="text-text-muted">{entry.name}:</span>
+          <span className="font-mono font-medium text-text-primary">
             {formatCurrency(entry.value)}
           </span>
         </div>
@@ -445,10 +435,10 @@ function PieTooltip({
   if (!active || !payload || payload.length === 0) return null;
   const item = payload[0];
   return (
-    <div className="rounded-lg border border-[#1E293B] bg-[#162032] px-3 py-2 shadow-xl">
+    <div className="rounded-lg border border-border bg-bg-surface px-3 py-2 shadow-xl">
       <div className="flex items-center gap-2 text-xs">
-        <span className="text-[#94A3B8]">{item.name}:</span>
-        <span className="font-mono font-medium text-[#F1F5F9]">
+        <span className="text-text-muted">{item.name}:</span>
+        <span className="font-mono font-medium text-text-primary">
           {formatCurrency(item.value)}
         </span>
       </div>
@@ -461,6 +451,12 @@ function PieTooltip({
 /* ------------------------------------------------------------------ */
 
 export function MortgageCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    principal: "#3B82F6",
+    interest: "#22C55E",
+    warning: "#F59E0B",
+  };
   /* ---------- State ---------- */
   const [state, setCalcState, getShareUrl] = useCalculatorState({
     defaults: { homePrice: 400000, downPaymentPercent: 20, interestRate: 6.5, loanTerm: 30 }, slug: "mortgage-calculator",
@@ -703,7 +699,7 @@ export function MortgageCalculatorWidget() {
   /* ================================================================ */
 
   return (
-    <div className="rounded-2xl border border-[#1E293B] bg-[#162032] p-4 sm:p-6 md:p-8">
+    <div className="rounded-2xl border border-border bg-bg-surface p-4 sm:p-6 md:p-8">
       {/* ============================================================ */}
       {/*  TWO-COLUMN LAYOUT: Inputs (left) + Results (right)          */}
       {/* ============================================================ */}
@@ -746,7 +742,7 @@ export function MortgageCalculatorWidget() {
 
               {/* Down Payment */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+                <label className="mb-2 block text-sm font-medium text-text-muted">
                   Down Payment
                 </label>
                 <div className="flex gap-2">
@@ -768,12 +764,12 @@ export function MortgageCalculatorWidget() {
                             Number(e.target.value)
                           )
                         }
-                        className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] pl-3 pr-8 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+                        className="h-12 w-full rounded-lg border border-border bg-bg-primary pl-3 pr-8 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
                         min={0}
                         max={100}
                         step={0.5}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
                         %
                       </span>
                     </div>
@@ -797,11 +793,11 @@ export function MortgageCalculatorWidget() {
 
                 {/* PMI Warning */}
                 {showPmiWarning && (
-                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#F59E0B]/20 bg-[#F59E0B]/5 px-3 py-2 animate-fade-in-up">
-                    <span className="mt-0.5 text-[#F59E0B] shrink-0">
+                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-accent-warning/20 bg-accent-warning/5 px-3 py-2 animate-fade-in-up">
+                    <span className="mt-0.5 text-accent-warning shrink-0">
                       {IconWarning}
                     </span>
-                    <p className="text-xs text-[#F59E0B]/90">
+                    <p className="text-xs text-accent-warning/90">
                       PMI may be required for down payments below 20%.
                       This adds approximately 0.5-1% of the loan amount
                       annually to your payment.
@@ -822,7 +818,7 @@ export function MortgageCalculatorWidget() {
             <div className="space-y-6">
               {/* Interest Rate */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+                <label className="mb-2 block text-sm font-medium text-text-muted">
                   Interest Rate
                 </label>
                 <div className="relative">
@@ -832,12 +828,12 @@ export function MortgageCalculatorWidget() {
                     onChange={(e) =>
                       setCalcState("interestRate", Number(e.target.value))
                     }
-                    className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] pl-3 pr-8 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+                    className="h-12 w-full rounded-lg border border-border bg-bg-primary pl-3 pr-8 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
                     min={0}
                     max={15}
                     step={0.125}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
                     %
                   </span>
                 </div>
@@ -852,11 +848,11 @@ export function MortgageCalculatorWidget() {
 
                 {/* Rate warnings */}
                 {showHighRateWarning && (
-                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#3B82F6]/20 bg-[#3B82F6]/5 px-3 py-2 animate-fade-in-up">
-                    <span className="mt-0.5 text-[#3B82F6] shrink-0">
+                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-accent-secondary/20 bg-accent-secondary/5 px-3 py-2 animate-fade-in-up">
+                    <span className="mt-0.5 text-accent-secondary shrink-0">
                       {IconInfo}
                     </span>
-                    <p className="text-xs text-[#3B82F6]/90">
+                    <p className="text-xs text-accent-secondary/90">
                       This rate is above historical averages. Consider
                       shopping multiple lenders or improving your credit
                       score to qualify for better rates.
@@ -864,11 +860,11 @@ export function MortgageCalculatorWidget() {
                   </div>
                 )}
                 {showLowRateWarning && (
-                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#3B82F6]/20 bg-[#3B82F6]/5 px-3 py-2 animate-fade-in-up">
-                    <span className="mt-0.5 text-[#3B82F6] shrink-0">
+                  <div className="mt-2 flex items-start gap-2 rounded-lg border border-accent-secondary/20 bg-accent-secondary/5 px-3 py-2 animate-fade-in-up">
+                    <span className="mt-0.5 text-accent-secondary shrink-0">
                       {IconInfo}
                     </span>
-                    <p className="text-xs text-[#3B82F6]/90">
+                    <p className="text-xs text-accent-secondary/90">
                       This rate is below current market averages.
                       Verify this rate is available from your lender.
                     </p>
@@ -878,7 +874,7 @@ export function MortgageCalculatorWidget() {
 
               {/* Loan Term */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+                <label className="mb-2 block text-sm font-medium text-text-muted">
                   Loan Term
                 </label>
                 <div className="flex gap-2">
@@ -886,10 +882,10 @@ export function MortgageCalculatorWidget() {
                     <button
                       key={term}
                       onClick={() => setCalcState("loanTerm", term)}
-                      className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 ${
+                      className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50 ${
                         loanTerm === term
-                          ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.15)]"
-                          : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                          ? "border-accent-primary bg-accent-primary/10 text-accent-primary shadow-[0_0_12px_rgba(34,197,94,0.15)]"
+                          : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                       }`}
                     >
                       {term} yr
@@ -903,7 +899,7 @@ export function MortgageCalculatorWidget() {
                 {!showIncomeField ? (
                   <button
                     onClick={() => setShowIncomeField(true)}
-                    className="text-xs text-[#3B82F6] hover:text-[#22C55E] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 rounded"
+                    className="text-xs text-accent-secondary hover:text-accent-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50 rounded"
                   >
                     + Add annual income to see payment-to-income ratio
                   </button>
@@ -923,8 +919,8 @@ export function MortgageCalculatorWidget() {
                       <p
                         className={`mt-2 text-xs ${
                           monthlyIncomeRatio > 28
-                            ? "text-[#F59E0B]"
-                            : "text-[#22C55E]"
+                            ? "text-accent-warning"
+                            : "text-accent-primary"
                         }`}
                       >
                         Monthly payment is{" "}
@@ -949,8 +945,8 @@ export function MortgageCalculatorWidget() {
         {/* ---------------------------------------------------------- */}
         <div className="space-y-6">
           {/* -- Primary Result: Monthly Payment -- */}
-          <div className="rounded-xl border border-[#1E293B] bg-[#0B1120] p-6 text-center">
-            <p className="mb-2 text-sm font-medium text-[#94A3B8] uppercase tracking-wider">
+          <div className="rounded-xl border border-border bg-bg-primary p-6 text-center">
+            <p className="mb-2 text-sm font-medium text-text-muted uppercase tracking-wider">
               Monthly Payment
             </p>
             <AnimatedNumber
@@ -958,9 +954,9 @@ export function MortgageCalculatorWidget() {
               format="currency"
               decimals={2}
               duration={500}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] result-glow inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary result-glow inline-block transition-transform duration-150"
             />
-            <p className="mt-2 text-xs text-[#94A3B8]">
+            <p className="mt-2 text-xs text-text-muted">
               Principal & Interest only
             </p>
           </div>
@@ -970,20 +966,20 @@ export function MortgageCalculatorWidget() {
             <StatCard
               label="Loan Amount"
               icon={IconHome}
-              colorClass="text-[#3B82F6]"
+              colorClass="text-accent-secondary"
             >
               <AnimatedNumber
                 value={results.principal}
                 format="currency"
                 duration={500}
-                className="font-mono text-lg font-bold text-[#3B82F6] inline-block transition-transform duration-150"
+                className="font-mono text-lg font-bold text-accent-secondary inline-block transition-transform duration-150"
               />
             </StatCard>
 
             <StatCard
               label="Total Interest"
               icon={IconTrendingUp}
-              colorClass="text-[#F59E0B]"
+              colorClass="text-accent-warning"
               subtext={
                 results.principal > 0
                   ? `${Math.round(
@@ -996,30 +992,30 @@ export function MortgageCalculatorWidget() {
                 value={results.totalInterest}
                 format="currency"
                 duration={500}
-                className="font-mono text-lg font-bold text-[#F59E0B] inline-block transition-transform duration-150"
+                className="font-mono text-lg font-bold text-accent-warning inline-block transition-transform duration-150"
               />
             </StatCard>
 
             <StatCard
               label="Total Cost"
               icon={IconDollar}
-              colorClass="text-[#F1F5F9]"
+              colorClass="text-text-primary"
             >
               <AnimatedNumber
                 value={results.totalCost}
                 format="currency"
                 duration={500}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block transition-transform duration-150"
+                className="font-mono text-lg font-bold text-text-primary inline-block transition-transform duration-150"
               />
             </StatCard>
 
             <StatCard
               label="Payoff Date"
               icon={IconCalendar}
-              colorClass="text-[#F1F5F9]"
+              colorClass="text-text-primary"
               subtext={`${loanTerm} year term`}
             >
-              <span className="font-mono text-lg font-bold text-[#F1F5F9]">
+              <span className="font-mono text-lg font-bold text-text-primary">
                 {payoffDate}
               </span>
             </StatCard>
@@ -1035,8 +1031,8 @@ export function MortgageCalculatorWidget() {
 
               {/* Pie Chart */}
               {activeChart === "pie" && (
-                <div className="rounded-xl border border-[#1E293B] bg-[#0B1120] p-5 animate-fade-in-up">
-                  <p className="mb-4 text-sm font-medium text-[#94A3B8]">
+                <div className="rounded-xl border border-border bg-bg-primary p-5 animate-fade-in-up">
+                  <p className="mb-4 text-sm font-medium text-text-muted">
                     Principal vs Interest
                   </p>
                   <ResponsiveContainer width="100%" height={240}>
@@ -1072,7 +1068,7 @@ export function MortgageCalculatorWidget() {
                           backgroundColor: COLORS.principal,
                         }}
                       />
-                      <span className="text-[#94A3B8]">
+                      <span className="text-text-muted">
                         Principal (
                         {results.totalCost > 0
                           ? Math.round(
@@ -1090,7 +1086,7 @@ export function MortgageCalculatorWidget() {
                           backgroundColor: COLORS.interest,
                         }}
                       />
-                      <span className="text-[#94A3B8]">
+                      <span className="text-text-muted">
                         Interest (
                         {results.totalCost > 0
                           ? Math.round(
@@ -1108,8 +1104,8 @@ export function MortgageCalculatorWidget() {
 
               {/* Amortization Area Chart */}
               {activeChart === "amortization" && (
-                <div className="rounded-xl border border-[#1E293B] bg-[#0B1120] p-5 animate-fade-in-up">
-                  <p className="mb-4 text-sm font-medium text-[#94A3B8]">
+                <div className="rounded-xl border border-border bg-bg-primary p-5 animate-fade-in-up">
+                  <p className="mb-4 text-sm font-medium text-text-muted">
                     Balance Over Time
                   </p>
                   <ResponsiveContainer width="100%" height={300}>
@@ -1244,55 +1240,55 @@ export function MortgageCalculatorWidget() {
                   className="animate-fade-in-up"
                   ref={tableRef}
                 >
-                  <div className="rounded-xl border border-[#1E293B] overflow-hidden">
+                  <div className="rounded-xl border border-border overflow-hidden">
                     <div className="max-h-[480px] overflow-y-auto">
                       <table className="w-full text-sm">
                         <thead className="sticky top-0 z-10">
-                          <tr className="border-b border-[#1E293B] bg-[#0B1120]">
-                            <th className="px-3 py-3 text-left text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+                          <tr className="border-b border-border bg-bg-primary">
+                            <th className="px-3 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                               Month
                             </th>
-                            <th className="px-3 py-3 text-right text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+                            <th className="px-3 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                               Payment
                             </th>
-                            <th className="px-3 py-3 text-right text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+                            <th className="px-3 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                               Principal
                             </th>
-                            <th className="px-3 py-3 text-right text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+                            <th className="px-3 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                               Interest
                             </th>
-                            <th className="px-3 py-3 text-right text-xs font-medium text-[#94A3B8] uppercase tracking-wider">
+                            <th className="px-3 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                               Balance
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#1E293B]/50">
+                        <tbody className="divide-y divide-border/50">
                           {visibleMonths.map((row, i) => (
                             <tr
                               key={row.month}
-                              className={`transition-colors duration-100 hover:bg-[#1E293B]/30 ${
+                              className={`transition-colors duration-100 hover:bg-border/30 ${
                                 i % 2 === 0
-                                  ? "bg-[#162032]"
-                                  : "bg-[#0B1120]/30"
+                                  ? "bg-bg-surface"
+                                  : "bg-bg-primary/30"
                               }`}
                             >
-                              <td className="px-3 py-2 text-[#F1F5F9] font-medium">
+                              <td className="px-3 py-2 text-text-primary font-medium">
                                 {row.month}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-[#F1F5F9]">
+                              <td className="px-3 py-2 text-right font-mono text-text-primary">
                                 {formatCurrencyExact(row.payment)}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-[#3B82F6]">
+                              <td className="px-3 py-2 text-right font-mono text-accent-secondary">
                                 {formatCurrencyExact(
                                   row.principalPaid
                                 )}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-[#F59E0B]">
+                              <td className="px-3 py-2 text-right font-mono text-accent-warning">
                                 {formatCurrencyExact(
                                   row.interestPaid
                                 )}
                               </td>
-                              <td className="px-3 py-2 text-right font-mono text-[#F1F5F9]">
+                              <td className="px-3 py-2 text-right font-mono text-text-primary">
                                 {formatCurrency(
                                   Math.round(row.balance)
                                 )}
@@ -1302,30 +1298,30 @@ export function MortgageCalculatorWidget() {
 
                           {/* Totals row */}
                           {showAllRows && (
-                            <tr className="border-t-2 border-[#22C55E]/30 bg-[#22C55E]/5">
-                              <td className="px-3 py-3 text-[#22C55E] font-bold">
+                            <tr className="border-t-2 border-accent-primary/30 bg-accent-primary/5">
+                              <td className="px-3 py-3 text-accent-primary font-bold">
                                 Total
                               </td>
-                              <td className="px-3 py-3 text-right font-mono font-bold text-[#22C55E]">
+                              <td className="px-3 py-3 text-right font-mono font-bold text-accent-primary">
                                 {formatCurrency(
                                   Math.round(results.totalCost)
                                 )}
                               </td>
-                              <td className="px-3 py-3 text-right font-mono font-bold text-[#3B82F6]">
+                              <td className="px-3 py-3 text-right font-mono font-bold text-accent-secondary">
                                 {formatCurrency(
                                   Math.round(
                                     totalSchedulePrincipal
                                   )
                                 )}
                               </td>
-                              <td className="px-3 py-3 text-right font-mono font-bold text-[#F59E0B]">
+                              <td className="px-3 py-3 text-right font-mono font-bold text-accent-warning">
                                 {formatCurrency(
                                   Math.round(
                                     totalScheduleInterest
                                   )
                                 )}
                               </td>
-                              <td className="px-3 py-3 text-right font-mono font-bold text-[#22C55E]">
+                              <td className="px-3 py-3 text-right font-mono font-bold text-accent-primary">
                                 $0
                               </td>
                             </tr>
@@ -1338,7 +1334,7 @@ export function MortgageCalculatorWidget() {
                     {results.amortizationMonthly.length > 12 && (
                       <button
                         onClick={() => setShowAllRows(!showAllRows)}
-                        className="w-full border-t border-[#1E293B] bg-[#0B1120] px-4 py-3 text-xs font-medium text-[#3B82F6] hover:text-[#22C55E] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50"
+                        className="w-full border-t border-border bg-bg-primary px-4 py-3 text-xs font-medium text-accent-secondary hover:text-accent-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50"
                       >
                         {showAllRows
                           ? `Collapse to first 12 months`

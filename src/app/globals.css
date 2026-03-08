@@ -2,24 +2,44 @@
 
 /* ============================================
    CalcEngine.io Design System
-   Dark-first financial calculator suite
+   Light-first with dark mode support
    ============================================ */
 
+/* ── Light Mode (default) ── */
 :root {
-  /* Color Palette */
-  --color-bg-primary: #0B1120;
-  --color-bg-surface: #162032;
-  --color-accent-primary: #22C55E;
-  --color-accent-secondary: #3B82F6;
-  --color-accent-warning: #F59E0B;
-  --color-text-primary: #F1F5F9;
-  --color-text-muted: #94A3B8;
-  --color-border: #1E293B;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-surface: #F8FAFC;
+  --color-accent-primary: #16A34A;
+  --color-accent-primary-light: #4ADE80;
+  --color-accent-secondary: #2563EB;
+  --color-accent-warning: #D97706;
+  --color-accent-danger: #EA580C;
+  --color-accent-purple: #9333EA;
+  --color-accent-pink: #DB2777;
+  --color-text-primary: #1E293B;
+  --color-text-muted: #64748B;
+  --color-border: #E2E8F0;
 
   /* Font families — set by next/font CSS variables in layout.tsx */
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* ── Dark Mode ── */
+.dark {
+  --color-bg-primary: #0B1120;
+  --color-bg-surface: #162032;
+  --color-accent-primary: #22C55E;
+  --color-accent-primary-light: #4ADE80;
+  --color-accent-secondary: #3B82F6;
+  --color-accent-warning: #F59E0B;
+  --color-accent-danger: #F97316;
+  --color-accent-purple: #A855F7;
+  --color-accent-pink: #EC4899;
+  --color-text-primary: #F1F5F9;
+  --color-text-muted: #94A3B8;
+  --color-border: #1E293B;
 }
 
 @theme inline {
@@ -29,8 +49,12 @@
 
   /* Accent colors */
   --color-accent-primary: var(--color-accent-primary);
+  --color-accent-primary-light: var(--color-accent-primary-light);
   --color-accent-secondary: var(--color-accent-secondary);
   --color-accent-warning: var(--color-accent-warning);
+  --color-accent-danger: var(--color-accent-danger);
+  --color-accent-purple: var(--color-accent-purple);
+  --color-accent-pink: var(--color-accent-pink);
 
   /* Text colors */
   --color-text-primary: var(--color-text-primary);
@@ -119,7 +143,7 @@ textarea {
   padding: 0.625rem 0.875rem;
   font-family: var(--font-body);
   font-size: 1rem;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
@@ -127,7 +151,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--color-accent-secondary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-secondary) 15%, transparent);
 }
 
 label {
@@ -138,7 +162,7 @@ label {
 }
 
 /* ============================================
-   Scrollbar (subtle dark)
+   Scrollbar
    ============================================ */
 
 ::-webkit-scrollbar {
@@ -228,12 +252,13 @@ label {
 
 /* Glow effect for primary results */
 .result-glow {
-  text-shadow: 0 0 20px rgba(34, 197, 94, 0.3), 0 0 40px rgba(34, 197, 94, 0.1);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--color-accent-primary) 30%, transparent),
+               0 0 40px color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
 }
 
 /* Gradient text */
 .text-gradient-green {
-  background: linear-gradient(135deg, #22C55E, #4ADE80);
+  background: linear-gradient(135deg, var(--color-accent-primary), #4ADE80);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -241,7 +266,7 @@ label {
 
 /* Glassmorphism card effect */
 .glass-card {
-  background: rgba(22, 32, 50, 0.8);
+  background: color-mix(in srgb, var(--color-bg-surface) 80%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -252,10 +277,16 @@ label {
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 }
 .hover-lift:focus-within {
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+}
+.dark .hover-lift:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+.dark .hover-lift:focus-within {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
@@ -395,7 +426,7 @@ html {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #22C55E, #3B82F6, #22C55E);
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary), var(--color-accent-primary));
   background-size: 200% 200%;
   animation: gradientRotate 4s ease infinite;
   z-index: -1;
@@ -417,7 +448,7 @@ html {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #22C55E, #3B82F6);
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
   transition: width 0.3s ease;
 }
 .animated-underline:hover::after {
@@ -433,7 +464,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.2));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent-primary) 20%, transparent), color-mix(in srgb, var(--color-accent-secondary) 20%, transparent));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -446,7 +477,7 @@ html {
   background: linear-gradient(
     90deg,
     var(--color-border) 25%,
-    rgba(30, 41, 59, 0.6) 50%,
+    color-mix(in srgb, var(--color-border) 60%, transparent) 50%,
     var(--color-border) 75%
   );
   background-size: 200% 100%;
@@ -455,7 +486,7 @@ html {
 
 /* Subtle text gradient */
 .text-gradient-blue-green {
-  background: linear-gradient(135deg, #3B82F6, #22C55E);
+  background: linear-gradient(135deg, var(--color-accent-secondary), var(--color-accent-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -476,7 +507,7 @@ html {
   background: linear-gradient(
     to bottom right,
     transparent 40%,
-    rgba(34, 197, 94, 0.03) 50%,
+    color-mix(in srgb, var(--color-accent-primary) 3%, transparent) 50%,
     transparent 60%
   );
   transform: rotate(30deg);
@@ -492,6 +523,6 @@ html {
 
 /* Text selection */
 ::selection {
-  background: rgba(34, 197, 94, 0.3);
+  background: color-mix(in srgb, var(--color-accent-primary) 25%, transparent);
   color: var(--color-text-primary);
 }

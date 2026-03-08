@@ -20,14 +20,7 @@ import { PercentageInput } from "@/components/ui/percentage-input";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrency } from "@/lib/formatters";
-
-const COLORS = {
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const DEBT_COLORS = [
   "#3B82F6",
@@ -178,6 +171,7 @@ const DEFAULT_DEBTS: Debt[] = [
 ];
 
 export function DebtPayoffCalculatorWidget() {
+  const COLORS = useChartColors();
   const [debts, setDebts] = useState<Debt[]>(DEFAULT_DEBTS);
   const [extraPayment, setExtraPayment] = useState(200);
   const [strategy, setStrategy] = useState<Strategy>("avalanche");
@@ -263,14 +257,14 @@ export function DebtPayoffCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       {/* Debt Inputs */}
       <div className="mb-8 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-[#F1F5F9]">Your Debts</h3>
+          <h3 className="text-lg font-semibold text-text-primary">Your Debts</h3>
           <button
             onClick={addDebt}
-            className="rounded-lg border border-[#22C55E] bg-[#22C55E]/10 px-4 py-2 text-sm font-medium text-[#22C55E] hover:bg-[#22C55E]/20 transition-colors"
+            className="rounded-lg border border-accent-primary bg-accent-primary/10 px-4 py-2 text-sm font-medium text-accent-primary hover:bg-accent-primary/20 transition-colors"
           >
             + Add Debt
           </button>
@@ -279,19 +273,19 @@ export function DebtPayoffCalculatorWidget() {
         {debts.map((debt) => (
           <div
             key={debt.id}
-            className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4 space-y-3"
+            className="rounded-lg border border-border bg-bg-primary p-4 space-y-3"
           >
             <div className="flex items-center justify-between">
               <input
                 type="text"
                 value={debt.name}
                 onChange={(e) => updateDebt(debt.id, "name", e.target.value)}
-                className="h-10 w-full max-w-xs rounded-lg border border-[#1E293B] bg-[#162032] px-3 text-sm text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+                className="h-10 w-full max-w-xs rounded-lg border border-border bg-bg-surface px-3 text-sm text-text-primary focus:border-accent-secondary focus:outline-none"
               />
               {debts.length > 1 && (
                 <button
                   onClick={() => removeDebt(debt.id)}
-                  className="ml-3 rounded p-1 text-[#94A3B8] hover:text-[#F97316] transition-colors"
+                  className="ml-3 rounded p-1 text-text-muted hover:text-accent-danger transition-colors"
                   title="Remove debt"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -354,7 +348,7 @@ export function DebtPayoffCalculatorWidget() {
 
           {/* Strategy */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Payoff Strategy
             </label>
             <div className="flex gap-2">
@@ -362,8 +356,8 @@ export function DebtPayoffCalculatorWidget() {
                 onClick={() => setStrategy("avalanche")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   strategy === "avalanche"
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 Avalanche
@@ -373,8 +367,8 @@ export function DebtPayoffCalculatorWidget() {
                 onClick={() => setStrategy("snowball")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   strategy === "snowball"
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 Snowball
@@ -384,43 +378,43 @@ export function DebtPayoffCalculatorWidget() {
           </div>
 
           {/* Summary */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Debt Summary</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Debt Summary</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Total Balance</span>
-                <span className="font-mono text-[#F1F5F9]">{formatCurrency(results.totalBalance)}</span>
+                <span className="text-text-muted">Total Balance</span>
+                <span className="font-mono text-text-primary">{formatCurrency(results.totalBalance)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Total Min Payments</span>
-                <span className="font-mono text-[#F1F5F9]">{formatCurrency(results.totalMinPayments)}/mo</span>
+                <span className="text-text-muted">Total Min Payments</span>
+                <span className="font-mono text-text-primary">{formatCurrency(results.totalMinPayments)}/mo</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Extra Payment</span>
-                <span className="font-mono text-[#22C55E]">+{formatCurrency(extraPayment)}/mo</span>
+                <span className="text-text-muted">Extra Payment</span>
+                <span className="font-mono text-accent-primary">+{formatCurrency(extraPayment)}/mo</span>
               </div>
-              <div className="border-t border-[#1E293B] pt-2 flex justify-between text-sm font-semibold">
-                <span className="text-[#F1F5F9]">Total Monthly Payment</span>
-                <span className="font-mono text-[#22C55E]">{formatCurrency(results.totalMinPayments + extraPayment)}/mo</span>
+              <div className="border-t border-border pt-2 flex justify-between text-sm font-semibold">
+                <span className="text-text-primary">Total Monthly Payment</span>
+                <span className="font-mono text-accent-primary">{formatCurrency(results.totalMinPayments + extraPayment)}/mo</span>
               </div>
             </div>
           </div>
 
           {/* Payoff Order */}
           {results.selected.debtPayoffOrder.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Payoff Order ({strategy === "avalanche" ? "Avalanche" : "Snowball"})</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Payoff Order ({strategy === "avalanche" ? "Avalanche" : "Snowball"})</p>
               <div className="space-y-2">
                 {results.selected.debtPayoffOrder.map((item, idx) => (
                   <div key={item.name} className="flex items-center gap-3 text-sm">
                     <span
-                      className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-[#0B1120]"
+                      className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-bg-primary"
                       style={{ backgroundColor: DEBT_COLORS[idx % DEBT_COLORS.length] }}
                     >
                       {idx + 1}
                     </span>
-                    <span className="flex-1 text-[#F1F5F9]">{item.name}</span>
-                    <span className="font-mono text-xs text-[#94A3B8]">
+                    <span className="flex-1 text-text-primary">{item.name}</span>
+                    <span className="font-mono text-xs text-text-muted">
                       Month {item.month}
                     </span>
                   </div>
@@ -433,8 +427,8 @@ export function DebtPayoffCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Total Debt */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Total Debt</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Total Debt</p>
             <AnimatedNumber value={results.totalBalance} format="currency" />
           </div>
 
@@ -452,13 +446,13 @@ export function DebtPayoffCalculatorWidget() {
             />
             <StatCard
               label="Total Interest"
-              value={<AnimatedNumber value={results.selected.totalInterest} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.selected.totalInterest} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Money Saved vs Min"
               value={
                 results.savingsVsMinimum > 0
-                  ? <AnimatedNumber value={results.savingsVsMinimum} format="currency" className="font-mono text-lg font-bold text-[#22C55E] inline-block" />
+                  ? <AnimatedNumber value={results.savingsVsMinimum} format="currency" className="font-mono text-lg font-bold text-accent-primary inline-block" />
                   : "--"
               }
               trend={results.savingsVsMinimum > 0 ? "up" : "neutral"}
@@ -471,18 +465,18 @@ export function DebtPayoffCalculatorWidget() {
           </div>
 
           {/* Strategy comparison note */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-[#94A3B8]">
+              <span className="text-text-muted">
                 {strategy === "avalanche" ? "Snowball" : "Avalanche"} would save
               </span>
-              <span className="font-mono font-bold text-[#F1F5F9]">
+              <span className="font-mono font-bold text-text-primary">
                 {formatCurrency(
                   Math.abs(results.avalanche.totalInterest - results.snowball.totalInterest)
                 )}
               </span>
             </div>
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               {results.avalanche.totalInterest < results.snowball.totalInterest ? "Avalanche wins on interest" : results.snowball.totalInterest < results.avalanche.totalInterest ? "Snowball wins on interest" : "Same total cost"}
             </p>
           </div>
@@ -492,8 +486,8 @@ export function DebtPayoffCalculatorWidget() {
 
           {/* Stacked Area Chart - Balance Decline */}
           {results.selected.monthlySnapshots.length > 1 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Debt Balances Over Time</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Debt Balances Over Time</p>
               <ResponsiveContainer width="100%" height={280}>
                 <AreaChart data={results.selected.monthlySnapshots}>
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -537,8 +531,8 @@ export function DebtPayoffCalculatorWidget() {
           )}
 
           {/* Comparison Bar Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Strategy Comparison: Total Interest</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Strategy Comparison: Total Interest</p>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={comparisonData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

@@ -112,7 +112,7 @@ export function CompoundInterestWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -182,7 +182,7 @@ export function CompoundInterestWidget() {
 
           {/* Compounding Frequency */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Compounding Frequency
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -192,8 +192,8 @@ export function CompoundInterestWidget() {
                   onClick={() => setState("compoundingFrequency", key)}
                   className={`rounded-lg border px-3 py-2.5 text-xs font-medium transition-colors ${
                     compounding === key
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50"
                   }`}
                 >
                   {label}
@@ -217,26 +217,26 @@ export function CompoundInterestWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">
               Final Balance After {years} {years === 1 ? "Year" : "Years"}
             </p>
             <AnimatedNumber
               value={results.finalBalance}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
           {/* Total Interest Earned */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Total Interest Earned</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Total Interest Earned</p>
             <AnimatedNumber
               value={results.totalInterest}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+              className="font-mono text-2xl font-bold text-accent-primary inline-block"
             />
           </div>
 
@@ -250,7 +250,7 @@ export function CompoundInterestWidget() {
                   value={results.finalBalance}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -262,7 +262,7 @@ export function CompoundInterestWidget() {
                   value={results.totalContributions}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
             />
@@ -273,7 +273,7 @@ export function CompoundInterestWidget() {
                   value={results.totalInterest}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-lg font-bold text-accent-primary inline-block"
                 />
               }
               trend="up"
@@ -285,7 +285,7 @@ export function CompoundInterestWidget() {
                   value={results.effectiveAnnualRate}
                   format="percent"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -308,8 +308,8 @@ export function CompoundInterestWidget() {
 
           {/* Growth Chart */}
           {results.chartData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Growth Over Time</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Growth Over Time</p>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={results.chartData}>
                   <defs>
@@ -379,28 +379,28 @@ export function CompoundInterestWidget() {
           {/* Year-by-Year Table */}
           {results.chartData.length > 0 && (
             <div>
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Year-by-Year Breakdown</p>
-              <div className="max-h-64 overflow-y-auto rounded-lg border border-[#1E293B]">
+              <p className="mb-3 text-sm font-medium text-text-muted">Year-by-Year Breakdown</p>
+              <div className="max-h-64 overflow-y-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead className="sticky top-0">
-                    <tr className="border-b border-[#1E293B] bg-[#0B1120]">
-                      <th className="px-3 py-2 text-left text-xs font-medium text-[#94A3B8]">Year</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-[#94A3B8]">Contributions</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-[#94A3B8]">Interest</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-[#94A3B8]">Balance</th>
+                    <tr className="border-b border-border bg-bg-primary">
+                      <th className="px-3 py-2 text-left text-xs font-medium text-text-muted">Year</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-text-muted">Contributions</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-text-muted">Interest</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-text-muted">Balance</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1E293B]">
+                  <tbody className="divide-y divide-border">
                     {results.chartData.map((row) => (
-                      <tr key={row.year} className="hover:bg-[#0B1120]/50">
-                        <td className="px-3 py-2 text-[#F1F5F9]">{row.year}</td>
-                        <td className="px-3 py-2 text-right font-mono text-[#3B82F6]">
+                      <tr key={row.year} className="hover:bg-bg-primary/50">
+                        <td className="px-3 py-2 text-text-primary">{row.year}</td>
+                        <td className="px-3 py-2 text-right font-mono text-accent-secondary">
                           {formatCurrency(row.contributions)}
                         </td>
-                        <td className="px-3 py-2 text-right font-mono text-[#22C55E]">
+                        <td className="px-3 py-2 text-right font-mono text-accent-primary">
                           {formatCurrency(row.interest)}
                         </td>
-                        <td className="px-3 py-2 text-right font-mono text-[#F1F5F9]">
+                        <td className="px-3 py-2 text-right font-mono text-text-primary">
                           {formatCurrency(row.total)}
                         </td>
                       </tr>

@@ -68,7 +68,7 @@ export function SalaryToHourlyWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -110,14 +110,14 @@ export function SalaryToHourlyWidget() {
 
           {/* Weeks Per Year */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Weeks Per Year
             </label>
             <input
               type="number"
               value={weeksPerYear}
               onChange={(e) => setState("weeksPerYear", Number(e.target.value))}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
               min={1}
               max={52}
               step={1}
@@ -129,8 +129,8 @@ export function SalaryToHourlyWidget() {
                   onClick={() => setState("weeksPerYear", w)}
                   className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
                     weeksPerYear === w
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] text-[#94A3B8] hover:border-[#3B82F6]/50"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border text-text-muted hover:border-accent-secondary/50"
                   }`}
                 >
                   {w} weeks
@@ -143,13 +143,13 @@ export function SalaryToHourlyWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">Hourly Rate</p>
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">Hourly Rate</p>
             <AnimatedNumber
               value={results.hourly}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
@@ -162,7 +162,7 @@ export function SalaryToHourlyWidget() {
                   value={results.daily}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -173,7 +173,7 @@ export function SalaryToHourlyWidget() {
                   value={results.weekly}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -184,7 +184,7 @@ export function SalaryToHourlyWidget() {
                   value={results.biweekly}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -195,7 +195,7 @@ export function SalaryToHourlyWidget() {
                   value={results.semiMonthly}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -207,7 +207,7 @@ export function SalaryToHourlyWidget() {
                   value={results.monthly}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -222,8 +222,8 @@ export function SalaryToHourlyWidget() {
           />
 
           {/* Bar Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Pay Period Comparison</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Pay Period Comparison</p>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={chartData} barCategoryGap="20%">
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
@@ -261,51 +261,51 @@ export function SalaryToHourlyWidget() {
 
       {/* Quick Reference Table */}
       <div className="mt-8">
-        <p className="mb-3 text-sm font-medium text-[#94A3B8]">Quick Reference</p>
-        <div className="overflow-x-auto rounded-lg border border-[#1E293B]">
+        <p className="mb-3 text-sm font-medium text-text-muted">Quick Reference</p>
+        <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#1E293B] bg-[#0B1120]">
-                <th className="px-4 py-3 text-left text-xs font-medium text-[#94A3B8]">Period</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Gross Pay</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Periods/Year</th>
+              <tr className="border-b border-border bg-bg-primary">
+                <th className="px-4 py-3 text-left text-xs font-medium text-text-muted">Period</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-text-muted">Gross Pay</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-text-muted">Periods/Year</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E293B]">
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Hourly</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.hourly)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">{(hoursPerWeek * weeksPerYear).toLocaleString()}</td>
+            <tbody className="divide-y divide-border">
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Hourly</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.hourly)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">{(hoursPerWeek * weeksPerYear).toLocaleString()}</td>
               </tr>
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Daily</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.daily)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">{(weeksPerYear * 5)}</td>
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Daily</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.daily)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">{(weeksPerYear * 5)}</td>
               </tr>
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Weekly</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.weekly)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">{weeksPerYear}</td>
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Weekly</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.weekly)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">{weeksPerYear}</td>
               </tr>
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Biweekly</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.biweekly)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">26</td>
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Biweekly</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.biweekly)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">26</td>
               </tr>
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Semi-Monthly</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.semiMonthly)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">24</td>
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Semi-Monthly</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.semiMonthly)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">24</td>
               </tr>
-              <tr className="hover:bg-[#0B1120]/50">
-                <td className="px-4 py-2 text-[#F1F5F9]">Monthly</td>
-                <td className="px-4 py-2 text-right font-mono text-[#22C55E]">{formatCurrency(results.monthly)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">12</td>
+              <tr className="hover:bg-bg-primary/50">
+                <td className="px-4 py-2 text-text-primary">Monthly</td>
+                <td className="px-4 py-2 text-right font-mono text-accent-primary">{formatCurrency(results.monthly)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">12</td>
               </tr>
-              <tr className="border-t-2 border-[#1E293B] bg-[#0B1120]/50">
-                <td className="px-4 py-2 font-medium text-[#F1F5F9]">Annual</td>
-                <td className="px-4 py-2 text-right font-mono font-bold text-[#22C55E]">{formatCurrency(annualSalary)}</td>
-                <td className="px-4 py-2 text-right text-[#94A3B8]">1</td>
+              <tr className="border-t-2 border-border bg-bg-primary/50">
+                <td className="px-4 py-2 font-medium text-text-primary">Annual</td>
+                <td className="px-4 py-2 text-right font-mono font-bold text-accent-primary">{formatCurrency(annualSalary)}</td>
+                <td className="px-4 py-2 text-right text-text-muted">1</td>
               </tr>
             </tbody>
           </table>

@@ -24,28 +24,24 @@ import {
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
-
-const COLORS = {
-  renting: "#3B82F6",
-  buying: "#22C55E",
-  equity: "#F59E0B",
-  investment: "#A855F7",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
 export function RentVsBuyCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    renting: "#3B82F6",
+    buying: "#22C55E",
+    equity: "#F59E0B",
+    investment: "#A855F7",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       monthlyRent: 2000,
@@ -195,11 +191,11 @@ export function RentVsBuyCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-[#F1F5F9]">Renting Details</h3>
+          <h3 className="text-lg font-semibold text-text-primary">Renting Details</h3>
 
           {/* Monthly Rent */}
           <div>
@@ -241,7 +237,7 @@ export function RentVsBuyCalculatorWidget() {
             step={0.5}
           />
 
-          <h3 className="text-lg font-semibold text-[#F1F5F9] pt-2">Buying Details</h3>
+          <h3 className="text-lg font-semibold text-text-primary pt-2">Buying Details</h3>
 
           {/* Home Price */}
           <div>
@@ -289,7 +285,7 @@ export function RentVsBuyCalculatorWidget() {
 
           {/* Loan Term */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Loan Term (years)
             </label>
             <div className="flex gap-2">
@@ -299,8 +295,8 @@ export function RentVsBuyCalculatorWidget() {
                   onClick={() => setState('loanTerm', term)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     state.loanTerm === term
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {term} yr
@@ -383,7 +379,7 @@ export function RentVsBuyCalculatorWidget() {
                 <AnimatedNumber
                   value={Math.abs(results.netDifference)}
                   format="currency"
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               subvalue="in net wealth advantage"
@@ -395,7 +391,7 @@ export function RentVsBuyCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalRentCost}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -405,7 +401,7 @@ export function RentVsBuyCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalBuyCost}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -415,7 +411,7 @@ export function RentVsBuyCalculatorWidget() {
                 <AnimatedNumber
                   value={results.homeEquityBuilt}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                  className="font-mono text-lg font-bold text-accent-warning inline-block"
                 />
               }
             />
@@ -425,7 +421,7 @@ export function RentVsBuyCalculatorWidget() {
                 <AnimatedNumber
                   value={results.renterFinalPortfolio}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#A855F7] inline-block"
+                  className="font-mono text-lg font-bold text-accent-purple inline-block"
                 />
               }
             />
@@ -445,8 +441,8 @@ export function RentVsBuyCalculatorWidget() {
 
           {/* Line Chart: Cumulative Cost Over Time */}
           {results.yearlyData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Cumulative Cost Over Time</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Cumulative Cost Over Time</p>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={results.yearlyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -479,8 +475,8 @@ export function RentVsBuyCalculatorWidget() {
           )}
 
           {/* Bar Chart: Wealth Comparison */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Net Wealth Comparison at Year {state.timeHorizon}</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Net Wealth Comparison at Year {state.timeHorizon}</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={wealthComparisonData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

@@ -22,17 +22,7 @@ import {
 } from "@/components/ui";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  tertiary: "#F59E0B",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const PAY_GRADES = [
   "E-1", "E-2", "E-3", "E-4", "E-5", "E-6", "E-7", "E-8", "E-9",
@@ -65,6 +55,12 @@ function isEnlisted(grade: string): boolean {
 }
 
 export function MilitaryPayCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    tertiary: "#F59E0B",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       payGrade: "E-5" as string,
@@ -153,20 +149,20 @@ export function MilitaryPayCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Pay Grade */}
           <div>
-            <label htmlFor="mil-pay-grade" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="mil-pay-grade" className="mb-2 block text-sm font-medium text-text-muted">
               Pay Grade
             </label>
             <select
               id="mil-pay-grade"
               value={state.payGrade}
               onChange={(e) => setState('payGrade', e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
             >
               <optgroup label="Enlisted">
                 {PAY_GRADES.filter((g) => g.startsWith("E-")).map((g) => (
@@ -200,14 +196,14 @@ export function MilitaryPayCalculatorWidget() {
 
           {/* BAH Location */}
           <div>
-            <label htmlFor="mil-bah-location" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="mil-bah-location" className="mb-2 block text-sm font-medium text-text-muted">
               BAH Location
             </label>
             <select
               id="mil-bah-location"
               value={state.base}
               onChange={(e) => setState('base', e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
             >
               {BASES.map((b) => (
                 <option key={b} value={b}>{b}</option>
@@ -217,7 +213,7 @@ export function MilitaryPayCalculatorWidget() {
 
           {/* BAS Toggle */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               BAS Entitlement
             </label>
             <div className="flex gap-2" role="radiogroup" aria-label="BAS Entitlement">
@@ -229,8 +225,8 @@ export function MilitaryPayCalculatorWidget() {
                   onClick={() => setState('receiveBas', String(val))}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     receiveBas === val
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {val ? "Yes" : "No"}
@@ -241,7 +237,7 @@ export function MilitaryPayCalculatorWidget() {
 
           {/* Dependents */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Dependents (for BAH rate)
             </label>
             <div className="flex gap-2" role="radiogroup" aria-label="Dependents for BAH rate">
@@ -253,8 +249,8 @@ export function MilitaryPayCalculatorWidget() {
                   onClick={() => setState('hasDependents', String(val))}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     hasDependents === val
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {val ? "With Dependents" : "Without Dependents"}
@@ -267,57 +263,57 @@ export function MilitaryPayCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Total Monthly */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Total Monthly Compensation</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Total Monthly Compensation</p>
             <AnimatedNumber
               value={results.totalMonthly}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
           {/* Secondary AnimatedNumber metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-border bg-bg-primary p-4">
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Base Pay</p>
+              <p className="text-xs text-text-muted mb-1">Base Pay</p>
               <AnimatedNumber
                 value={results.basePay}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">BAH</p>
+              <p className="text-xs text-text-muted mb-1">BAH</p>
               <AnimatedNumber
                 value={results.bah}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">BAS</p>
+              <p className="text-xs text-text-muted mb-1">BAS</p>
               <AnimatedNumber
                 value={results.bas}
                 format="currency"
                 decimals={2}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Annual</p>
+              <p className="text-xs text-text-muted mb-1">Annual</p>
               <AnimatedNumber
                 value={results.totalAnnual}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Tax-Equivalent</p>
+              <p className="text-xs text-text-muted mb-1">Tax-Equivalent</p>
               <AnimatedNumber
                 value={results.taxEquivalent}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                className="font-mono text-lg font-bold text-accent-primary inline-block"
               />
             </div>
           </div>
@@ -360,8 +356,8 @@ export function MilitaryPayCalculatorWidget() {
           </div>
 
           {/* Stacked Bar - Pay Components */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Pay Components</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Pay Components</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={barData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -389,8 +385,8 @@ export function MilitaryPayCalculatorWidget() {
           </div>
 
           {/* Line Chart - Pay Progression */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Pay Progression Over Service</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Pay Progression Over Service</p>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={progressionData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

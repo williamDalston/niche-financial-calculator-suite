@@ -131,18 +131,18 @@ export function GsPayCalculatorWidget() {
   }, [grade, step, state.localityIndex]);
 
   return (
-    <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
+    <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div>
-          <label htmlFor="gs-grade" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-grade" className="mb-2 block text-sm font-medium text-text-muted">
             GS Grade
           </label>
           <select
             id="gs-grade"
             value={grade}
             onChange={(e) => setState('grade', e.target.value)}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {grades.map((g) => (
               <option key={g} value={g}>
@@ -153,14 +153,14 @@ export function GsPayCalculatorWidget() {
         </div>
 
         <div>
-          <label htmlFor="gs-step" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-step" className="mb-2 block text-sm font-medium text-text-muted">
             Step
           </label>
           <select
             id="gs-step"
             value={step}
             onChange={(e) => setState('step', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {steps.map((s) => (
               <option key={s} value={s}>
@@ -171,14 +171,14 @@ export function GsPayCalculatorWidget() {
         </div>
 
         <div>
-          <label htmlFor="gs-locality" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="gs-locality" className="mb-2 block text-sm font-medium text-text-muted">
             Locality Pay Area
           </label>
           <select
             id="gs-locality"
             value={state.localityIndex}
             onChange={(e) => setState('localityIndex', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {gsPayData.localityAreas.map((area, i) => (
               <option key={area.code} value={i}>
@@ -190,15 +190,15 @@ export function GsPayCalculatorWidget() {
       </div>
 
       {/* Hero result */}
-      <div className="mb-6 rounded-xl border border-[#1E293B] bg-[#0B1120] p-6 text-center">
-        <p className="text-sm font-medium text-[#94A3B8] mb-2">Total Annual Pay</p>
+      <div className="mb-6 rounded-xl border border-border bg-bg-primary p-6 text-center">
+        <p className="text-sm font-medium text-text-muted mb-2">Total Annual Pay</p>
         <AnimatedNumber
           value={results.totalAnnualPay}
           format="currency"
           decimals={0}
-          className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+          className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary inline-block transition-transform duration-150"
         />
-        <p className="text-xs text-[#94A3B8] mt-2">
+        <p className="text-xs text-text-muted mt-2">
           {grade} Step {step} &mdash; {results.localityName}
         </p>
       </div>
@@ -263,7 +263,7 @@ export function GsPayCalculatorWidget() {
       <div className="grid grid-cols-1 gap-8">
         {/* Step comparison bar chart */}
         <div>
-          <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">
             All Steps for {grade} ({results.localityName})
           </h3>
           <ResponsiveContainer width="100%" height={320}>

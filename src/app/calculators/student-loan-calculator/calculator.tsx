@@ -19,19 +19,7 @@ import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
-
-const COLORS = {
-  standard: "#3B82F6",
-  graduated: "#22C55E",
-  extended: "#F59E0B",
-  incomeDriven: "#A855F7",
-  extra: "#EC4899",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 type RepaymentPlan = "standard" | "graduated" | "extended" | "income-driven";
 
@@ -40,13 +28,6 @@ const PLAN_LABELS: Record<RepaymentPlan, string> = {
   graduated: "Graduated (10 yr)",
   extended: "Extended (25 yr)",
   "income-driven": "Income-Driven (20 yr)",
-};
-
-const PLAN_COLORS: Record<RepaymentPlan, string> = {
-  standard: COLORS.standard,
-  graduated: COLORS.graduated,
-  extended: COLORS.extended,
-  "income-driven": COLORS.incomeDriven,
 };
 
 function calcStandardPayment(balance: number, annualRate: number, termYears: number): number {
@@ -145,6 +126,20 @@ function buildGraduatedAmortization(
 }
 
 export function StudentLoanCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    standard: "#3B82F6",
+    graduated: "#22C55E",
+    extended: "#F59E0B",
+    incomeDriven: "#A855F7",
+    extra: "#EC4899",
+  };
+  const PLAN_COLORS: Record<RepaymentPlan, string> = {
+    standard: COLORS.standard,
+    graduated: COLORS.graduated,
+    extended: COLORS.extended,
+    "income-driven": COLORS.incomeDriven,
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       loanBalance: 35000,
@@ -313,7 +308,7 @@ export function StudentLoanCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -374,7 +369,7 @@ export function StudentLoanCalculatorWidget() {
 
           {/* Repayment Plan */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Repayment Plan
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -384,8 +379,8 @@ export function StudentLoanCalculatorWidget() {
                   onClick={() => setState('repaymentPlan', plan)}
                   className={`rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     state.repaymentPlan === plan
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {PLAN_LABELS[plan]}
@@ -398,11 +393,11 @@ export function StudentLoanCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Monthly Payment */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Monthly Payment</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Monthly Payment</p>
             <AnimatedNumber value={results.monthlyPayment} format="currency" decimals={2} />
             {state.extraPayment > 0 && (
-              <span className="ml-2 text-base text-[#94A3B8]">
+              <span className="ml-2 text-base text-text-muted">
                 + {formatCurrency(state.extraPayment)} extra
               </span>
             )}
@@ -412,16 +407,16 @@ export function StudentLoanCalculatorWidget() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Monthly Payment"
-              value={<AnimatedNumber value={results.monthlyPayment} format="currency" decimals={2} className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyPayment} format="currency" decimals={2} className="font-mono text-2xl font-bold text-accent-primary inline-block" />}
               highlight
             />
             <StatCard
               label="Total Interest"
-              value={<AnimatedNumber value={results.totalInterest} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.totalInterest} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Total Cost"
-              value={<AnimatedNumber value={results.totalCost} format="currency" className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.totalCost} format="currency" className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Payoff Date"
@@ -431,7 +426,7 @@ export function StudentLoanCalculatorWidget() {
               label="Interest Saved"
               value={
                 results.interestSaved > 0
-                  ? <AnimatedNumber value={results.interestSaved} format="currency" className="font-mono text-lg font-bold text-[#22C55E] inline-block" />
+                  ? <AnimatedNumber value={results.interestSaved} format="currency" className="font-mono text-lg font-bold text-accent-primary inline-block" />
                   : "--"
               }
               trend={results.interestSaved > 0 ? "up" : "neutral"}
@@ -443,8 +438,8 @@ export function StudentLoanCalculatorWidget() {
 
           {/* Balance Over Time Chart */}
           {results.balanceOverTime.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Balance Over Time by Plan</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Balance Over Time by Plan</p>
               <ResponsiveContainer width="100%" height={280}>
                 <LineChart data={results.balanceOverTime}>
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -489,27 +484,27 @@ export function StudentLoanCalculatorWidget() {
           )}
 
           {/* Plan Comparison Table */}
-          <div className="overflow-x-auto rounded-lg border border-[#1E293B]">
+          <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#1E293B] bg-[#0B1120]">
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[#94A3B8]">Plan</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Payment</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Total Interest</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-[#94A3B8]">Total Cost</th>
+                <tr className="border-b border-border bg-bg-primary">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-muted">Plan</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-text-muted">Payment</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-text-muted">Total Interest</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-text-muted">Total Cost</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E293B]">
+              <tbody className="divide-y divide-border">
                 {results.planComparisons.map((row) => (
-                  <tr key={row.plan} className="hover:bg-[#0B1120]/50">
-                    <td className="px-4 py-2 text-[#F1F5F9]">{row.plan}</td>
-                    <td className="px-4 py-2 text-right font-mono text-[#3B82F6]">
+                  <tr key={row.plan} className="hover:bg-bg-primary/50">
+                    <td className="px-4 py-2 text-text-primary">{row.plan}</td>
+                    <td className="px-4 py-2 text-right font-mono text-accent-secondary">
                       {formatCurrencyExact(row.startingPayment)}
                     </td>
-                    <td className="px-4 py-2 text-right font-mono text-[#F59E0B]">
+                    <td className="px-4 py-2 text-right font-mono text-accent-warning">
                       {formatCurrency(row.totalInterest)}
                     </td>
-                    <td className="px-4 py-2 text-right font-mono text-[#F1F5F9]">
+                    <td className="px-4 py-2 text-right font-mono text-text-primary">
                       {formatCurrency(row.totalCost)}
                     </td>
                   </tr>

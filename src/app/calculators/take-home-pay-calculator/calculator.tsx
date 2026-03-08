@@ -19,6 +19,7 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrencyExact, formatPercent } from "@/lib/formatters";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  2025 Federal Tax Brackets                                          */
@@ -122,16 +123,16 @@ const PAY_FREQUENCIES: Record<string, { label: string; periods: number }> = {
   monthly: { label: "Monthly (12)", periods: 12 },
 };
 
-const COLORS = {
-  takeHome: "#22C55E",
-  federal: "#3B82F6",
-  state: "#8B5CF6",
-  socialSecurity: "#F59E0B",
-  medicare: "#F97316",
-  deductions: "#06B6D4",
-};
-
 export function TakeHomePayWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    takeHome: "#22C55E",
+    federal: "#3B82F6",
+    state: "#8B5CF6",
+    socialSecurity: "#F59E0B",
+    medicare: "#F97316",
+    deductions: "#06B6D4",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: { grossSalary: 75000, filingStatus: "single" as string, state: "CA" as string, payFrequency: "biweekly" as string, retirement401k: 0, healthInsurance: 0 }, slug: "take-home-pay-calculator",
   });
@@ -235,7 +236,7 @@ export function TakeHomePayWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -264,7 +265,7 @@ export function TakeHomePayWidget() {
 
           {/* Filing Status */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Filing Status
             </label>
             <div className="flex gap-2">
@@ -278,8 +279,8 @@ export function TakeHomePayWidget() {
                   onClick={() => setState("filingStatus", s.value)}
                   className={`flex-1 rounded-lg border px-3 py-2.5 text-xs font-medium transition-colors ${
                     filingStatus === s.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50"
                   }`}
                 >
                   {s.label}
@@ -290,13 +291,13 @@ export function TakeHomePayWidget() {
 
           {/* State */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               State
             </label>
             <select
               value={stateCode}
               onChange={(e) => setState("state", e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
             >
               {sortedStates.map(([code, { name, rate }]) => (
                 <option key={code} value={code}>
@@ -308,13 +309,13 @@ export function TakeHomePayWidget() {
 
           {/* Pay Frequency */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Pay Frequency
             </label>
             <select
               value={payFrequency}
               onChange={(e) => setState("payFrequency", e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
             >
               {Object.entries(PAY_FREQUENCIES).map(([key, { label }]) => (
                 <option key={key} value={key}>
@@ -325,8 +326,8 @@ export function TakeHomePayWidget() {
           </div>
 
           {/* Pre-tax Deductions */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4 space-y-4">
-            <p className="text-sm font-medium text-[#F1F5F9]">Pre-tax Deductions</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4 space-y-4">
+            <p className="text-sm font-medium text-text-primary">Pre-tax Deductions</p>
             <PercentageInput
               label="401(k) Contribution"
               value={contribution401kPercent}
@@ -336,7 +337,7 @@ export function TakeHomePayWidget() {
               step={0.5}
             />
             {contribution401kPercent > 0 && (
-              <p className="text-xs text-[#94A3B8] -mt-2">
+              <p className="text-xs text-text-muted -mt-2">
                 = {formatCurrencyExact(contribution401k)}/year
               </p>
             )}
@@ -353,23 +354,23 @@ export function TakeHomePayWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Net Pay Per Period - Primary */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">
               Net Pay Per {PAY_FREQUENCIES[payFrequency]?.label.split(" ")[0]} Paycheck
             </p>
             <AnimatedNumber
               value={results.netPayPerPeriod}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               Annual take-home:{" "}
               <AnimatedNumber
                 value={results.annualNetPay}
                 format="currency"
                 decimals={0}
-                className="font-mono text-xs font-semibold text-[#94A3B8] inline-block"
+                className="font-mono text-xs font-semibold text-text-muted inline-block"
               />
             </p>
           </div>
@@ -384,7 +385,7 @@ export function TakeHomePayWidget() {
                   value={results.annualNetPay}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -396,7 +397,7 @@ export function TakeHomePayWidget() {
                   value={results.federalTax}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -407,7 +408,7 @@ export function TakeHomePayWidget() {
                   value={results.stateTax}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -418,7 +419,7 @@ export function TakeHomePayWidget() {
                   value={results.socialSecurity}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -429,7 +430,7 @@ export function TakeHomePayWidget() {
                   value={results.medicare}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -448,20 +449,20 @@ export function TakeHomePayWidget() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="flex items-center justify-between rounded-lg border border-[#1E293B] bg-[#0B1120] px-4 py-3"
+                className="flex items-center justify-between rounded-lg border border-border bg-bg-primary px-4 py-3"
               >
                 <div className="flex items-center gap-2">
                   <div
                     className="h-3 w-3 rounded-sm"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm text-[#94A3B8]">{item.label}</span>
+                  <span className="text-sm text-text-muted">{item.label}</span>
                 </div>
                 <AnimatedNumber
                   value={item.value}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-sm font-medium text-[#F1F5F9] inline-block"
+                  className="font-mono text-sm font-medium text-text-primary inline-block"
                 />
               </div>
             ))}
@@ -476,7 +477,7 @@ export function TakeHomePayWidget() {
                   value={results.effectiveTaxRate}
                   format="percent"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -487,7 +488,7 @@ export function TakeHomePayWidget() {
                   value={results.marginalRate}
                   format="percent"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -501,8 +502,8 @@ export function TakeHomePayWidget() {
           />
 
           {/* Pie Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Where Your Money Goes</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Where Your Money Goes</p>
             <ResponsiveContainer width="100%" height={240}>
               <PieChart>
                 <Pie

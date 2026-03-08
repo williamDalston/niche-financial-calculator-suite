@@ -139,7 +139,7 @@ export function AutoLoanCalculatorWidget() {
   const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B"];
 
   return (
-    <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
+    <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
         <CurrencyInput
@@ -200,25 +200,25 @@ export function AutoLoanCalculatorWidget() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label className="mb-2 block text-sm font-medium text-text-muted">
             Loan Term
           </label>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1 rounded-lg bg-[#0B1120] p-1 border border-[#1E293B]">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1 rounded-lg bg-bg-primary p-1 border border-border">
             {termOptions.map((t) => (
               <button
                 key={t}
                 onClick={() => setState('loanTerm', t)}
-                className={`rounded-md px-2 py-2.5 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 min-h-[44px] sm:min-h-0 ${
+                className={`rounded-md px-2 py-2.5 text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-secondary/50 min-h-[44px] sm:min-h-0 ${
                   state.loanTerm === t
-                    ? "bg-[#162032] text-[#22C55E] shadow-sm"
-                    : "text-[#94A3B8] hover:text-[#F1F5F9]"
+                    ? "bg-bg-surface text-accent-primary shadow-sm"
+                    : "text-text-muted hover:text-text-primary"
                 }`}
               >
                 {t}mo
               </button>
             ))}
           </div>
-          <p className="mt-1.5 text-xs text-[#94A3B8] text-center">
+          <p className="mt-1.5 text-xs text-text-muted text-center">
             {state.loanTerm} months ({(state.loanTerm / 12).toFixed(state.loanTerm % 12 === 0 ? 0 : 1)} years)
           </p>
         </div>
@@ -228,15 +228,15 @@ export function AutoLoanCalculatorWidget() {
       {results && (
         <>
           {/* Hero result */}
-          <div className="mb-6 rounded-xl border border-[#1E293B] bg-[#0B1120] p-6 text-center">
-            <p className="text-sm font-medium text-[#94A3B8] mb-2">Monthly Payment</p>
+          <div className="mb-6 rounded-xl border border-border bg-bg-primary p-6 text-center">
+            <p className="text-sm font-medium text-text-muted mb-2">Monthly Payment</p>
             <AnimatedNumber
               value={results.monthlyPayment}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="text-xs text-[#94A3B8] mt-2">
+            <p className="text-xs text-text-muted mt-2">
               for {state.loanTerm} months at {state.interestRate}% APR
             </p>
           </div>
@@ -298,7 +298,7 @@ export function AutoLoanCalculatorWidget() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Pie Chart */}
             <div>
-              <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">
                 Cost Breakdown
               </h3>
               <ResponsiveContainer width="100%" height={280}>
@@ -335,7 +335,7 @@ export function AutoLoanCalculatorWidget() {
 
             {/* Line Chart */}
             <div>
-              <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">
                 Loan Balance Over Time
               </h3>
               <ResponsiveContainer width="100%" height={280}>

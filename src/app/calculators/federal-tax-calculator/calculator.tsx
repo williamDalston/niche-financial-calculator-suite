@@ -23,21 +23,7 @@ import {
 } from "@/components/ui";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatPercentRatio as formatPercent } from "@/lib/formatters";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  tertiary: "#F59E0B",
-  quaternary: "#F97316",
-  purple: "#A855F7",
-  pink: "#EC4899",
-  cyan: "#06B6D4",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const BRACKET_COLORS = [
   "#22C55E",
@@ -103,8 +89,17 @@ const STANDARD_DEDUCTIONS: Record<FilingStatus, number> = {
   hoh: 22500,
 };
 
-
 export function FederalTaxCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    tertiary: "#F59E0B",
+    quaternary: "#F97316",
+    purple: "#A855F7",
+    pink: "#EC4899",
+    cyan: "#06B6D4",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       filingStatus: "single" as string,
@@ -207,20 +202,20 @@ export function FederalTaxCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Filing Status */}
           <div>
-            <label htmlFor="ft-filing-status" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label htmlFor="ft-filing-status" className="mb-2 block text-sm font-medium text-text-muted">
               Filing Status
             </label>
             <select
               id="ft-filing-status"
               value={filingStatus}
               onChange={(e) => setState('filingStatus', e.target.value)}
-              className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+              className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
             >
               <option value="single">Single</option>
               <option value="mfj">Married Filing Jointly</option>
@@ -253,7 +248,7 @@ export function FederalTaxCalculatorWidget() {
 
           {/* Above-the-Line Deductions */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Above-the-Line Deductions
             </label>
             <div className="space-y-3">
@@ -286,7 +281,7 @@ export function FederalTaxCalculatorWidget() {
 
           {/* Deduction Type */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Deduction Type
             </label>
             <div className="flex gap-2">
@@ -296,8 +291,8 @@ export function FederalTaxCalculatorWidget() {
                   onClick={() => setState('deductionType', type)}
                   className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                     deductionType === type
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {type === "standard" ? `Standard (${formatCurrency(STANDARD_DEDUCTIONS[filingStatus])})` : "Itemized"}
@@ -308,7 +303,7 @@ export function FederalTaxCalculatorWidget() {
 
           {/* Itemized Deductions */}
           {deductionType === "itemized" && (
-            <div className="space-y-3 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+            <div className="space-y-3 rounded-lg border border-border bg-bg-primary p-4">
               <CurrencyInput
                 label="Mortgage Interest"
                 value={state.mortgageInterest}
@@ -336,7 +331,7 @@ export function FederalTaxCalculatorWidget() {
           {/* Dependents */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label htmlFor="ft-dependents" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+              <label htmlFor="ft-dependents" className="mb-2 block text-sm font-medium text-text-muted">
                 Dependents
               </label>
               <input
@@ -344,13 +339,13 @@ export function FederalTaxCalculatorWidget() {
                 type="number"
                 value={state.numDependents}
                 onChange={(e) => setState('numDependents', Number(e.target.value))}
-                className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+                className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
                 min={0}
                 max={20}
               />
             </div>
             <div>
-              <label htmlFor="ft-children" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+              <label htmlFor="ft-children" className="mb-2 block text-sm font-medium text-text-muted">
                 Children (Tax Credit)
               </label>
               <input
@@ -358,7 +353,7 @@ export function FederalTaxCalculatorWidget() {
                 type="number"
                 value={state.childTaxCreditChildren}
                 onChange={(e) => setState('childTaxCreditChildren', Number(e.target.value))}
-                className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+                className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
                 min={0}
                 max={20}
               />
@@ -369,41 +364,41 @@ export function FederalTaxCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Tax After Credits */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Federal Tax After Credits</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Federal Tax After Credits</p>
             <AnimatedNumber
               value={results.taxAfterCredits}
               format="currency"
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
           {/* AnimatedNumber secondary metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-border bg-bg-primary p-4">
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Effective Rate</p>
+              <p className="text-xs text-text-muted mb-1">Effective Rate</p>
               <AnimatedNumber
                 value={results.effectiveRate * 100}
                 format="percent"
                 decimals={1}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Marginal Rate</p>
+              <p className="text-xs text-text-muted mb-1">Marginal Rate</p>
               <AnimatedNumber
                 value={results.marginalRate * 100}
                 format="percent"
                 decimals={1}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Taxable Income</p>
+              <p className="text-xs text-text-muted mb-1">Taxable Income</p>
               <AnimatedNumber
                 value={results.taxableIncome}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
           </div>
@@ -445,8 +440,8 @@ export function FederalTaxCalculatorWidget() {
 
           {/* Tax by Bracket - Stacked Bar */}
           {results.bracketBreakdown.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Tax by Bracket</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Tax by Bracket</p>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={[{ name: "Tax", ...Object.fromEntries(results.bracketBreakdown.map((b) => [b.bracket, b.amount])) }]}>
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -482,8 +477,8 @@ export function FederalTaxCalculatorWidget() {
 
           {/* Pie Chart - Income Allocation */}
           {state.grossIncome > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Income Allocation</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Income Allocation</p>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -514,11 +509,11 @@ export function FederalTaxCalculatorWidget() {
               <div className="mt-2 flex justify-center gap-6 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: COLORS.quaternary }} />
-                  <span className="text-[#94A3B8]">Federal Tax ({state.grossIncome > 0 ? Math.round(results.taxAfterCredits / state.grossIncome * 100) : 0}%)</span>
+                  <span className="text-text-muted">Federal Tax ({state.grossIncome > 0 ? Math.round(results.taxAfterCredits / state.grossIncome * 100) : 0}%)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-sm" style={{ backgroundColor: COLORS.primary }} />
-                  <span className="text-[#94A3B8]">Take-Home ({state.grossIncome > 0 ? Math.round(results.takeHome / state.grossIncome * 100) : 0}%)</span>
+                  <span className="text-text-muted">Take-Home ({state.grossIncome > 0 ? Math.round(results.takeHome / state.grossIncome * 100) : 0}%)</span>
                 </div>
               </div>
             </div>

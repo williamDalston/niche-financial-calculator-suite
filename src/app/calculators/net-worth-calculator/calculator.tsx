@@ -21,20 +21,11 @@ import {
   StatCard,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
-
-const COLORS = {
-  assets: "#22C55E",
-  liabilities: "#F97316",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
 
 const ASSET_COLORS = ["#22C55E", "#3B82F6", "#A855F7", "#F59E0B", "#EC4899", "#06B6D4"];
 const LIABILITY_COLORS = ["#F97316", "#FB923C", "#E879F7", "#FDBA74", "#F472B6"];
@@ -99,7 +90,7 @@ function LineItemEditor({
             type="text"
             value={item.label}
             onChange={(e) => onUpdate(item.id, "label", e.target.value)}
-            className="h-12 flex-1 rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-sm text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 flex-1 rounded-lg border border-border bg-bg-primary p-3 text-sm text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
             placeholder="Label"
           />
           <CurrencyInput
@@ -111,7 +102,7 @@ function LineItemEditor({
           />
           <button
             onClick={() => onRemove(item.id)}
-            className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#1E293B] bg-[#0B1120] text-[#F97316] hover:bg-[#F97316]/10 transition-colors shrink-0"
+            className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-bg-primary text-accent-danger hover:bg-accent-danger/10 transition-colors shrink-0"
             title="Remove item"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +113,7 @@ function LineItemEditor({
       ))}
       <button
         onClick={onAdd}
-        className="flex items-center gap-2 text-sm font-medium text-[#3B82F6] hover:text-[#22C55E] transition-colors"
+        className="flex items-center gap-2 text-sm font-medium text-accent-secondary hover:text-accent-primary transition-colors"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -138,6 +129,11 @@ function LineItemEditor({
 /* ------------------------------------------------------------------ */
 
 export function NetWorthCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    assets: "#22C55E",
+    liabilities: "#F97316",
+  };
   const [assets, setAssets] = useState<LineItem[]>(defaultAssets);
   const [liabilities, setLiabilities] = useState<LineItem[]>(defaultLiabilities);
 
@@ -206,13 +202,13 @@ export function NetWorthCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
           {/* Assets */}
           <div>
-            <h3 className="mb-3 text-lg font-semibold text-[#22C55E]">Assets</h3>
+            <h3 className="mb-3 text-lg font-semibold text-accent-primary">Assets</h3>
             <LineItemEditor
               items={assets}
               onUpdate={(id, field, val) => updateItem(assets, setAssets, id, field, val)}
@@ -224,7 +220,7 @@ export function NetWorthCalculatorWidget() {
 
           {/* Liabilities */}
           <div>
-            <h3 className="mb-3 text-lg font-semibold text-[#F97316]">Liabilities</h3>
+            <h3 className="mb-3 text-lg font-semibold text-accent-danger">Liabilities</h3>
             <LineItemEditor
               items={liabilities}
               onUpdate={(id, field, val) => updateItem(liabilities, setLiabilities, id, field, val)}
@@ -246,7 +242,7 @@ export function NetWorthCalculatorWidget() {
                 <AnimatedNumber
                   value={results.netWorth}
                   format="currency"
-                  className={`font-mono text-2xl font-bold inline-block ${results.netWorth >= 0 ? "text-[#22C55E]" : "text-[#F97316]"}`}
+                  className={`font-mono text-2xl font-bold inline-block ${results.netWorth >= 0 ? "text-accent-primary" : "text-accent-danger"}`}
                 />
               }
               className="col-span-2"
@@ -257,7 +253,7 @@ export function NetWorthCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalAssets}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-lg font-bold text-accent-primary inline-block"
                 />
               }
             />
@@ -267,7 +263,7 @@ export function NetWorthCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalLiabilities}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#F97316] inline-block"
+                  className="font-mono text-lg font-bold text-accent-danger inline-block"
                 />
               }
             />
@@ -279,7 +275,7 @@ export function NetWorthCalculatorWidget() {
                   format="number"
                   decimals={1}
                   suffix="%"
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -293,8 +289,8 @@ export function NetWorthCalculatorWidget() {
           />
 
           {/* Stacked Bar: Assets vs Liabilities */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Assets vs Liabilities</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Assets vs Liabilities</p>
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={barData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -330,8 +326,8 @@ export function NetWorthCalculatorWidget() {
 
           {/* Pie Chart: Asset Allocation */}
           {results.assetAllocation.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Asset Allocation</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Asset Allocation</p>
               <ResponsiveContainer width="100%" height={240}>
                 <PieChart>
                   <Pie

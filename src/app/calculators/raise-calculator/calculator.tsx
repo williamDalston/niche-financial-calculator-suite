@@ -22,18 +22,7 @@ import {
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  warning: "#F59E0B",
-  danger: "#F97316",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const PAY_FREQUENCIES = [
   { label: "Weekly", value: 52 },
@@ -103,6 +92,13 @@ function computeTax(income: number, status: string): number {
 }
 
 export function RaiseCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    warning: "#F59E0B",
+    danger: "#F97316",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentSalary: 65000,
@@ -163,10 +159,10 @@ export function RaiseCalculatorWidget() {
   };
 
   const selectClass =
-    "h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none";
+    "h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none";
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -195,7 +191,7 @@ export function RaiseCalculatorWidget() {
 
           {/* Raise Mode Toggle */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Enter Raise As
             </label>
             <div className="flex gap-2">
@@ -203,8 +199,8 @@ export function RaiseCalculatorWidget() {
                 onClick={() => setState('raiseMode', "percent")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   state.raiseMode === "percent"
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 Percentage
@@ -213,8 +209,8 @@ export function RaiseCalculatorWidget() {
                 onClick={() => setState('raiseMode', "newSalary")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   state.raiseMode === "newSalary"
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 New Salary
@@ -256,7 +252,7 @@ export function RaiseCalculatorWidget() {
 
           {/* Pay Frequency */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Pay Frequency
             </label>
             <select
@@ -274,7 +270,7 @@ export function RaiseCalculatorWidget() {
 
           {/* Filing Status */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Filing Status (for tax estimate)
             </label>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -284,8 +280,8 @@ export function RaiseCalculatorWidget() {
                   onClick={() => setState('filingStatus', status.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     state.filingStatus === status.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {status.label}
@@ -298,38 +294,38 @@ export function RaiseCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: New Salary */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">New Annual Salary</p>
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">New Annual Salary</p>
             <AnimatedNumber
               value={results.newSalary}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               +{results.percentChange.toFixed(1)}% increase
             </p>
           </div>
 
           {/* Raise Amount */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Raise Amount (Annual)</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Raise Amount (Annual)</p>
             <AnimatedNumber
               value={results.raiseAmount}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#3B82F6] inline-block"
+              className="font-mono text-2xl font-bold text-accent-secondary inline-block"
             />
           </div>
 
           {/* Per-Paycheck Increase */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Per Paycheck Increase</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Per Paycheck Increase</p>
             <AnimatedNumber
               value={results.increasePerPaycheck}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+              className="font-mono text-2xl font-bold text-accent-primary inline-block"
             />
           </div>
 
@@ -343,7 +339,7 @@ export function RaiseCalculatorWidget() {
                   value={results.newSalary}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -355,7 +351,7 @@ export function RaiseCalculatorWidget() {
                   value={results.raiseAmount}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
               trend="up"
@@ -367,7 +363,7 @@ export function RaiseCalculatorWidget() {
                   value={results.increasePerPaycheck}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-lg font-bold text-accent-primary inline-block"
                 />
               }
             />
@@ -378,7 +374,7 @@ export function RaiseCalculatorWidget() {
                   value={results.afterTaxRaise}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -396,25 +392,25 @@ export function RaiseCalculatorWidget() {
           />
 
           {/* After-Tax Results */}
-          <div className="rounded-lg border border-[#22C55E]/30 bg-[#22C55E]/5 p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">After-Tax Raise Value</p>
+          <div className="rounded-lg border border-accent-primary/30 bg-accent-primary/5 p-5">
+            <p className="mb-1 text-sm text-text-muted">After-Tax Raise Value</p>
             <div className="flex items-baseline gap-2">
               <AnimatedNumber
                 value={results.afterTaxRaise}
                 format="currency"
                 decimals={0}
-                className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                className="font-mono text-2xl font-bold text-accent-primary inline-block"
               />
-              <span className="text-base font-normal text-[#94A3B8]">/ year</span>
+              <span className="text-base font-normal text-text-muted">/ year</span>
             </div>
-            <p className="mt-1 text-sm text-[#94A3B8]">
+            <p className="mt-1 text-sm text-text-muted">
               {formatCurrencyExact(results.afterTaxPerPaycheck)} per paycheck
             </p>
           </div>
 
           {/* Salary Comparison Bar Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">
               Old vs New Salary
             </p>
             <ResponsiveContainer width="100%" height={180}>
@@ -458,8 +454,8 @@ export function RaiseCalculatorWidget() {
           </div>
 
           {/* Pre-Tax vs After-Tax Breakdown */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">
               Raise Breakdown: Pre-Tax vs After-Tax
             </p>
             <ResponsiveContainer width="100%" height={180}>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navLinks = [
   { label: "Calculators", href: "/calculators" },
@@ -66,9 +67,14 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <div className="ml-2 border-l border-border pl-2">
+            <ThemeToggle />
+          </div>
         </nav>
 
-        {/* Mobile menu button */}
+        {/* Mobile: theme toggle + menu button */}
+        <div className="flex md:hidden items-center gap-2">
+          <ThemeToggle />
         <button
           ref={menuButtonRef}
           type="button"
@@ -112,6 +118,7 @@ export function Header() {
             </svg>
           )}
         </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}

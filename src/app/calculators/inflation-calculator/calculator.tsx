@@ -158,7 +158,7 @@ export function InflationCalculatorWidget() {
   }, [state.amount, state.startYear, state.endYear, useCustomRate, state.customRate]);
 
   return (
-    <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
+    <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
         <div>
@@ -178,9 +178,9 @@ export function InflationCalculatorWidget() {
               type="checkbox"
               checked={useCustomRate}
               onChange={(e) => setUseCustomRate(e.target.checked)}
-              className="h-5 w-5 rounded border-[#1E293B] bg-[#0B1120] text-[#22C55E] focus:ring-[#3B82F6]"
+              className="h-5 w-5 rounded border-border bg-bg-primary text-accent-primary focus:ring-accent-secondary"
             />
-            <span className="text-sm text-[#94A3B8]">
+            <span className="text-sm text-text-muted">
               Use custom inflation rate instead of CPI data
             </span>
           </label>
@@ -189,13 +189,13 @@ export function InflationCalculatorWidget() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label className="mb-2 block text-sm font-medium text-text-muted">
             Start Year
           </label>
           <select
             value={state.startYear}
             onChange={(e) => setState('startYear', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {years.map((y) => (
               <option key={`start-${y}`} value={y}>
@@ -206,13 +206,13 @@ export function InflationCalculatorWidget() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label className="mb-2 block text-sm font-medium text-text-muted">
             End Year
           </label>
           <select
             value={state.endYear}
             onChange={(e) => setState('endYear', Number(e.target.value))}
-            className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] px-3 py-3 text-[#F1F5F9] font-body transition-colors focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+            className="h-12 w-full rounded-lg border border-border bg-bg-primary px-3 py-3 text-text-primary font-body transition-colors focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
           >
             {years.map((y) => (
               <option key={`end-${y}`} value={y}>
@@ -240,17 +240,17 @@ export function InflationCalculatorWidget() {
       {results && (
         <>
           {/* Hero result */}
-          <div className="mb-6 rounded-xl border border-[#1E293B] bg-[#0B1120] p-6 text-center">
-            <p className="text-sm font-medium text-[#94A3B8] mb-2">
+          <div className="mb-6 rounded-xl border border-border bg-bg-primary p-6 text-center">
+            <p className="text-sm font-medium text-text-muted mb-2">
               {fmt(state.amount)} in {state.startYear} is equivalent to
             </p>
             <AnimatedNumber
               value={results.adjustedAmount}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="text-xs text-[#94A3B8] mt-2">in {state.endYear} dollars</p>
+            <p className="text-xs text-text-muted mt-2">in {state.endYear} dollars</p>
           </div>
 
           {/* StatCard grid */}
@@ -302,7 +302,7 @@ export function InflationCalculatorWidget() {
 
           {/* Chart */}
           <div>
-            <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               Value of {fmt(state.amount)} Over Time
             </h3>
             <ResponsiveContainer width="100%" height={320}>

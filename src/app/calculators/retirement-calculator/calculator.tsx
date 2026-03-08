@@ -103,7 +103,7 @@ export function RetirementCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
@@ -194,24 +194,24 @@ export function RetirementCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">
               Projected Savings at Age {retirementAge}
             </p>
             <AnimatedNumber
               value={results.totalAtRetirement}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
             <div className="mt-2">
-              <p className="text-xs text-[#94A3B8]">
+              <p className="text-xs text-text-muted">
                 In today&apos;s dollars:{" "}
                 <AnimatedNumber
                   value={results.inflationAdjusted}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-sm font-semibold text-[#94A3B8] inline-block"
+                  className="font-mono text-sm font-semibold text-text-muted inline-block"
                 />
               </p>
             </div>
@@ -227,7 +227,7 @@ export function RetirementCalculatorWidget() {
                   value={results.totalAtRetirement}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -239,7 +239,7 @@ export function RetirementCalculatorWidget() {
                   value={results.totalContributions}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
             />
@@ -250,7 +250,7 @@ export function RetirementCalculatorWidget() {
                   value={results.totalGrowth}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-lg font-bold text-accent-primary inline-block"
                 />
               }
               trend="up"
@@ -262,7 +262,7 @@ export function RetirementCalculatorWidget() {
                   value={yearsToRetirement}
                   format="number"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -285,8 +285,8 @@ export function RetirementCalculatorWidget() {
 
           {/* Growth Chart */}
           {results.chartData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Savings Growth Over Time</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Savings Growth Over Time</p>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={results.chartData}>
                   <defs>
@@ -352,8 +352,8 @@ export function RetirementCalculatorWidget() {
 
           {/* Milestones */}
           {results.chartData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Key Milestones</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Key Milestones</p>
               <div className="space-y-2">
                 {[100000, 250000, 500000, 1000000, 2000000].map((milestone) => {
                   const entry = results.chartData.find((d) => d.total >= milestone);
@@ -363,8 +363,8 @@ export function RetirementCalculatorWidget() {
                       key={milestone}
                       className="flex items-center justify-between text-sm"
                     >
-                      <span className="text-[#94A3B8]">{formatCurrency(milestone)}</span>
-                      <span className="font-mono text-[#F1F5F9]">
+                      <span className="text-text-muted">{formatCurrency(milestone)}</span>
+                      <span className="font-mono text-text-primary">
                         Age {entry.age} ({entry.year} years)
                       </span>
                     </div>

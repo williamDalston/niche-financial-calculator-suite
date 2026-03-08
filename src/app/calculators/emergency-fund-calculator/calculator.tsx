@@ -21,29 +21,7 @@ import {
 } from "@/components/ui";
 import { formatCurrency } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  warning: "#F59E0B",
-  danger: "#F97316",
-  purple: "#A855F7",
-  cyan: "#06B6D4",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
-
-const EXPENSE_COLORS = [
-  COLORS.primary,
-  COLORS.secondary,
-  COLORS.warning,
-  COLORS.danger,
-  COLORS.purple,
-  COLORS.cyan,
-];
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const RISK_OPTIONS = [
   { label: "Conservative (6 months)", value: 6, key: "conservative" },
@@ -52,6 +30,23 @@ const RISK_OPTIONS = [
 ];
 
 export function EmergencyFundCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    warning: "#F59E0B",
+    danger: "#F97316",
+    purple: "#A855F7",
+    cyan: "#06B6D4",
+  };
+  const EXPENSE_COLORS = [
+    COLORS.primary,
+    COLORS.secondary,
+    COLORS.warning,
+    COLORS.danger,
+    COLORS.purple,
+    COLORS.cyan,
+  ];
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       housing: 1500,
@@ -140,11 +135,11 @@ export function EmergencyFundCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-[#94A3B8]">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-text-muted">
             Monthly Essential Expenses
           </h3>
 
@@ -202,7 +197,7 @@ export function EmergencyFundCalculatorWidget() {
             step={25}
           />
 
-          <hr className="border-[#1E293B]" />
+          <hr className="border-border" />
 
           <CurrencyInput
             label="Current Emergency Savings"
@@ -224,7 +219,7 @@ export function EmergencyFundCalculatorWidget() {
 
           {/* Risk Tolerance */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               Risk Tolerance
             </label>
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -234,8 +229,8 @@ export function EmergencyFundCalculatorWidget() {
                   onClick={() => setState('riskTolerance', opt.value)}
                   className={`flex-1 rounded-lg border px-3 py-3 text-sm font-medium transition-colors ${
                     state.riskTolerance === opt.value
-                      ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                      : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                      ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                      : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                   }`}
                 >
                   {opt.label}
@@ -248,31 +243,31 @@ export function EmergencyFundCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Target Amount */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#22C55E] bg-[#0B1120] p-5">
-            <p className="mb-1 text-sm text-[#94A3B8]">Target Emergency Fund</p>
+          <div className="rounded-lg border border-l-[3px] border-border border-l-accent-primary bg-bg-primary p-5">
+            <p className="mb-1 text-sm text-text-muted">Target Emergency Fund</p>
             <AnimatedNumber
               value={results.targetAmount}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               {state.riskTolerance} months of essential expenses
             </p>
           </div>
 
           {/* Progress Bar */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5">
+          <div className="rounded-lg border border-border bg-bg-primary p-5">
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm text-[#94A3B8]">Progress</p>
+              <p className="text-sm text-text-muted">Progress</p>
               <AnimatedNumber
                 value={results.progressPercent}
                 format="percent"
                 decimals={1}
-                className="font-mono text-sm font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-sm font-bold text-text-primary inline-block"
               />
             </div>
-            <div className="h-4 w-full overflow-hidden rounded-full bg-[#1E293B]">
+            <div className="h-4 w-full overflow-hidden rounded-full bg-border">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
@@ -286,21 +281,21 @@ export function EmergencyFundCalculatorWidget() {
                 }}
               />
             </div>
-            <div className="mt-2 flex justify-between text-xs text-[#94A3B8]">
+            <div className="mt-2 flex justify-between text-xs text-text-muted">
               <span>{formatCurrency(state.currentSavings)} saved</span>
               <span>{formatCurrency(results.targetAmount)} target</span>
             </div>
           </div>
 
           {/* Months to Funded */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Months to Fully Funded</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Months to Fully Funded</p>
             {results.monthsToFunded === Infinity ? (
-              <p className="font-mono text-2xl font-bold text-[#F59E0B]">
+              <p className="font-mono text-2xl font-bold text-accent-warning">
                 N/A (no monthly contribution)
               </p>
             ) : results.monthsToFunded === 0 ? (
-              <p className="font-mono text-2xl font-bold text-[#22C55E]">
+              <p className="font-mono text-2xl font-bold text-accent-primary">
                 Fully funded!
               </p>
             ) : (
@@ -309,19 +304,19 @@ export function EmergencyFundCalculatorWidget() {
                 format="number"
                 decimals={0}
                 suffix=" months"
-                className="font-mono text-2xl font-bold text-[#3B82F6] inline-block"
+                className="font-mono text-2xl font-bold text-accent-secondary inline-block"
               />
             )}
           </div>
 
           {/* Amount Still Needed */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-1 text-xs text-[#94A3B8]">Amount Still Needed</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-1 text-xs text-text-muted">Amount Still Needed</p>
             <AnimatedNumber
               value={results.amountNeeded}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#F59E0B] inline-block"
+              className="font-mono text-2xl font-bold text-accent-warning inline-block"
             />
           </div>
 
@@ -335,7 +330,7 @@ export function EmergencyFundCalculatorWidget() {
                   value={results.targetAmount}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
               className="col-span-2"
@@ -347,7 +342,7 @@ export function EmergencyFundCalculatorWidget() {
                   value={results.progressPercent}
                   format="percent"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#3B82F6] inline-block"
+                  className="font-mono text-lg font-bold text-accent-secondary inline-block"
                 />
               }
               trend={results.progressPercent >= 100 ? "up" : "neutral"}
@@ -369,7 +364,7 @@ export function EmergencyFundCalculatorWidget() {
                   value={results.totalMonthlyExpenses}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -380,7 +375,7 @@ export function EmergencyFundCalculatorWidget() {
                   value={results.amountNeeded}
                   format="currency"
                   decimals={0}
-                  className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                  className="font-mono text-lg font-bold text-accent-warning inline-block"
                 />
               }
               trend={results.amountNeeded > 0 ? "down" : "up"}
@@ -396,8 +391,8 @@ export function EmergencyFundCalculatorWidget() {
 
           {/* Expense Breakdown Pie Chart */}
           {expenseBreakdown.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">
                 Monthly Expense Breakdown
               </p>
               <ResponsiveContainer width="100%" height={200}>
@@ -440,7 +435,7 @@ export function EmergencyFundCalculatorWidget() {
                           EXPENSE_COLORS[idx % EXPENSE_COLORS.length],
                       }}
                     />
-                    <span className="text-[#94A3B8]">
+                    <span className="text-text-muted">
                       {item.name} ({formatCurrency(item.value)})
                     </span>
                   </div>
@@ -453,8 +448,8 @@ export function EmergencyFundCalculatorWidget() {
 
       {/* Savings Growth Chart */}
       {results.projectionData.length > 1 && (
-        <div className="mt-8 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-          <p className="mb-3 text-sm font-medium text-[#94A3B8]">
+        <div className="mt-8 rounded-lg border border-border bg-bg-primary p-4">
+          <p className="mb-3 text-sm font-medium text-text-muted">
             Savings Growth Projection
           </p>
           <ResponsiveContainer width="100%" height={300}>

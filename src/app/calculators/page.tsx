@@ -50,7 +50,7 @@ export default function AllCalculatorsPage() {
       <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
         All Calculators
       </h1>
-      <p className="mt-3 max-w-2xl text-lg text-[#94A3B8]">
+      <p className="mt-3 max-w-2xl text-lg text-text-muted">
         Browse and search all 30 free financial calculators. Filter by category
         or search by name.
       </p>

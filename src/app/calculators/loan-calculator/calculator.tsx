@@ -157,7 +157,7 @@ export function LoanCalculatorWidget() {
     : {};
 
   return (
-    <div className="bg-[#162032] border border-[#1E293B] rounded-xl p-6 md:p-8">
+    <div className="bg-bg-surface border border-border rounded-xl p-6 md:p-8">
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
         {/* Loan Amount */}
@@ -205,7 +205,7 @@ export function LoanCalculatorWidget() {
 
         {/* Loan Term */}
         <div>
-          <label htmlFor="loan-term-value" className="mb-2 block text-sm font-medium text-[#94A3B8]">
+          <label htmlFor="loan-term-value" className="mb-2 block text-sm font-medium text-text-muted">
             Loan Term
           </label>
           <div className="flex gap-2">
@@ -215,12 +215,12 @@ export function LoanCalculatorWidget() {
               min={1}
               value={state.termValue}
               onChange={(e) => setState('termValue', Number(e.target.value))}
-              className="flex-1 h-12 bg-[#0B1120] border border-[#1E293B] rounded-lg p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="flex-1 h-12 bg-bg-primary border border-border rounded-lg p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
             />
             <select
               value={state.termUnit}
               onChange={(e) => setState('termUnit', e.target.value)}
-              className="h-12 bg-[#0B1120] border border-[#1E293B] rounded-lg p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none focus:ring-[3px] focus:ring-[#3B82F6]/15"
+              className="h-12 bg-bg-primary border border-border rounded-lg p-3 text-text-primary focus:border-accent-secondary focus:outline-none focus:ring-[3px] focus:ring-accent-secondary/15"
             >
               <option value="months">Months</option>
               <option value="years">Years</option>
@@ -263,7 +263,7 @@ export function LoanCalculatorWidget() {
                   value={results.monthlyPayment}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-2xl font-bold text-[#22C55E] inline-block"
+                  className="font-mono text-2xl font-bold text-accent-primary inline-block"
                 />
               }
             />
@@ -274,7 +274,7 @@ export function LoanCalculatorWidget() {
                   value={results.totalInterest}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -285,7 +285,7 @@ export function LoanCalculatorWidget() {
                   value={results.totalCost}
                   format="currency"
                   decimals={2}
-                  className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                  className="font-mono text-lg font-bold text-text-primary inline-block"
                 />
               }
             />
@@ -304,7 +304,7 @@ export function LoanCalculatorWidget() {
                     value={results.interestSaved}
                     format="currency"
                     decimals={2}
-                    className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                    className="font-mono text-lg font-bold text-accent-primary inline-block"
                   />
                 }
                 trend="up"
@@ -316,7 +316,7 @@ export function LoanCalculatorWidget() {
                     value={results.monthsSaved}
                     format="number"
                     decimals={0}
-                    className="font-mono text-lg font-bold text-[#22C55E] inline-block"
+                    className="font-mono text-lg font-bold text-accent-primary inline-block"
                   />
                 }
                 trend="up"
@@ -337,7 +337,7 @@ export function LoanCalculatorWidget() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Pie Chart */}
             <div>
-              <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">
                 Principal vs Interest
               </h3>
               <ResponsiveContainer width="100%" height={280}>
@@ -374,7 +374,7 @@ export function LoanCalculatorWidget() {
 
             {/* Line Chart */}
             <div>
-              <h3 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">
                 Balance Over Time
               </h3>
               <ResponsiveContainer width="100%" height={280}>

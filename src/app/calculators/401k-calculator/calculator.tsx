@@ -21,19 +21,15 @@ import {
 } from "@/components/ui";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
-
-const COLORS = {
-  primary: "#22C55E",
-  secondary: "#3B82F6",
-  tertiary: "#F59E0B",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 export function FourOhOneKCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    primary: "#22C55E",
+    secondary: "#3B82F6",
+    tertiary: "#F59E0B",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentAge: 30,
@@ -141,7 +137,7 @@ export function FourOhOneKCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -320,40 +316,40 @@ export function FourOhOneKCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Balance at Retirement */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Estimated Balance at Retirement (Age {state.retirementAge})</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Estimated Balance at Retirement (Age {state.retirementAge})</p>
             <AnimatedNumber
               value={results.balanceAtRetirement}
               format="currency"
-              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-[#22C55E] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-accent-primary inline-block transition-transform duration-150"
             />
           </div>
 
           {/* Secondary AnimatedNumber metrics */}
-          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
+          <div className="flex flex-wrap items-center justify-center gap-6 rounded-lg border border-border bg-bg-primary p-4">
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Monthly Income (4% Rule)</p>
+              <p className="text-xs text-text-muted mb-1">Monthly Income (4% Rule)</p>
               <AnimatedNumber
                 value={results.monthlyRetirementIncome}
                 format="currency"
                 decimals={2}
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Total Contributions</p>
+              <p className="text-xs text-text-muted mb-1">Total Contributions</p>
               <AnimatedNumber
                 value={results.totalEmployeeContribs + results.totalEmployerContribs}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F1F5F9] inline-block"
+                className="font-mono text-lg font-bold text-text-primary inline-block"
               />
             </div>
             <div className="text-center">
-              <p className="text-xs text-[#94A3B8] mb-1">Employer Match</p>
+              <p className="text-xs text-text-muted mb-1">Employer Match</p>
               <AnimatedNumber
                 value={results.totalEmployerContribs}
                 format="currency"
-                className="font-mono text-lg font-bold text-[#F59E0B] inline-block"
+                className="font-mono text-lg font-bold text-accent-warning inline-block"
               />
             </div>
           </div>
@@ -396,8 +392,8 @@ export function FourOhOneKCalculatorWidget() {
 
           {/* Stacked Area Chart */}
           {results.chartData.length > 1 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">401(k) Growth Over Time</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">401(k) Growth Over Time</p>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={results.chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

@@ -21,20 +21,16 @@ import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { useCalculatorState } from "@/hooks/use-calculator-state";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
-
-const COLORS = {
-  annuity: "#3B82F6",
-  supplement: "#22C55E",
-  tsp: "#F59E0B",
-  socialSecurity: "#A855F7",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 export function FersRetirementCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    annuity: "#3B82F6",
+    supplement: "#22C55E",
+    tsp: "#F59E0B",
+    socialSecurity: "#A855F7",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       currentAge: 45,
@@ -156,7 +152,7 @@ export function FersRetirementCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -239,7 +235,7 @@ export function FersRetirementCalculatorWidget() {
 
           {/* FERS Supplement Eligible */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
               FERS Supplement Eligible
             </label>
             <div className="flex gap-2">
@@ -247,8 +243,8 @@ export function FersRetirementCalculatorWidget() {
                 onClick={() => setState('fersSupplementEligible', "true")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   fersSupplementEligible
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 Yes
@@ -257,8 +253,8 @@ export function FersRetirementCalculatorWidget() {
                 onClick={() => setState('fersSupplementEligible', "false")}
                 className={`flex-1 rounded-lg border px-4 py-3 text-sm font-medium transition-colors ${
                   !fersSupplementEligible
-                    ? "border-[#22C55E] bg-[#22C55E]/10 text-[#22C55E]"
-                    : "border-[#1E293B] bg-[#0B1120] text-[#94A3B8] hover:border-[#3B82F6]/50 hover:text-[#F1F5F9]"
+                    ? "border-accent-primary bg-accent-primary/10 text-accent-primary"
+                    : "border-border bg-bg-primary text-text-muted hover:border-accent-secondary/50 hover:text-text-primary"
                 }`}
               >
                 No
@@ -279,10 +275,10 @@ export function FersRetirementCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Total Monthly Income */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Total Monthly Retirement Income</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Total Monthly Retirement Income</p>
             <AnimatedNumber value={results.totalMonthlyIncome} format="currency" decimals={2} />
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <p className="mt-1 text-xs text-text-muted">
               {results.replacementRate.toFixed(1)}% replacement rate
             </p>
           </div>
@@ -291,39 +287,39 @@ export function FersRetirementCalculatorWidget() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Total Monthly Income"
-              value={<AnimatedNumber value={results.totalMonthlyIncome} format="currency" decimals={2} className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
+              value={<AnimatedNumber value={results.totalMonthlyIncome} format="currency" decimals={2} className="font-mono text-2xl font-bold text-accent-primary inline-block" />}
               highlight
             />
             <StatCard
               label="FERS Annuity"
-              value={<AnimatedNumber value={results.monthlyAnnuity} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyAnnuity} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
               subvalue={`${(results.multiplier * 100).toFixed(1)}% x ${results.totalYearsOfService} yrs`}
             />
             <StatCard
               label="FERS Supplement"
               value={
                 results.monthlySupplementEstimate > 0
-                  ? <AnimatedNumber value={results.monthlySupplementEstimate} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />
+                  ? <AnimatedNumber value={results.monthlySupplementEstimate} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />
                   : "N/A"
               }
               subvalue={results.monthlySupplementEstimate > 0 ? "Until age 62" : undefined}
             />
             <StatCard
               label="TSP Income"
-              value={<AnimatedNumber value={results.monthlyTspIncome} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyTspIncome} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
               subvalue={`From ${formatCurrency(results.projectedTsp)}`}
             />
             <StatCard
               label="Social Security"
               value={
                 results.monthlySocialSecurity > 0
-                  ? <AnimatedNumber value={results.monthlySocialSecurity} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />
+                  ? <AnimatedNumber value={results.monthlySocialSecurity} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />
                   : "At age 62"
               }
             />
             <StatCard
               label="Replacement Rate"
-              value={<AnimatedNumber value={results.replacementRate} format="percent" decimals={1} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.replacementRate} format="percent" decimals={1} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
           </div>
 
@@ -331,35 +327,35 @@ export function FersRetirementCalculatorWidget() {
           <ShareResults slug="fers-retirement-calculator" title="FERS Retirement Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Annual Summary */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Annual Summary</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Annual Summary</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">FERS Annuity</span>
-                <span className="font-mono text-[#3B82F6]">{formatCurrency(results.annualAnnuity)}/yr</span>
+                <span className="text-text-muted">FERS Annuity</span>
+                <span className="font-mono text-accent-secondary">{formatCurrency(results.annualAnnuity)}/yr</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">FERS Supplement</span>
-                <span className="font-mono text-[#22C55E]">{formatCurrency(results.monthlySupplementEstimate * 12)}/yr</span>
+                <span className="text-text-muted">FERS Supplement</span>
+                <span className="font-mono text-accent-primary">{formatCurrency(results.monthlySupplementEstimate * 12)}/yr</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">TSP Withdrawal</span>
-                <span className="font-mono text-[#F59E0B]">{formatCurrency(results.monthlyTspIncome * 12)}/yr</span>
+                <span className="text-text-muted">TSP Withdrawal</span>
+                <span className="font-mono text-accent-warning">{formatCurrency(results.monthlyTspIncome * 12)}/yr</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Social Security</span>
-                <span className="font-mono text-[#A855F7]">{formatCurrency(results.monthlySocialSecurity * 12)}/yr</span>
+                <span className="text-text-muted">Social Security</span>
+                <span className="font-mono text-accent-purple">{formatCurrency(results.monthlySocialSecurity * 12)}/yr</span>
               </div>
-              <div className="border-t border-[#1E293B] pt-2 flex justify-between text-sm font-semibold">
-                <span className="text-[#F1F5F9]">Total Annual Income</span>
-                <span className="font-mono text-[#22C55E]">{formatCurrency(results.totalAnnualIncome)}/yr</span>
+              <div className="border-t border-border pt-2 flex justify-between text-sm font-semibold">
+                <span className="text-text-primary">Total Annual Income</span>
+                <span className="font-mono text-accent-primary">{formatCurrency(results.totalAnnualIncome)}/yr</span>
               </div>
             </div>
           </div>
 
           {/* Stacked Bar Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Retirement Income Sources</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Retirement Income Sources</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={incomeBarData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
@@ -389,8 +385,8 @@ export function FersRetirementCalculatorWidget() {
           </div>
 
           {/* TSP Growth Line Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">TSP Balance Growth</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">TSP Balance Growth</p>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={results.tspGrowthData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />

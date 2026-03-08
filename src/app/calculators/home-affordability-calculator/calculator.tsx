@@ -21,24 +21,20 @@ import { PercentageInput } from "@/components/ui/percentage-input";
 import { ShareResults } from "@/components/ui/share-results";
 import { StatCard } from "@/components/ui/stat-card";
 import { formatCurrency, formatCurrencyExact } from "@/lib/formatters";
-
-const COLORS = {
-  principal: "#3B82F6",
-  interest: "#22C55E",
-  tax: "#F59E0B",
-  insurance: "#F97316",
-  pmi: "#A855F7",
-  hoa: "#EC4899",
-  bg: "#0B1120",
-  surface: "#162032",
-  border: "#1E293B",
-  textPrimary: "#F1F5F9",
-  textMuted: "#94A3B8",
-};
+import { useChartColors } from "@/hooks/use-chart-colors";
 
 const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B", "#F97316", "#A855F7", "#EC4899"];
 
 export function HomeAffordabilityCalculatorWidget() {
+  const COLORS = {
+    ...useChartColors(),
+    principal: "#3B82F6",
+    interest: "#22C55E",
+    tax: "#F59E0B",
+    insurance: "#F97316",
+    pmi: "#A855F7",
+    hoa: "#EC4899",
+  };
   const [state, setState, getShareUrl] = useCalculatorState({
     defaults: {
       annualIncome: 85000,
@@ -193,7 +189,7 @@ export function HomeAffordabilityCalculatorWidget() {
   };
 
   return (
-    <div className="rounded-xl border border-[#1E293B] bg-[#162032] p-6 md:p-8">
+    <div className="rounded-xl border border-border bg-bg-surface p-6 md:p-8">
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
         {/* Inputs */}
         <div className="space-y-6">
@@ -216,7 +212,7 @@ export function HomeAffordabilityCalculatorWidget() {
 
           {/* Monthly Debts */}
           <div>
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Monthly Debts</p>
+            <p className="mb-3 text-sm font-medium text-text-muted">Monthly Debts</p>
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <CurrencyInput
                 label="Car Payment"
@@ -277,13 +273,13 @@ export function HomeAffordabilityCalculatorWidget() {
               step={0.125}
             />
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#94A3B8]">
+              <label className="mb-2 block text-sm font-medium text-text-muted">
                 Loan Term (years)
               </label>
               <select
                 value={state.loanTerm}
                 onChange={(e) => setState('loanTerm', Number(e.target.value))}
-                className="h-12 w-full rounded-lg border border-[#1E293B] bg-[#0B1120] p-3 text-[#F1F5F9] focus:border-[#3B82F6] focus:outline-none"
+                className="h-12 w-full rounded-lg border border-border bg-bg-primary p-3 text-text-primary focus:border-accent-secondary focus:outline-none"
               >
                 <option value={15}>15 years</option>
                 <option value={20}>20 years</option>
@@ -348,19 +344,19 @@ export function HomeAffordabilityCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Max Home Price */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-5 text-center">
-            <p className="mb-2 text-sm text-[#94A3B8]">Maximum Home Price</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-5 text-center">
+            <p className="mb-2 text-sm text-text-muted">Maximum Home Price</p>
             <AnimatedNumber value={results.maxHomePrice} format="currency" />
           </div>
 
           {/* Secondary: Max Monthly Payment */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4 text-center">
-            <p className="mb-1 text-sm text-[#94A3B8]">Max Monthly Payment</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4 text-center">
+            <p className="mb-1 text-sm text-text-muted">Max Monthly Payment</p>
             <AnimatedNumber
               value={results.maxMonthlyPayment}
               format="currency"
               decimals={2}
-              className="font-mono text-2xl font-bold text-[#F1F5F9] inline-block transition-transform duration-150"
+              className="font-mono text-2xl font-bold text-text-primary inline-block transition-transform duration-150"
             />
           </div>
 
@@ -368,28 +364,28 @@ export function HomeAffordabilityCalculatorWidget() {
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <StatCard
               label="Max Home Price"
-              value={<AnimatedNumber value={results.maxHomePrice} format="currency" className="font-mono text-2xl font-bold text-[#22C55E] inline-block" />}
+              value={<AnimatedNumber value={results.maxHomePrice} format="currency" className="font-mono text-2xl font-bold text-accent-primary inline-block" />}
               highlight
             />
             <StatCard
               label="Max Monthly Payment"
-              value={<AnimatedNumber value={results.maxMonthlyPayment} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.maxMonthlyPayment} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="P&I"
-              value={<AnimatedNumber value={results.principalAndInterest} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.principalAndInterest} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Property Tax"
-              value={<AnimatedNumber value={results.monthlyTax} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyTax} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="Insurance"
-              value={<AnimatedNumber value={results.monthlyInsurance} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyInsurance} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
             <StatCard
               label="PMI"
-              value={<AnimatedNumber value={results.monthlyPMI} format="currency" decimals={2} className="font-mono text-lg font-bold text-[#F1F5F9] inline-block" />}
+              value={<AnimatedNumber value={results.monthlyPMI} format="currency" decimals={2} className="font-mono text-lg font-bold text-text-primary inline-block" />}
             />
           </div>
 
@@ -397,44 +393,44 @@ export function HomeAffordabilityCalculatorWidget() {
           <ShareResults slug="home-affordability-calculator" title="Home Affordability Calculator Results" results={shareResults} getShareUrl={getShareUrl} />
 
           {/* Monthly Payment Breakdown */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Monthly Payment Breakdown</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Monthly Payment Breakdown</p>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Principal & Interest</span>
-                <span className="font-mono text-[#3B82F6]">{formatCurrencyExact(results.principalAndInterest)}</span>
+                <span className="text-text-muted">Principal & Interest</span>
+                <span className="font-mono text-accent-secondary">{formatCurrencyExact(results.principalAndInterest)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Property Tax</span>
-                <span className="font-mono text-[#F59E0B]">{formatCurrencyExact(results.monthlyTax)}</span>
+                <span className="text-text-muted">Property Tax</span>
+                <span className="font-mono text-accent-warning">{formatCurrencyExact(results.monthlyTax)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">Insurance</span>
-                <span className="font-mono text-[#F97316]">{formatCurrencyExact(results.monthlyInsurance)}</span>
+                <span className="text-text-muted">Insurance</span>
+                <span className="font-mono text-accent-danger">{formatCurrencyExact(results.monthlyInsurance)}</span>
               </div>
               {results.monthlyPMI > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#94A3B8]">PMI</span>
-                  <span className="font-mono text-[#A855F7]">{formatCurrencyExact(results.monthlyPMI)}</span>
+                  <span className="text-text-muted">PMI</span>
+                  <span className="font-mono text-accent-purple">{formatCurrencyExact(results.monthlyPMI)}</span>
                 </div>
               )}
               {results.monthlyHOA > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#94A3B8]">HOA</span>
-                  <span className="font-mono text-[#EC4899]">{formatCurrencyExact(results.monthlyHOA)}</span>
+                  <span className="text-text-muted">HOA</span>
+                  <span className="font-mono text-accent-pink">{formatCurrencyExact(results.monthlyHOA)}</span>
                 </div>
               )}
-              <div className="border-t border-[#1E293B] pt-2 flex justify-between text-sm font-semibold">
-                <span className="text-[#F1F5F9]">Total</span>
-                <span className="font-mono text-[#22C55E]">{formatCurrencyExact(results.maxMonthlyPayment)}</span>
+              <div className="border-t border-border pt-2 flex justify-between text-sm font-semibold">
+                <span className="text-text-primary">Total</span>
+                <span className="font-mono text-accent-primary">{formatCurrencyExact(results.maxMonthlyPayment)}</span>
               </div>
             </div>
           </div>
 
           {/* Pie Chart */}
           {results.maxHomePrice > 0 && pieData.length > 0 && (
-            <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-              <p className="mb-3 text-sm font-medium text-[#94A3B8]">Payment Breakdown</p>
+            <div className="rounded-lg border border-border bg-bg-primary p-4">
+              <p className="mb-3 text-sm font-medium text-text-muted">Payment Breakdown</p>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie
@@ -469,7 +465,7 @@ export function HomeAffordabilityCalculatorWidget() {
                       className="h-3 w-3 rounded-sm"
                       style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
                     />
-                    <span className="text-[#94A3B8]">{entry.name}</span>
+                    <span className="text-text-muted">{entry.name}</span>
                   </div>
                 ))}
               </div>
@@ -477,8 +473,8 @@ export function HomeAffordabilityCalculatorWidget() {
           )}
 
           {/* Income Scenarios Bar Chart */}
-          <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
-            <p className="mb-3 text-sm font-medium text-[#94A3B8]">Home Price by Income Level</p>
+          <div className="rounded-lg border border-border bg-bg-primary p-4">
+            <p className="mb-3 text-sm font-medium text-text-muted">Home Price by Income Level</p>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={incomeScenarios}>
                 <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
