@@ -78,16 +78,25 @@ const categoryList = [
 ];
 
 const popularSlugs = [
+  "raise-calculator",
+  "tsp-calculator",
+  "auto-loan-calculator",
+  "wage-gap-calculator",
+  "federal-tax-calculator",
+  "gs-pay-calculator",
   "mortgage-calculator",
   "salary-to-hourly",
   "take-home-pay-calculator",
   "retirement-calculator",
-  "compound-interest-calculator",
-  "loan-calculator",
-  "auto-loan-calculator",
-  "gs-pay-calculator",
-  "cost-of-living-calculator",
-  "home-affordability-calculator",
+];
+
+/* Top calculators shown as quick-access buttons in the hero */
+const heroQuickAccess = [
+  { slug: "raise-calculator", label: "Raise Calculator", icon: "📈" },
+  { slug: "tsp-calculator", label: "TSP Calculator", icon: "🏛️" },
+  { slug: "auto-loan-calculator", label: "Auto Loan", icon: "🚗" },
+  { slug: "federal-tax-calculator", label: "Tax Calculator", icon: "🧾" },
+  { slug: "salary-to-hourly", label: "Salary to Hourly", icon: "💰" },
 ];
 
 const popularCalculators = popularSlugs
@@ -236,13 +245,25 @@ export default function HomePage() {
               <span className="text-accent-primary">Calculators</span>
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-text-muted sm:text-xl animate-fade-in-up animate-fade-in-up-delay-1">
-              Mortgage, salary, retirement, tax, and investment tools &mdash;
-              updated for 2026
+              Find out how much your raise is really worth, estimate your tax
+              bill, or plan your next car payment &mdash; all free, no signup.
             </p>
-            <div className="mt-10 w-full max-w-2xl animate-fade-in-up animate-fade-in-up-delay-2">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2 animate-fade-in-up animate-fade-in-up-delay-2">
+              {heroQuickAccess.map((item) => (
+                <Link
+                  key={item.slug}
+                  href={`/calculators/${item.slug}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-bg-surface px-4 py-2 text-sm font-medium text-text-primary transition-all duration-200 hover:border-accent-primary/50 hover:shadow-md hover:shadow-accent-primary/5 hover-lift"
+                >
+                  <span aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 w-full max-w-2xl animate-fade-in-up animate-fade-in-up-delay-3">
               <CalculatorSearch calculators={searchableCalcs} />
             </div>
-            <p className="mt-8 flex flex-wrap items-center justify-center gap-x-2 text-sm font-medium text-text-muted animate-fade-in-up animate-fade-in-up-delay-3">
+            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 text-sm font-medium text-text-muted animate-fade-in-up animate-fade-in-up-delay-3">
               <span className="inline-flex items-center gap-1">
                 <span
                   className="inline-block h-1.5 w-1.5 rounded-full bg-accent-primary"
@@ -315,10 +336,10 @@ export default function HomePage() {
       <section className="border-t border-border bg-bg-surface/40">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            Most Popular Calculators
+            Trending Calculators
           </h2>
           <p className="mt-2 text-text-muted">
-            The calculators people search for most, all in one place.
+            The calculators people are using right now.
           </p>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {popularCalculators.map((calc, idx) =>

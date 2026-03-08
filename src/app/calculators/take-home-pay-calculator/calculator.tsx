@@ -127,13 +127,13 @@ const COLORS = {
   federal: "#3B82F6",
   state: "#8B5CF6",
   socialSecurity: "#F59E0B",
-  medicare: "#EF4444",
+  medicare: "#F97316",
   deductions: "#06B6D4",
 };
 
 export function TakeHomePayWidget() {
   const [state, setState, getShareUrl] = useCalculatorState({
-    defaults: { grossSalary: 75000, filingStatus: "single" as string, state: "CA" as string, payFrequency: "biweekly" as string, retirement401k: 0, healthInsurance: 0 },
+    defaults: { grossSalary: 75000, filingStatus: "single" as string, state: "CA" as string, payFrequency: "biweekly" as string, retirement401k: 0, healthInsurance: 0 }, slug: "take-home-pay-calculator",
   });
   const grossSalary = state.grossSalary;
   const filingStatus = state.filingStatus;
@@ -494,7 +494,7 @@ export function TakeHomePayWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="take-home-pay-calculator"
             title="Take-Home Pay Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

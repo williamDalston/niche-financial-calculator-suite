@@ -23,7 +23,7 @@ import { formatCurrencyExact as formatCurrency } from "@/lib/formatters";
 
 export function SalaryToHourlyWidget() {
   const [state, setState, getShareUrl] = useCalculatorState({
-    defaults: { annualSalary: 65000, hoursPerWeek: 40, weeksPerYear: 52 },
+    defaults: { annualSalary: 65000, hoursPerWeek: 40, weeksPerYear: 52 }, slug: "salary-to-hourly",
   });
   const { annualSalary, hoursPerWeek, weeksPerYear } = state;
 
@@ -55,7 +55,7 @@ export function SalaryToHourlyWidget() {
     { name: "Daily", value: results.daily, color: "#3B82F6" },
     { name: "Weekly", value: results.weekly, color: "#8B5CF6" },
     { name: "Biweekly", value: results.biweekly, color: "#F59E0B" },
-    { name: "Monthly", value: results.monthly, color: "#EF4444" },
+    { name: "Monthly", value: results.monthly, color: "#F97316" },
   ];
 
   const shareResults: Record<string, string> = {
@@ -215,7 +215,7 @@ export function SalaryToHourlyWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="salary-to-hourly"
             title="Salary to Hourly Conversion"
             results={shareResults}
             getShareUrl={getShareUrl}

@@ -33,12 +33,12 @@ const DEBT_COLORS = [
   "#3B82F6",
   "#22C55E",
   "#F59E0B",
-  "#EF4444",
+  "#F97316",
   "#A855F7",
   "#EC4899",
   "#06B6D4",
   "#84CC16",
-  "#F97316",
+  "#FB923C",
   "#6366F1",
 ];
 
@@ -291,7 +291,7 @@ export function DebtPayoffCalculatorWidget() {
               {debts.length > 1 && (
                 <button
                   onClick={() => removeDebt(debt.id)}
-                  className="ml-3 rounded p-1 text-[#94A3B8] hover:text-[#EF4444] transition-colors"
+                  className="ml-3 rounded p-1 text-[#94A3B8] hover:text-[#F97316] transition-colors"
                   title="Remove debt"
                 >
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -488,7 +488,7 @@ export function DebtPayoffCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="Debt Payoff Calculator Results" results={shareResultsData} />
+          <ShareResults slug="debt-payoff-calculator" title="Debt Payoff Calculator Results" results={shareResultsData} />
 
           {/* Stacked Area Chart - Balance Decline */}
           {results.selected.monthlySnapshots.length > 1 && (

@@ -24,7 +24,7 @@ import { formatCurrency, formatCompact } from "@/lib/formatters";
 
 export function RetirementCalculatorWidget() {
   const [state, setState, getShareUrl] = useCalculatorState({
-    defaults: { currentAge: 30, retirementAge: 65, currentSavings: 50000, monthlyContribution: 500, annualReturn: 7, inflationRate: 3 },
+    defaults: { currentAge: 30, retirementAge: 65, currentSavings: 50000, monthlyContribution: 500, annualReturn: 7, inflationRate: 3 }, slug: "retirement-calculator",
   });
   const { currentAge, retirementAge, currentSavings, monthlyContribution, annualReturn, inflationRate } = state;
 
@@ -277,7 +277,7 @@ export function RetirementCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="retirement-calculator"
             title="Retirement Savings Projection"
             results={shareResultsData}
             getShareUrl={getShareUrl}

@@ -72,7 +72,7 @@ export function MilitaryPayCalculatorWidget() {
       base: BASES[0] as string,
       receiveBas: "true" as string,
       hasDependents: "false" as string,
-    },
+    }, slug: "military-pay-calculator",
   });
 
   const receiveBas = state.receiveBas === "true";
@@ -323,7 +323,7 @@ export function MilitaryPayCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="military-pay-calculator"
             title="Military Pay Calculator Results"
             results={shareResults}
             getShareUrl={getShareUrl}

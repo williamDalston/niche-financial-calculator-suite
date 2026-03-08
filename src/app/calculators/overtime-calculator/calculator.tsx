@@ -45,7 +45,7 @@ export function OvertimeCalculatorWidget() {
       hoursWorked: 50,
       otMultiplier: 1.5,
       payPeriod: "weekly" as string,
-    },
+    }, slug: "overtime-calculator",
   });
 
   const results = useMemo(() => {
@@ -283,7 +283,7 @@ export function OvertimeCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="overtime-calculator"
             title="Overtime Calculator Results"
             results={shareResults}
             getShareUrl={getShareUrl}

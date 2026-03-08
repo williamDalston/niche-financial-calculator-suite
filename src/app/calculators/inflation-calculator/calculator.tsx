@@ -79,7 +79,7 @@ export function InflationCalculatorWidget() {
       startYear: 2000,
       endYear: 2024,
       customRate: 3.0,
-    },
+    }, slug: "inflation-calculator",
   });
   const [useCustomRate, setUseCustomRate] = useState(false);
 
@@ -285,7 +285,7 @@ export function InflationCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="inflation-calculator"
             title="Inflation Calculator — CalcEngine.io"
             results={{
               "Original Amount": fmt(state.amount),

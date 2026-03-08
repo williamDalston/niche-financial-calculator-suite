@@ -82,7 +82,7 @@ export function GsPayCalculatorWidget() {
       grade: "GS-12" as string,
       step: 1,
       localityIndex: 0,
-    },
+    }, slug: "gs-pay-calculator",
   });
 
   const grade = state.grade as GradeKey;
@@ -244,7 +244,7 @@ export function GsPayCalculatorWidget() {
       </div>
 
       {/* Share Results */}
-      <ShareResults
+      <ShareResults slug="gs-pay-calculator"
         title="GS Pay Calculator — CalcEngine.io"
         results={{
           Grade: grade,

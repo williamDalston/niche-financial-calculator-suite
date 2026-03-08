@@ -63,7 +63,7 @@ export function PensionCalculatorWidget() {
       pensionMultiplier: 2,
       colaRate: 2,
       survivorOption: "none" as string,
-    },
+    }, slug: "pension-calculator",
   });
   const [showLumpSum, setShowLumpSum] = useState(false);
 
@@ -398,7 +398,7 @@ export function PensionCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="pension-calculator"
             title="Pension Calculation Results"
             results={shareResultsData}
             getShareUrl={getShareUrl}

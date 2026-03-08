@@ -72,7 +72,7 @@ export function TspCalculatorWidget() {
       selectedFund: "C" as string,
       contributionType: "traditional" as string,
       employerMatchPct: 5,
-    },
+    }, slug: "tsp-calculator",
   });
 
   const expectedReturn = TSP_FUNDS.find((f) => f.name === state.selectedFund)?.returnRate ?? 7;
@@ -334,7 +334,7 @@ export function TspCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="TSP Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
+          <ShareResults slug="tsp-calculator" title="TSP Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Tax Note */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">

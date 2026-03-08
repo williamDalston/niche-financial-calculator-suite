@@ -28,7 +28,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   tertiary: "#F59E0B",
-  quaternary: "#EF4444",
+  quaternary: "#F97316",
   purple: "#A855F7",
   pink: "#EC4899",
   cyan: "#06B6D4",
@@ -43,7 +43,7 @@ const BRACKET_COLORS = [
   "#22C55E",
   "#3B82F6",
   "#F59E0B",
-  "#EF4444",
+  "#F97316",
   "#A855F7",
   "#EC4899",
   "#06B6D4",
@@ -118,7 +118,7 @@ export function FederalTaxCalculatorWidget() {
       charitableDeduction: 0,
       numDependents: 0,
       childTaxCreditChildren: 0,
-    },
+    }, slug: "federal-tax-calculator",
   });
 
   const filingStatus = state.filingStatus as FilingStatus;
@@ -409,7 +409,7 @@ export function FederalTaxCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="federal-tax-calculator"
             title="Federal Tax Calculator Results"
             results={shareResults}
             getShareUrl={getShareUrl}

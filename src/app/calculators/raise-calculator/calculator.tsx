@@ -27,7 +27,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   warning: "#F59E0B",
-  danger: "#EF4444",
+  danger: "#F97316",
   bg: "#0B1120",
   surface: "#162032",
   border: "#1E293B",
@@ -111,7 +111,7 @@ export function RaiseCalculatorWidget() {
       newSalaryInput: 68250,
       payFrequency: 26,
       filingStatus: "single",
-    },
+    }, slug: "raise-calculator",
   });
 
   const results = useMemo(() => {
@@ -389,7 +389,7 @@ export function RaiseCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="raise-calculator"
             title="Raise Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

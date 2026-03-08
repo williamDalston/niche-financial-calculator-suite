@@ -463,7 +463,7 @@ function PieTooltip({
 export function MortgageCalculatorWidget() {
   /* ---------- State ---------- */
   const [state, setCalcState, getShareUrl] = useCalculatorState({
-    defaults: { homePrice: 400000, downPaymentPercent: 20, interestRate: 6.5, loanTerm: 30 },
+    defaults: { homePrice: 400000, downPaymentPercent: 20, interestRate: 6.5, loanTerm: 30 }, slug: "mortgage-calculator",
   });
   const { homePrice, downPaymentPercent, interestRate, loanTerm } = state;
 

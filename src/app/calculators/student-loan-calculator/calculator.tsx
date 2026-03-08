@@ -152,7 +152,7 @@ export function StudentLoanCalculatorWidget() {
       loanTermYears: 10,
       extraPayment: 0,
       repaymentPlan: "standard" as string,
-    },
+    }, slug: "student-loan-calculator",
   });
 
   const results = useMemo(() => {
@@ -439,7 +439,7 @@ export function StudentLoanCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="Student Loan Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
+          <ShareResults slug="student-loan-calculator" title="Student Loan Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Balance Over Time Chart */}
           {results.balanceOverTime.length > 0 && (

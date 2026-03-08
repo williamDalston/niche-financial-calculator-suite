@@ -87,7 +87,7 @@ export function AutoLoanCalculatorWidget() {
       salesTaxRate: 7.0,
       interestRate: 6.5,
       loanTerm: 60,
-    },
+    }, slug: "auto-loan-calculator",
   });
 
   const results = useMemo(() => {
@@ -277,7 +277,7 @@ export function AutoLoanCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="auto-loan-calculator"
             title="Auto Loan Calculator — CalcEngine.io"
             results={{
               "Vehicle Price": fmtShort(state.vehiclePrice),

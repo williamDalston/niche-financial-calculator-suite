@@ -4,7 +4,7 @@ export function CalculatorSkeleton() {
   return (
     <div className="space-y-6" role="status" aria-label="Loading calculator">
       {/* Input fields skeleton */}
-      <div className="rounded-xl border border-border bg-bg-surface p-6 space-y-4 animate-scale-in">
+      <div className="rounded-xl border border-border bg-bg-surface p-6 space-y-4">
         <div className="h-5 w-32 rounded shimmer" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[...Array(4)].map((_, i) => (
@@ -17,7 +17,7 @@ export function CalculatorSkeleton() {
       </div>
 
       {/* Results skeleton */}
-      <div className="rounded-xl border border-border bg-bg-surface p-6 space-y-4 animate-scale-in animate-scale-in-delay-1">
+      <div className="rounded-xl border border-border bg-bg-surface p-6 space-y-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="space-y-2">
@@ -29,7 +29,7 @@ export function CalculatorSkeleton() {
       </div>
 
       {/* Chart skeleton */}
-      <div className="rounded-xl border border-border bg-bg-surface p-6 animate-scale-in animate-scale-in-delay-2">
+      <div className="rounded-xl border border-border bg-bg-surface p-6">
         <div className="h-4 w-36 rounded shimmer mb-4" />
         <div className="h-64 w-full rounded-lg shimmer" />
       </div>

@@ -250,7 +250,7 @@ export function CalculatorLayout({
         )}</div>
 
       {/* -------- 3. Calculator Widget (above the fold) -------- */}
-      <div className="mb-8 animate-fade-in-up animate-fade-in-up-delay-1">
+      <div className="mb-8">
         <CalculatorErrorBoundary>{children}</CalculatorErrorBoundary>
       </div>
 

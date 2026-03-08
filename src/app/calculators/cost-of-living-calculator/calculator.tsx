@@ -73,7 +73,7 @@ export function CostOfLivingCalculatorWidget() {
       currentCityIndex: defaultCurrentCityIndex,
       targetCityIndex: defaultTargetCityIndex,
       salary: 75000,
-    },
+    }, slug: "cost-of-living-calculator",
   });
 
   const results = useMemo(() => {
@@ -226,7 +226,7 @@ export function CostOfLivingCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="cost-of-living-calculator"
             title="Cost of Living Calculator — CalcEngine.io"
             results={{
               "Current City": results.currentCity,
@@ -281,7 +281,7 @@ export function CostOfLivingCalculatorWidget() {
                       <td
                         className={`py-2 px-3 text-right font-mono font-medium ${
                           cat.difference > 0
-                            ? "text-[#EF4444]"
+                            ? "text-[#F97316]"
                             : cat.difference < 0
                             ? "text-[#22C55E]"
                             : "text-[#94A3B8]"
@@ -304,7 +304,7 @@ export function CostOfLivingCalculatorWidget() {
                     <td
                       className={`py-2 px-3 text-right font-mono font-bold ${
                         results.percentDifference > 0
-                          ? "text-[#EF4444]"
+                          ? "text-[#F97316]"
                           : results.percentDifference < 0
                           ? "text-[#22C55E]"
                           : "text-[#94A3B8]"

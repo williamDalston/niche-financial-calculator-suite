@@ -61,7 +61,7 @@ export function RentVsBuyCalculatorWidget() {
       homeAppreciationRate: 3.5,
       investmentReturnRate: 7,
       timeHorizon: 10,
-    },
+    }, slug: "rent-vs-buy-calculator",
   });
 
   const results = useMemo(() => {
@@ -437,7 +437,7 @@ export function RentVsBuyCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="rent-vs-buy-calculator"
             title="Rent vs Buy Calculation Results"
             results={shareResultsData}
             getShareUrl={getShareUrl}

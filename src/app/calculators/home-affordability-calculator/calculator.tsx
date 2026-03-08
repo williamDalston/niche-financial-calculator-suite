@@ -26,7 +26,7 @@ const COLORS = {
   principal: "#3B82F6",
   interest: "#22C55E",
   tax: "#F59E0B",
-  insurance: "#EF4444",
+  insurance: "#F97316",
   pmi: "#A855F7",
   hoa: "#EC4899",
   bg: "#0B1120",
@@ -36,7 +36,7 @@ const COLORS = {
   textMuted: "#94A3B8",
 };
 
-const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#EC4899"];
+const PIE_COLORS = ["#3B82F6", "#22C55E", "#F59E0B", "#F97316", "#A855F7", "#EC4899"];
 
 export function HomeAffordabilityCalculatorWidget() {
   const [state, setState, getShareUrl] = useCalculatorState({
@@ -54,7 +54,7 @@ export function HomeAffordabilityCalculatorWidget() {
       pmiRate: 0.5,
       hoaMonthly: 0,
       maxDTI: 36,
-    },
+    }, slug: "home-affordability-calculator",
   });
 
   const results = useMemo(() => {
@@ -394,7 +394,7 @@ export function HomeAffordabilityCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="Home Affordability Calculator Results" results={shareResults} getShareUrl={getShareUrl} />
+          <ShareResults slug="home-affordability-calculator" title="Home Affordability Calculator Results" results={shareResults} getShareUrl={getShareUrl} />
 
           {/* Monthly Payment Breakdown */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">
@@ -410,7 +410,7 @@ export function HomeAffordabilityCalculatorWidget() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[#94A3B8]">Insurance</span>
-                <span className="font-mono text-[#EF4444]">{formatCurrencyExact(results.monthlyInsurance)}</span>
+                <span className="font-mono text-[#F97316]">{formatCurrencyExact(results.monthlyInsurance)}</span>
               </div>
               {results.monthlyPMI > 0 && (
                 <div className="flex justify-between text-sm">

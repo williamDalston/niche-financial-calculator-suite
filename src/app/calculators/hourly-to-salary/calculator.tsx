@@ -49,7 +49,7 @@ export function HourlyToSalaryCalculatorWidget() {
       weeksPerYear: 52,
       overtimeHours: 0,
       overtimeMultiplier: 1.5,
-    },
+    }, slug: "hourly-to-salary",
   });
 
   const results = useMemo(() => {
@@ -281,7 +281,7 @@ export function HourlyToSalaryCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="hourly-to-salary"
             title="Hourly to Salary Calculation Results"
             results={shareResultsData}
             getShareUrl={getShareUrl}

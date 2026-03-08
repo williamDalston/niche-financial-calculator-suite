@@ -29,7 +29,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   warning: "#F59E0B",
-  danger: "#EF4444",
+  danger: "#F97316",
   purple: "#A855F7",
   bg: "#0B1120",
   surface: "#162032",
@@ -102,7 +102,7 @@ export function WageGapCalculatorWidget() {
       experience: "6-10",
       education: "bachelors",
       stateRegion: "National",
-    },
+    }, slug: "wage-gap-calculator",
   });
 
   const results = useMemo(() => {
@@ -371,7 +371,7 @@ export function WageGapCalculatorWidget() {
               value={results.careerCost[2]?.cost || 0}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl font-bold text-[#EF4444] inline-block"
+              className="font-mono text-2xl font-bold text-[#F97316] inline-block"
             />
           </div>
 
@@ -441,7 +441,7 @@ export function WageGapCalculatorWidget() {
                   value={results.careerCost[2]?.cost || 0}
                   format="compact"
                   decimals={1}
-                  className="font-mono text-lg font-bold text-[#EF4444] inline-block"
+                  className="font-mono text-lg font-bold text-[#F97316] inline-block"
                 />
               }
               trend="down"
@@ -450,7 +450,7 @@ export function WageGapCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="wage-gap-calculator"
             title="Wage Gap Analysis"
             results={shareResultsData}
             getShareUrl={getShareUrl}
@@ -476,8 +476,8 @@ export function WageGapCalculatorWidget() {
           </div>
 
           {/* Career Cost Breakdown */}
-          <div className="rounded-lg border border-[#EF4444]/30 bg-[#EF4444]/5 p-4">
-            <p className="mb-3 text-sm font-medium text-[#EF4444]">
+          <div className="rounded-lg border border-[#F97316]/30 bg-[#F97316]/5 p-4">
+            <p className="mb-3 text-sm font-medium text-[#F97316]">
               Lifetime Cost of the Gap (with 3% annual growth)
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">

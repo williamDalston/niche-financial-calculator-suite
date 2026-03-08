@@ -31,7 +31,7 @@ import { useCalculatorState } from "@/hooks/use-calculator-state";
 
 const COLORS = {
   takeHome: "#22C55E",
-  taxes: "#EF4444",
+  taxes: "#F97316",
   expenses: "#F59E0B",
   savings: "#3B82F6",
   margin: "#A855F7",
@@ -60,7 +60,7 @@ export function FreelanceRateCalculatorWidget() {
       retirementSavingsMonthly: 500,
       profitMargin: 20,
       vacationWeeks: 4,
-    },
+    }, slug: "freelance-rate-calculator",
   });
 
   const results = useMemo(() => {
@@ -309,7 +309,7 @@ export function FreelanceRateCalculatorWidget() {
                 <AnimatedNumber
                   value={results.selfEmploymentTax}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#EF4444] inline-block"
+                  className="font-mono text-lg font-bold text-[#F97316] inline-block"
                 />
               }
             />
@@ -327,7 +327,7 @@ export function FreelanceRateCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="freelance-rate-calculator"
             title="Freelance Rate Calculation Results"
             results={shareResultsData}
             getShareUrl={getShareUrl}

@@ -27,7 +27,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   warning: "#F59E0B",
-  danger: "#EF4444",
+  danger: "#F97316",
   purple: "#A855F7",
   cyan: "#06B6D4",
   bg: "#0B1120",
@@ -146,7 +146,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
       otherIncome: 0,
       quarterlyPaid: 0,
       usState: "CA",
-    },
+    }, slug: "self-employment-tax-calculator",
   });
 
   const results = useMemo(() => {
@@ -359,13 +359,13 @@ export function SelfEmploymentTaxCalculatorWidget() {
         {/* Results */}
         <div className="space-y-6">
           {/* Primary Result: Total Tax Liability */}
-          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#EF4444] bg-[#0B1120] p-5">
+          <div className="rounded-lg border border-l-[3px] border-[#1E293B] border-l-[#F97316] bg-[#0B1120] p-5">
             <p className="mb-1 text-sm text-[#94A3B8]">Total Tax Liability</p>
             <AnimatedNumber
               value={results.totalTax}
               format="currency"
               decimals={0}
-              className="font-mono text-2xl sm:text-3xl font-bold text-[#EF4444] inline-block transition-transform duration-150"
+              className="font-mono text-2xl sm:text-3xl font-bold text-[#F97316] inline-block transition-transform duration-150"
             />
             <p className="mt-1 text-xs text-[#94A3B8]">
               Effective tax rate: {results.effectiveRate.toFixed(1)}%
@@ -479,7 +479,7 @@ export function SelfEmploymentTaxCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="self-employment-tax-calculator"
             title="Self-Employment Tax Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

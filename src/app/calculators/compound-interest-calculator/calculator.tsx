@@ -31,7 +31,7 @@ const COMPOUNDING_OPTIONS: Record<string, { label: string; n: number }> = {
 
 export function CompoundInterestWidget() {
   const [state, setState, getShareUrl] = useCalculatorState({
-    defaults: { principal: 10000, monthlyContribution: 200, interestRate: 7, compoundingFrequency: "monthly" as string, timePeriod: 20 },
+    defaults: { principal: 10000, monthlyContribution: 200, interestRate: 7, compoundingFrequency: "monthly" as string, timePeriod: 20 }, slug: "compound-interest-calculator",
   });
   const principal = state.principal;
   const monthlyContribution = state.monthlyContribution;
@@ -300,7 +300,7 @@ export function CompoundInterestWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="compound-interest-calculator"
             title="Compound Interest Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

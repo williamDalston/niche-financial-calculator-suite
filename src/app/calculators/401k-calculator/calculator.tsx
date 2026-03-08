@@ -45,7 +45,7 @@ export function FourOhOneKCalculatorWidget() {
       employerMatchCap: 6,
       annualReturn: 7,
       salaryGrowth: 3,
-    },
+    }, slug: "401k-calculator",
   });
 
   const results = useMemo(() => {
@@ -359,7 +359,7 @@ export function FourOhOneKCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="401k-calculator"
             title="401(k) Calculator Results"
             results={shareResults}
             getShareUrl={getShareUrl}

@@ -28,7 +28,7 @@ import { formatCurrency } from "@/lib/formatters";
 
 const COLORS = {
   assets: "#22C55E",
-  liabilities: "#EF4444",
+  liabilities: "#F97316",
   bg: "#0B1120",
   surface: "#162032",
   border: "#1E293B",
@@ -37,7 +37,7 @@ const COLORS = {
 };
 
 const ASSET_COLORS = ["#22C55E", "#3B82F6", "#A855F7", "#F59E0B", "#EC4899", "#06B6D4"];
-const LIABILITY_COLORS = ["#EF4444", "#F97316", "#E879F7", "#FB923C", "#F472B6"];
+const LIABILITY_COLORS = ["#F97316", "#FB923C", "#E879F7", "#FDBA74", "#F472B6"];
 
 /* ------------------------------------------------------------------ */
 /*  Types & Helpers                                                    */
@@ -111,7 +111,7 @@ function LineItemEditor({
           />
           <button
             onClick={() => onRemove(item.id)}
-            className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#1E293B] bg-[#0B1120] text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors shrink-0"
+            className="flex h-12 w-12 items-center justify-center rounded-lg border border-[#1E293B] bg-[#0B1120] text-[#F97316] hover:bg-[#F97316]/10 transition-colors shrink-0"
             title="Remove item"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +224,7 @@ export function NetWorthCalculatorWidget() {
 
           {/* Liabilities */}
           <div>
-            <h3 className="mb-3 text-lg font-semibold text-[#EF4444]">Liabilities</h3>
+            <h3 className="mb-3 text-lg font-semibold text-[#F97316]">Liabilities</h3>
             <LineItemEditor
               items={liabilities}
               onUpdate={(id, field, val) => updateItem(liabilities, setLiabilities, id, field, val)}
@@ -246,7 +246,7 @@ export function NetWorthCalculatorWidget() {
                 <AnimatedNumber
                   value={results.netWorth}
                   format="currency"
-                  className={`font-mono text-2xl font-bold inline-block ${results.netWorth >= 0 ? "text-[#22C55E]" : "text-[#EF4444]"}`}
+                  className={`font-mono text-2xl font-bold inline-block ${results.netWorth >= 0 ? "text-[#22C55E]" : "text-[#F97316]"}`}
                 />
               }
               className="col-span-2"
@@ -267,7 +267,7 @@ export function NetWorthCalculatorWidget() {
                 <AnimatedNumber
                   value={results.totalLiabilities}
                   format="currency"
-                  className="font-mono text-lg font-bold text-[#EF4444] inline-block"
+                  className="font-mono text-lg font-bold text-[#F97316] inline-block"
                 />
               }
             />
@@ -287,7 +287,7 @@ export function NetWorthCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="net-worth-calculator"
             title="Net Worth Calculation Results"
             results={shareResultsData}
           />

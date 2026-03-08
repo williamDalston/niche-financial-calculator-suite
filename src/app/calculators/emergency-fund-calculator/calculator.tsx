@@ -26,7 +26,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   warning: "#F59E0B",
-  danger: "#EF4444",
+  danger: "#F97316",
   purple: "#A855F7",
   cyan: "#06B6D4",
   bg: "#0B1120",
@@ -63,7 +63,7 @@ export function EmergencyFundCalculatorWidget() {
       currentSavings: 5000,
       monthlyContribution: 500,
       riskTolerance: 6,
-    },
+    }, slug: "emergency-fund-calculator",
   });
 
   const results = useMemo(() => {
@@ -388,7 +388,7 @@ export function EmergencyFundCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="emergency-fund-calculator"
             title="Emergency Fund Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

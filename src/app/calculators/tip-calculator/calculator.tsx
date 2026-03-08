@@ -43,7 +43,7 @@ export function TipCalculatorWidget() {
       roundUp: 0,
       preTaxMode: 0,
       taxAmount: 0,
-    },
+    }, slug: "tip-calculator",
   });
 
   // UI-only state (not persisted in URL)
@@ -363,7 +363,7 @@ export function TipCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="tip-calculator"
             title="Tip Calculation"
             results={shareResultsData}
             getShareUrl={getShareUrl}

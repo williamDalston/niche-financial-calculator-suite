@@ -43,7 +43,7 @@ export function LoanCalculatorWidget() {
       termValue: 60,
       termUnit: "months" as string,
       extraPayment: 0,
-    },
+    }, slug: "loan-calculator",
   });
 
   const results = useMemo(() => {
@@ -326,7 +326,7 @@ export function LoanCalculatorWidget() {
 
           {/* Share Results */}
           <div className="mb-8">
-            <ShareResults
+            <ShareResults slug="loan-calculator"
               title="Loan Calculation Results"
               results={shareResultsData}
               getShareUrl={getShareUrl}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { trackShare } from "@/lib/track-event";
 
 /* ------------------------------------------------------------------ */
 /*  ShareResults                                                       */
@@ -13,6 +14,8 @@ interface ShareResultsProps {
   className?: string;
   /** Optional callback that returns a shareable URL with calculator state encoded as query params. */
   getShareUrl?: () => string;
+  /** Calculator slug for analytics tracking. */
+  slug?: string;
 }
 
 /* ----- Icons (inline SVG, 16x16) ----- */
@@ -118,6 +121,7 @@ export function ShareResults({
   results,
   className,
   getShareUrl,
+  slug,
 }: ShareResultsProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [shareState, setShareState] = useState<"idle" | "shared">("idle");
@@ -129,6 +133,7 @@ export function ShareResults({
     try {
       await navigator.clipboard.writeText(text);
       setCopyState("copied");
+      if (slug) trackShare(slug, "copy");
       setTimeout(() => setCopyState("idle"), 2000);
     } catch {
       /* Fallback for non-secure contexts */
@@ -141,9 +146,10 @@ export function ShareResults({
       document.execCommand("copy");
       document.body.removeChild(textarea);
       setCopyState("copied");
+      if (slug) trackShare(slug, "copy");
       setTimeout(() => setCopyState("idle"), 2000);
     }
-  }, [title, results, getShareUrl]);
+  }, [title, results, getShareUrl, slug]);
 
   /* --- Share Link --- */
   const handleShare = useCallback(async () => {
@@ -158,6 +164,7 @@ export function ShareResults({
       try {
         await navigator.share(shareData);
         setShareState("shared");
+        if (slug) trackShare(slug, "share");
         setTimeout(() => setShareState("idle"), 2000);
       } catch {
         /* User cancelled -- silently ignore */
@@ -167,17 +174,19 @@ export function ShareResults({
       try {
         await navigator.clipboard.writeText(url);
         setShareState("shared");
+        if (slug) trackShare(slug, "share_link");
         setTimeout(() => setShareState("idle"), 2000);
       } catch {
         /* Ignore clipboard errors */
       }
     }
-  }, [title, results, getShareUrl]);
+  }, [title, results, getShareUrl, slug]);
 
   /* --- Print --- */
   const handlePrint = useCallback(() => {
+    if (slug) trackShare(slug, "print");
     window.print();
-  }, []);
+  }, [slug]);
 
   /* Shared button classes */
   const btnClass =

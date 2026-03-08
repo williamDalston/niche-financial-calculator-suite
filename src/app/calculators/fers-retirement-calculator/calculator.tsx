@@ -46,7 +46,7 @@ export function FersRetirementCalculatorWidget() {
       expectedTspReturn: 7,
       fersSupplementEligible: "true" as string,
       socialSecurityEstimate: 2200,
-    },
+    }, slug: "fers-retirement-calculator",
   });
 
   const fersSupplementEligible = state.fersSupplementEligible === "true";
@@ -328,7 +328,7 @@ export function FersRetirementCalculatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults title="FERS Retirement Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
+          <ShareResults slug="fers-retirement-calculator" title="FERS Retirement Calculator Results" results={shareResultsData} getShareUrl={getShareUrl} />
 
           {/* Annual Summary */}
           <div className="rounded-lg border border-[#1E293B] bg-[#0B1120] p-4">

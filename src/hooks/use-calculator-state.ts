@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { trackCalculation } from "@/lib/track-event";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -8,6 +9,8 @@ import { useState, useCallback, useRef, useEffect } from "react";
 
 interface UseCalculatorStateOptions<T extends Record<string, number | string>> {
   defaults: T;
+  /** Calculator slug — used for analytics event tracking. */
+  slug?: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -30,7 +33,7 @@ function coerce<V extends number | string>(raw: string, fallback: V): V {
 function useCalculatorState<T extends Record<string, number | string>>(
   options: UseCalculatorStateOptions<T>,
 ): [T, (key: keyof T, value: T[keyof T]) => void, () => string] {
-  const { defaults } = options;
+  const { defaults, slug } = options;
 
   /* ---- Build initial state from defaults + URL search params ---- */
   const [state, setStateRaw] = useState<T>(() => {
@@ -51,6 +54,8 @@ function useCalculatorState<T extends Record<string, number | string>>(
 
   /* ---- Debounce timer ref ---- */
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const trackDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasTrackedRef = useRef(false);
 
   /* ---- Flush URL on unmount so the last update always lands ---- */
   const pendingStateRef = useRef<T>(state);
@@ -58,6 +63,7 @@ function useCalculatorState<T extends Record<string, number | string>>(
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (trackDebounceRef.current) clearTimeout(trackDebounceRef.current);
     };
   }, []);
 
@@ -77,17 +83,27 @@ function useCalculatorState<T extends Record<string, number | string>>(
     }, 300);
   }, []);
 
-  /* ---- setState: update React state + schedule URL sync ---- */
+  /* ---- setState: update React state + schedule URL sync + track ---- */
   const setState = useCallback(
     (key: keyof T, value: T[keyof T]) => {
       setStateRaw((prev) => {
         const next = { ...prev, [key]: value };
         pendingStateRef.current = next;
         syncUrl(next);
+
+        /* Fire a single "calculate" event per interaction burst (debounced 2s) */
+        if (slug && !hasTrackedRef.current) {
+          if (trackDebounceRef.current) clearTimeout(trackDebounceRef.current);
+          trackDebounceRef.current = setTimeout(() => {
+            trackCalculation(slug);
+            hasTrackedRef.current = true;
+          }, 2000);
+        }
+
         return next;
       });
     },
-    [syncUrl],
+    [syncUrl, slug],
   );
 
   /* ---- getShareUrl: build a full URL with the current state ---- */

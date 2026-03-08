@@ -28,7 +28,7 @@ const COLORS = {
   primary: "#22C55E",
   secondary: "#3B82F6",
   tertiary: "#F59E0B",
-  quaternary: "#EF4444",
+  quaternary: "#F97316",
   bg: "#0B1120",
   surface: "#162032",
   border: "#1E293B",
@@ -108,7 +108,7 @@ export function SocialSecurityEstimatorWidget() {
       annualIncome: 75000,
       plannedRetirementAge: 67,
       yearsWorked: 20,
-    },
+    }, slug: "social-security-estimator",
   });
 
   const results = useMemo(() => {
@@ -370,7 +370,7 @@ export function SocialSecurityEstimatorWidget() {
           </div>
 
           {/* Share Results */}
-          <ShareResults
+          <ShareResults slug="social-security-estimator"
             title="Social Security Estimator Results"
             results={shareResults}
             getShareUrl={getShareUrl}
